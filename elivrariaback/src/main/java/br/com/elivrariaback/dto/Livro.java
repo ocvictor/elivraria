@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class Livro implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@NotBlank(message = "Insira o ISBN!")
 	private String ISBN;
 	@NotBlank(message = "Insira o Titulo!")
@@ -39,6 +41,26 @@ public class Livro implements Serializable {
 	@Column(name = "precoUnit")
 	@Min(value = 1, message="Insira o Preco Unitario!")
 	private double precoUnit;
+	
+	@NotNull(message = "Insira o Ano!")
+	private int ano;
+	@NotNull(message = "Insira a Edição!")
+	private String edicao;
+	@NotNull(message = "Insira o Numero de Paginas!")
+	private int numPaginas;
+	@NotBlank(message = "Insira a Sinopse!")
+	private String sinopse;
+	@NotNull(message = "Insira a altura!")
+	private double altura;
+	@NotNull(message = "Insira a largura!")
+	private double largura;
+	@NotNull(message = "Insira a profundidade!")
+	private double profundidade;
+	@NotNull(message = "Insira o peso!")
+	private double peso;
+	@NotNull(message = "Insira o codigo de barras!")
+	private double codBarras;
+		
 	private int quantidade;
 	@Column(name = "ativo")	
 	private boolean ativo;
@@ -50,6 +72,7 @@ public class Livro implements Serializable {
 	private int fornecedorId;
 	private int compras;
 	private int visualizacoes;
+	
 	
 	
 	@Transient
@@ -65,9 +88,7 @@ public class Livro implements Serializable {
 
 
 	// default constructor
-	public Livro() {
-		
-		
+	public Livro() {		
 		
 	}
 	
@@ -167,12 +188,87 @@ public class Livro implements Serializable {
 	public void setVisualizacoes(int visualizacoes) {
 		this.visualizacoes = visualizacoes;
 	}
+	
+	
+	public int getAno() {
+		return ano;
+	}
+
+	public void setAno(int ano) {
+		this.ano = ano;
+	}
+
+	public String getEdicao() {
+		return edicao;
+	}
+
+	public void setEdicao(String edicao) {
+		this.edicao = edicao;
+	}
+
+	public int getNumPaginas() {
+		return numPaginas;
+	}
+
+	public void setNumPaginas(int numPaginas) {
+		this.numPaginas = numPaginas;
+	}
+
+	public String getSinopse() {
+		return sinopse;
+	}
+
+	public void setSinopse(String sinopse) {
+		this.sinopse = sinopse;
+	}
+
+	public double getAltura() {
+		return altura;
+	}
+
+	public void setAltura(double altura) {
+		this.altura = altura;
+	}
+
+	public double getLargura() {
+		return largura;
+	}
+
+	public void setLargura(double largura) {
+		this.largura = largura;
+	}
+
+	public double getProfundidade() {
+		return profundidade;
+	}
+
+	public void setProfundidade(double profundidade) {
+		this.profundidade = profundidade;
+	}
+
+	public double getPeso() {
+		return peso;
+	}
+
+	public void setPeso(double peso) {
+		this.peso = peso;
+	}
+
+	public double getCodBarras() {
+		return codBarras;
+	}
+
+	public void setCodBarras(double codBarras) {
+		this.codBarras = codBarras;
+	}
 
 	// toString for debugging
 	@Override
 	public String toString() {
 		return "Livro [id=" + id + ", isbn=" + ISBN + ", titulo=" + titulo + ", editora=" + editora + ", autor="
 				+ autor + ", precoUnit=" + precoUnit + ", quantidade=" + quantidade + ", ativo=" + ativo
+				+ ", ano=" + ano + ", edicao=" + edicao + ", codbarras=" + codBarras + ", numpaginas= " + numPaginas
+				+ ", sinopse= " + sinopse + ", largura= " + largura + ", altura=" + altura + ", profundidade=" + profundidade + ", peso=" + peso
 				+ ", categoriaId=" + categoriaId + ", fornecedorID=" + fornecedorId + ", compras=" + compras + ", visualizacoes="
 				+ visualizacoes + "]";
 	}

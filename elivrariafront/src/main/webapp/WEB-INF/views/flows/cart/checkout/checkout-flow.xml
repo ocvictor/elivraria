@@ -5,7 +5,7 @@
                           http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 	
 
-	<var name="shipping" class="br.com.elivrariaback.dto.Address"/>
+	<var name="endereco" class="br.com.elivrariaback.dto.Endereco"/>
 	
 	<on-start>
 		<evaluate expression="checkoutHandler.init(currentUser.name)" result="flowScope.checkoutModel"/>

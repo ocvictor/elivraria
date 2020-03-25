@@ -39,7 +39,7 @@ public class GlobalController {
 				if(usuario!=null) {
 					usuarioModelo = new UsuarioModelo();
 					usuarioModelo.setId(usuario.getId());
-					usuarioModelo.setNome(usuario.getNome() + " " + usuario.getSobrenome());
+					usuarioModelo.setNomeCompleto(usuario.getNome() + " " + usuario.getSobrenome());
 					usuarioModelo.setRole(usuario.getRole());
 					
 					if(usuario.getRole().equals("USER")) {

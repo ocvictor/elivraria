@@ -12,14 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 import br.com.elivrariafront.service.CartService;
 
 @Controller
-@RequestMapping("/cart")
-public class CartController {
+@RequestMapping("/carrinho")
+public class CarrinhoController {
 
-	private final static Logger logger = LoggerFactory.getLogger(CartController.class);
+	private final static Logger logger = LoggerFactory.getLogger(CarrinhoController.class);
 	
 	@Autowired
 	private CartService cartService;
-	@RequestMapping("/show")
+	@RequestMapping("/mostrar")
 	public ModelAndView showCart(@RequestParam(name = "result", required = false) String result) {
 		
 		ModelAndView mv = new ModelAndView("page");

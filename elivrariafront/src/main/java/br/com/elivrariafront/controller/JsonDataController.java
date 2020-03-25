@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.Usuario;
 
 @Controller
 @RequestMapping("/json/data")
@@ -17,6 +19,7 @@ public class JsonDataController {
 
 	@Autowired
 	private LivroDAO livroDAO;
+	private UsuarioDAO usuarioDAO;
 	
 
 	@RequestMapping("/admin/todos/livros")
@@ -50,12 +53,18 @@ public class JsonDataController {
 		return livroDAO.getLivrosByParam("visualizacoes", 5);				
 	}
 		
-	@RequestMapping("/mc/products")
+	@RequestMapping("/mc/livros")
 	@ResponseBody
 	public List<Livro> getLivrosMaisComprados() {		
 		return livroDAO.getLivrosByParam("compras", 5);				
 	}
 	
+	@RequestMapping("/admin/todos/usuarios")
+	@ResponseBody
+	public List<Usuario> getTodosUsuariosLista() {		
+		return usuarioDAO.listUsuarios();
+				
+	}
 	
 	
 	

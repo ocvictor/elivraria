@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+	
+
+	<var name="usuario" class="br.com.elivrariaback.dto.Usuario"/>
+	<var name="endereco" class="br.com.elivrariaback.dto.Endereco"/>
+	<var name="cartao" class="br.com.elivrariaback.dto.Cartao"/>
+
+	<on-start>
+		<evaluate expression="registroHandler.init()" result="flowScope.registroModelo"/>
+	</on-start>
+
+	<view-state id="infopessoal" view="flows/registro/registro-infopessoal" model="usuario">
+		<transition on="endereco" to="validar" />
+		<on-exit>
+			<evaluate expression="registroHandler.addUsuario(flowScope.registroModelo, usuario)" />			
+		</on-exit>
+	</view-state>
+
+	<action-state id="validar">
+		<evaluate expression="registroHandler.validarUsuario(usuario,messageContext)" />
+		<transition on="sucesso" to="endereco"/>
+		<transition on="falha" to="infopessoal"/>
+	</action-state>
+	
+	<view-state id="endereco" view="flows/registro/registro-endereco" model="endereco">		
+		<transition on="cartao" to="cartao" />
+		<transition on="infopessoal" to="infopessoal" />	
+		<on-exit>
+			<evaluate expression="registroHandler.addEndereco(flowScope.registroModelo, endereco)" />
+		</on-exit>
+	</view-state>
+	
+	<view-state id="cartao" view="flows/registro/registro-cartao" model="cartao">
+		<on-entry>
+			<evaluate expression="registroHandler.getBandeiras(flowScope.registrotModelo)" result="viewScope.bandeiras"/>	
+		</on-entry>	
+		<transition on="confirmar" to="confirmar" />
+		<transition on="endereco" to="endereco" />	
+		<on-exit>
+			<evaluate expression="registroHandler.addCartao(flowScope.registroModelo, cartao)" />
+		</on-exit>
+	</view-state>
+	
+	<view-state id="confirmar" view="flows/registro/registro-confirmar" model="flowScope.registroModelo">		
+		<transition on="submeter" to="submeter" />
+		<transition on="endereco" to="endereco" />
+		<transition on="cartao" to="cartao" />
+		<transition on="infopessoal" to="infopessoal" />	
+	</view-state>
+	
+	<action-state id="submeter">
+		<evaluate expression="registroHandler.saveAll(flowScope.registroModelo)" />
+		<transition on="sucesso" to="sucesso"/>
+	</action-state>
+	
+	<end-state  id="sucesso" view="flows/registro/registro-sucesso" />
+	<end-state id="home" view="externalRedirect:contextRelative:/" />
+
+	<global-transitions>
+		<transition on="home" to="home" validate="false" />
+	</global-transitions>
+	
+</flow>

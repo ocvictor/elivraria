@@ -27,17 +27,34 @@ public class Usuario implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@NotBlank(message = "Insira o nome!")
 	@Column(name = "nome")
 	private String nome;
+	
 	@NotBlank(message = "Insira o sobrenome!")
 	@Column(name = "sobrenome")
 	private String sobrenome;
+	
+	@NotBlank(message = "Insira o gênero!")
+	@Column(name = "genero")
+	private String genero;
+	
+	@NotBlank(message = "Insira a data de nascimento!")
+	@Column(name = "dtnascimento")
+	private String dtNascimento;
+	
 	@NotBlank(message = "Insira o email!")	
 	private String email;
+	
+	@NotBlank(message = "Insira o DDD do Telefone!")
+	@Column(name = "ddd_telefone")
+	private String dddTelefone;
+	
 	@NotBlank(message = "Insira o telefone de contato!")
 	@Column(name = "telefone")
 	private String telefone;
+	
 	private String role;
 	@NotBlank(message = "Insira a senha!")
 	private String senha;
@@ -46,6 +63,27 @@ public class Usuario implements Serializable{
 	private String confirmaSenha;
 
 	
+	public String getGenero() {
+		return genero;
+	}
+	public void setGenero(String genero) {
+		this.genero = genero;
+	}
+
+	
+	
+	public String getDtNascimento() {
+		return dtNascimento;
+	}
+	public void setDtNascimento(String dtNascimento) {
+		this.dtNascimento = dtNascimento;
+	}
+	public String getDddTelefone() {
+		return dddTelefone;
+	}
+	public void setDddTelefone(String dddTelefone) {
+		this.dddTelefone = dddTelefone;
+	}
 	public int getId() {
 		return id;
 	}
@@ -103,7 +141,8 @@ public class Usuario implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nome=" + nome + ", sobrenome=" + sobrenome + ", email=" + email
+		return "Usuario [id=" + id + ", nome=" + nome + ", sobrenome=" + sobrenome + ", genero=" + genero 
+				+ ", dtnascimento=" + dtNascimento + ", email=" + email + ", ddd_telefone=" + dddTelefone
 				+ ", telefone=" + telefone + ", role=" + role + ", senha=" + senha + ", ativo="
 				+ ativo + "]";
 	}

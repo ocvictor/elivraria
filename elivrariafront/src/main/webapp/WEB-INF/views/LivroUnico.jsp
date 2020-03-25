@@ -9,8 +9,8 @@
 			<ol class="breadcrumb">
 			
 				<li><a href="${contextRoot}/home">Home</a></li>
-				<li><a href="${contextRoot}/show/all/products">Products</a></li>
-				<li class="active">${product.name}</li>
+				<li><a href="${contextRoot}/mostrar/todos/livros">Livros</a></li>
+				<li class="active">${livro.titulo}</li>
 			
 			</ol>
 		
@@ -28,7 +28,7 @@
 		
 			<div class="thumbnail">
 							
-				<img src="${images}/${product.code}.jpg" class="img img-responsive"/>
+				<img src="${images}/${livro.ISBN}.jpg" class="img img-responsive"/>
 						
 			</div>
 		
@@ -38,27 +38,27 @@
 		<!-- Display the product description -->	
 		<div class="col-xs-12 col-sm-8">
 		
-			<h3>${product.name}</h3>
+			<h3>${livro.titulo}</h3>
 			<hr/>
 			
-			<p>${product.description}</p>
+			<p>${livro.sinopse}</p>
 			<hr/>
 			
-			<h4>Price: <strong> &#8377; ${product.unitPrice} /-</strong></h4>
+			<h4>Preço: <strong> R$ ${livro.precoUnit} </strong></h4>
 			<hr/>
 			
 			
 			
 			<c:choose>
 				
-				<c:when test="${product.quantity < 1}">
+				<c:when test="${livro.quantidade < 1}">
 				
-					<h6>Qty. Available: <span style="color:red">Out of Stock!</span></h6>
+					<h6>Qtd. Disponível: <span style="color:red">Sem Estoque!</span></h6>
 					
 				</c:when>
 				<c:otherwise>				
 					
-					<h6>Qty. Available: ${product.quantity}</h6>
+					<h6>Qtd. Disponível: ${livro.quantidade}</h6>
 						
 				</c:otherwise>
 			
@@ -69,16 +69,16 @@
 
 			<c:choose>
 				
-				<c:when test="${product.quantity < 1}">
+				<c:when test="${livro.quantidade < 1}">
 				
 					<a href="javascript:void(0)" class="btn btn-success disabled"><strike>
-					<span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</strike></a>
+					<span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao Carrinho</strike></a>
 					
 				</c:when>
 				<c:otherwise>				
 				
-				<a href="${contextRoot}/cart/add/${product.id}/product" class="btn btn-success">
-				<span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a>
+				<a href="${contextRoot}/carrinho/adicionar/${livro.id}/livro" class="btn btn-success">
+				<span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao Carrinho</a>
 				
 				
 				
@@ -90,14 +90,14 @@
 			
 			
 			<security:authorize access="hasAuthority('ADMIN')">
-				<a href="${contextRoot}/manage/${product.id}/product" class="btn btn-success">
-				<span class="glyphicon glyphicon-pencil"></span> Edit</a>
+				<a href="${contextRoot}/gerenciar/${livro.id}/livro" class="btn btn-success">
+				<span class="glyphicon glyphicon-pencil"></span> Editar</a>
 			</security:authorize>	
 						
 			
 
-			<a href="${contextRoot}/show/all/products" class="btn btn-warning">
-				Continue Shopping</a>
+			<a href="${contextRoot}/mostrar/todos/livros" class="btn btn-warning">
+				Continuar Comprando</a>
 					
 		</div>
 
