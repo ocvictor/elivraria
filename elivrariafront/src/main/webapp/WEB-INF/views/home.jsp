@@ -2,7 +2,7 @@
 <script src="${js}/angular.js"></script>
 
 <!-- DataTable Bootstrap Script -->
-<script src="${js}/productsController.js"></script>
+<script src="${js}/livroController.js"></script>
 <div class="container" ng-app="elivraria" ng-controller="LivroController as lCtrl" >
 
 	<div class="row" ng-init="lCtrl.fetchProducts()">
@@ -65,13 +65,13 @@
 
                 <div class="row is-table-row">
                 	
-                    <div class="col-sm-4" ng-repeat="Livros in lCtrl.mvLivros">                    	
+                    <div class="col-sm-4" ng-repeat="livro in lCtrl.mvLivros">                    	
                         <div class="thumbnail">
                             <img ng-src="${images}/{{livro.isbn}}.jpg" alt="{{livro.titulo}}" class="landingImg">
                             <h5>{{livro.titulo}}</h5>
                             <hr/>
                             <div class="caption">
-                                <h4 class="pull-right">&#8377; {{livro.precoUnit}}</h4>
+                                <h4 class="pull-right">R$ {{livro.precoUnit}}</h4>
                                 <p>{{livro.autor}}</p>
                                 <a ng-href="${contextRoot}/mostrar/{{livro.id}}/livro" class="btn btn-primary pull-right">Ver</a>
                             </div>
@@ -101,7 +101,7 @@
                             <h5>{{livro.titulo}}</h5>
                             <hr/>
                             <div class="caption">
-                                <h4 class="pull-right">&#8377; {{livro.precoUnit}}</h4>
+                                <h4 class="pull-right">R$ {{livro.precoUnit}}</h4>
                                 <p>{{livro.autor}}</p>
                                 <a ng-href="${contextRoot}/mostrar/{{livro.id}}/livro" class="btn btn-primary pull-right">Ver</a>
                             </div>

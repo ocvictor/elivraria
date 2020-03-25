@@ -118,7 +118,7 @@
        </div>
        <div class="panel-footer">
        	<div class="text-right">
-       		Não possui conta? - <a href="${contextRoot}/register">Registre-se Aqui</a>
+       		Não possui conta? - <a href="${contextRoot}/registro">Registre-se Aqui</a>
        	</div>
        </div>
       

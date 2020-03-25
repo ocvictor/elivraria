@@ -35,6 +35,9 @@ $(function() {
 	case 'Gerenciar Livros':
 		$('#gerenciarLivros').addClass('active');
 		break;
+	case 'Gerenciar Usuarios':
+		$('#gerenciarUsuarios').addClass('active');
+		break;
 	case 'Carrinho':
 		$('#usuarioModelo').addClass('active');
 		break;		
@@ -42,6 +45,7 @@ $(function() {
 		if (menu == "Home")
 			break;
 		$('#listaLivros').addClass('active');
+		$('#listaUsuarios').addClass('active');
 		$('#a_' + menu).addClass('active');
 		break;
 	}
@@ -57,15 +61,48 @@ $(function() {
 		if (window.categoriaId == '') {
 			jsonUrl = window.contextRoot + '/json/data/todos/livros';
 		} else {
-			jsonUrl = window.contextRoot + '/json/data/categorias/'
+			jsonUrl = window.contextRoot + '/json/data/categoria/'
 					+ window.categoriaId + '/livros';
 		}
 
 		$table
 				.DataTable({
-
+					
+					"language": {
+						
+						    "sEmptyTable": "Nenhum registro encontrado",
+						    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+						    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+						    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+						    "sInfoPostFix": "",
+						    "sInfoThousands": ".",
+						    "sLengthMenu": "_MENU_ resultados por pagina",
+						    "sLoadingRecords": "Carregando...",
+						    "sProcessing": "Processando...",
+						    "sZeroRecords": "Nenhum registro encontrado",
+						    "sSearch": "Pesquisar",
+						    "oPaginate": {
+						        "sNext": "Proximo",
+						        "sPrevious": "Anterior",
+						        "sFirst": "Primeiro",
+						        "sLast": "Ultimo"
+						    },
+						    "oAria": {
+						        "sSortAscending": ": Ordenar colunas de forma ascendente",
+						        "sSortDescending": ": Ordenar colunas de forma descendente"
+						    },
+						    "select": {
+						        "rows": {
+						            "_": "Selecionado %d linhas",
+						            "0": "Nenhuma linha selecionada",
+						            "1": "Selecionado 1 linha"
+						        }
+						    }
+						
+			        },
+				
 					lengthMenu : [ [ 3, 5, 10, -1 ],
-							[ '3 registros', '5 registros', '10 registros', 'ALL' ] ],
+							[ '3 ', '5 ', '10 ', 'Todos' ] ],
 					pageLength : 5,
 					ajax : {
 						url : jsonUrl,
@@ -92,7 +129,7 @@ $(function() {
 							{
 								data : 'precoUnit',
 								mRender : function(data, type, row) {
-									return '&#8377; ' + data
+									return 'R$ ' + data
 								}
 							},
 							{
@@ -160,7 +197,39 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$LivrosTable.DataTable({
-					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 registros', '30 registros', '50 registros', 'ALL' ] ],
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
 					pageLength : 30,
 					ajax : {
 						url : jsonUrl,
@@ -170,22 +239,12 @@ $(function() {
 					           	{data: 'id'},
 
 
-					           	{data: 'ISBN',
-					           	 bSortable: false,
-					           		mRender: function(data,type,row) {
-					           			return '<img src="' + window.contextRoot
-										+ '/resources/images/' + data
-										+ '.jpg" class="dataTableImg"/>';					           			
-					           		}
-					           	},
+					           	{data: 'isbn'},
 					           	{
 									data : 'titulo'
-								},
+								},							
 								{
-									data : 'editora'
-								},
-								{
-									data : 'quantidade,',
+									data : 'quantidade',
 									mRender : function(data, type, row) {
 
 										if (data < 1) {
@@ -199,7 +258,7 @@ $(function() {
 								{
 									data : 'precoUnit',
 									mRender : function(data, type, row) {
-										return '&#8377; ' + data
+										return 'R$ ' + data
 									}
 								},
 								{
@@ -272,6 +331,55 @@ $(function() {
 				});
 	}
 	
+	// lista todos enderecos do cliente
+	var UsuariosTable = $('#UsuariosTable');
+	
+	
+	if(UsuariosTable.length) {
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/todos/usuarios';
+		console.log(jsonUrl);
+		
+		UsuariosTable.DataTable({
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 registros', '30 registros', '50 registros', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{data: 'id'},
+
+
+					           	
+					           	{
+									data : 'nome'
+								},
+								{
+									data : 'sobrenome'
+								},
+								
+								,
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ data
+												+ '/usuario" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></a> &#160;';
+
+										return str;
+									}
+								}					           	
+					],				
+					
+				});
+	}
+	
 	
 	
 	
@@ -303,21 +411,21 @@ $(function() {
 		
 		$categoriaForm.validate({			
 				rules: {
-					name: {
+					nome: {
 						required: true,
 						minlength: 3
 					},
-					description: {
+					descricao: {
 						required: true,
 						minlength: 3					
 					}				
 				},
 				messages: {					
-					name: {
+					nome: {
 						required: 'Please enter product name!',
 						minlength: 'Please enter atleast five characters'
 					},
-					description: {
+					descricao: {
 						required: 'Please enter product name!',
 						minlength: 'Please enter atleast five characters'
 					}					
@@ -353,11 +461,11 @@ $(function() {
 				},
 				messages: {					
 					username: {
-						required: 'Please enter your email!',
-						email: 'Please enter a valid email address!'
+						required: 'Entre com e-mail',
+						email: 'Insira um e-mail válido!'
 					},
 					password: {
-						required: 'Please enter your password!'
+						required: 'Entre com a senha!'
 					}					
 				},
 				errorElement : "em",
@@ -389,24 +497,24 @@ $(function() {
 	/*------*/
 	/* handle refresh cart*/	
 	$('button[name="refreshCart"]').click(function(){
-		var cartLineId = $(this).attr('value');
-		var countField = $('#count_' + cartLineId);
-		var originalCount = countField.attr('value');
+		var itemCarrinhoId = $(this).attr('value');
+		var quantidade = $('#count_' + itemCarrinhoId);
+		var originalCount = quantidade.attr('value');
 		// do the checking only the count has changed
-		if(countField.val() !== originalCount) {	
+		if(quantidade.val() !== originalCount) {	
 			// check if the quantity is within the specified range
-			if(countField.val() < 1 || countField.val() > 3) {
+			if(quantidade.val() < 1 || quantidade.val() > 3) {
 				// set the field back to the original field
-				countField.val(originalCount);
+				quantidade.val(originalCount);
 				bootbox.alert({
 					size: 'medium',
 			    	title: 'Error',
-			    	message: 'Product Count should be minimum 1 and maximum 3!'
+			    	message: 'Quantidade deve ser minimo 1 e maximo 3!'
 				});
 			}
 			else {
 				// use the window.location.href property to send the request to the server
-				var updateUrl = window.contextRoot + '/cart/' + cartLineId + '/update?count=' + countField.val();
+				var updateUrl = window.contextRoot + '/carrinho/' + itemCarrinhoId + '/update?count=' + quantidade.val();
 				window.location.href = updateUrl;
 			}
 		}

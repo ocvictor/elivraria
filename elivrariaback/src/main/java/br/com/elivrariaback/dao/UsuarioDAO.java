@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Carrinho;
+import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Usuario;
 
 public interface UsuarioDAO {
@@ -16,8 +17,14 @@ public interface UsuarioDAO {
 	Endereco getEndereco(int enderecoId);
 	boolean addEndereco(Endereco endereco);
 	boolean updateEndereco(Endereco endereco);
+	boolean addCartao(Cartao cartao);
+	boolean updateCartao(Cartao cartao);
+	boolean updateUsuario(Usuario usuario);
 	Endereco getEnderecoCobranca(int usuarioId);
+	Cartao getCartao(int usuarioId);
+	List<Cartao> listCartao(int usuarioId);
 	List<Endereco> listEnderecoEntrega(int usuarioId);
+	List<Usuario> listUsuarios();
 	
 
 	

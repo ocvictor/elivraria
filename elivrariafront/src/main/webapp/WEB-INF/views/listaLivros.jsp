@@ -1,6 +1,12 @@
-<div class="container">
+<!-- DataTable Bootstrap Script -->
+<script src="${js}/angular.js"></script>
 
-	<div class="row">
+<!-- DataTable Bootstrap Script -->
+<script src="${js}/livroController.js"></script>
+
+<div class="container" ng-app="elivraria" ng-controller="LivroController as lCtrl">
+
+	<div class="row" ng-init="lCtrl.fetchProducts()">
 
 
 		<!-- Would be to display sidebar -->
@@ -18,34 +24,34 @@
 
 				<div class="col-lg-12">
 
-					<c:if test="${userClickAllProducts == true}">
+					<c:if test="${ClickTodosLivros == true}">
 					
 						<script>
-							window.categoryId = '';
+							window.categoriaId = '';
 						</script>
 					
 						<ol class="breadcrumb">
 
 
 							<li><a href="${contextRoot}/home">Home</a></li>
-							<li class="active">All Products</li>
+							<li class="active">Todos os Livros</li>
 
 
 						</ol>
 					</c:if>
 					
 					
-					<c:if test="${userClickCategoryProducts == true}">
+					<c:if test="${ClickCategoriaLivros == true}">
 						<script>
-							window.categoryId = '${category.id}';
+							window.categoriaId = '${categoria.id}';
 						</script>
 					
 						<ol class="breadcrumb">
 
 
 							<li><a href="${contextRoot}/home">Home</a></li>
-							<li class="active">Category</li>
-							<li class="active">${category.name}</li>
+							<li class="active">Categoria</li>
+							<li class="active">${categoria.nome}</li>
 
 
 						</ol>
@@ -63,17 +69,17 @@
 				<div class="col-xs-12">
 				
 					
-					<table id="productListTable" class="table table-striped table-borderd">
+					<table id="LivroListaTabela" class="table table-striped table-borderd">
 					
 					
 						<thead>
 						
 							<tr>
 								<th></th>
-								<th>Name</th>
-								<th>Brand</th>
-								<th>Price</th>
-								<th>Qty. Available</th>
+								<th>Título</th>
+								<th>Editora</th>
+								<th>Preço</th>
+								<th>Qtd. Disponível</th>
 								<th></th>
 							
 							</tr>
@@ -85,10 +91,10 @@
 						
 							<tr>
 								<th></th>
-								<th>Name</th>
-								<th>Brand</th>
-								<th>Price</th>
-								<th>Qty. Available</th>
+								<th>Título</th>
+								<th>Editora</th>
+								<th>Preço</th>
+								<th>Qtd. Disponível</th>
 								<th></th>
 							
 							</tr>
@@ -100,16 +106,8 @@
 			
 			</div>
 
-
 		</div>
 
-
-
 	</div>
-
-
-
-
-
 
 </div>

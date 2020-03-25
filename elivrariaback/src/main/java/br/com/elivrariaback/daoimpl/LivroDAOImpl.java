@@ -111,7 +111,7 @@ public class LivroDAOImpl implements LivroDAO {
 
 	@Override
 	public List<Livro> listaAtivosLivroCategoria(int categoriaId) {
-		String selectActiveProductsByCategory = "FROM Livro WHERE ativo = :ativo AND categoriaId = :categoriaId";
+		String selectActiveProductsByCategory = "FROM Livro WHERE ativo = :ativo AND categoria_id = :categoriaId";
 		return sessionFactory
 				.getCurrentSession()
 					.createQuery(selectActiveProductsByCategory, Livro.class)

@@ -21,10 +21,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.BandeiraDAO;
+import br.com.elivrariaback.dao.UsuarioDAO;
+import br.com.elivrariaback.dto.Bandeira;
+import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Categoria;
+import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariafront.util.FileUtil;
-import br.com.elivrariafront.validator.ProductValidator;
+import br.com.elivrariafront.validator.LivroValidator;
 
 @Controller
 @RequestMapping("/gerenciar")
@@ -37,7 +43,15 @@ public class GerenciamentoController {
 	
 	@Autowired
 	private CategoriaDAO categoriaDAO;		
+	
+	@Autowired
+	private UsuarioDAO usuarioDAO;
+	
 
+	@Autowired
+	private BandeiraDAO bandeiraDAO;
+	
+	
 	@RequestMapping("/livro")
 	public ModelAndView gerenciarLivro(@RequestParam(name="success",required=false)String success) {		
 
@@ -87,11 +101,11 @@ public class GerenciamentoController {
 			BindingResult results, Model model, HttpServletRequest request) {
 		
 		if(mLivro.getId() == 0) {
-			new ProductValidator().validate(mLivro, results);
+			new LivroValidator().validate(mLivro, results);
 		}
 		else {
 			if(!mLivro.getFile().getOriginalFilename().equals("")) {
-				new ProductValidator().validate(mLivro, results);
+				new LivroValidator().validate(mLivro, results);
 			}			
 		}
 		
@@ -141,12 +155,120 @@ public class GerenciamentoController {
 		return categoriaDAO.list();
 	}
 	
-	@ModelAttribute("categorias")
+	@ModelAttribute("categoria")
 	public Categoria modelCategoria() {
 		return new Categoria();
 	}
 	
+//----------------------
+	@RequestMapping("/usuario")
+	public ModelAndView gerenciarUsuario(@RequestParam(name="success",required=false)String success) {		
+
+		ModelAndView mv = new ModelAndView("page");	
+		mv.addObject("title","Gerenciar Usuario");		
+		mv.addObject("ClickGerenciarUsuario",true);
+		
+		Usuario nUsuario = new Usuario();
+		
+		nUsuario.setAtivo(true);
+
+		mv.addObject("usuario", nUsuario);
+
+		
+		if(success != null) {
+			if(success.equals("usuario")){
+				mv.addObject("message", "Usuário Cadastrado com sucesso!");
+			}
+		}
+			
+		return mv;
+		
+	}
+
 	
+	@RequestMapping("/{id}/usuario")
+	public ModelAndView gerenciarUsuarioEditar(@PathVariable int id) {		
+
+		ModelAndView mv = new ModelAndView("page");	
+		mv.addObject("title","Gerenciar Usuario");		
+		mv.addObject("ClickGerenciarUsuaio",true);
+		
+		mv.addObject("usuario", usuarioDAO.get(id));
+
+			
+		return mv;
+		
+	}
+	
+	
+	@RequestMapping(value = "/usuario", method=RequestMethod.POST)
+	public String managePostUsuario(@Valid @ModelAttribute("usuario") Usuario mUsuario, Endereco mEndereco, Cartao mCartao,
+			BindingResult results, Model model, HttpServletRequest request) {
+		
+		if(mUsuario.getId() == 0 ) {
+			usuarioDAO.add(mUsuario);
+		}
+		else {
+			usuarioDAO.updateEndereco(mEndereco);
+			usuarioDAO.updateCartao(mCartao);
+		}
+		
+		return "redirect:/gerenciar/usuario?success=usuario";
+	}
+
+	
+	@RequestMapping(value = "/usuario/{id}/ativacao", method=RequestMethod.GET)
+	@ResponseBody
+	public String managePostUsuarioActivacao(@PathVariable int id) {		
+		Usuario usuario = usuarioDAO.get(id);
+		boolean isAtivo = usuario.isAtivo();
+		usuario.setAtivo(!isAtivo);
+		usuarioDAO.updateUsuario(usuario);		
+		return (isAtivo)? "Usuario Desativado com Sucesso!": "usuario Ativado com Sucesso";
+	}
+			
+
+	@RequestMapping(value = "/endereco", method=RequestMethod.POST)
+	public String GerenciarEndereco(@ModelAttribute("endereco") Endereco mEndereco, HttpServletRequest request) {					
+		usuarioDAO.addEndereco(mEndereco);		
+		return "redirect:" + request.getHeader("Referer") + "?success=endereco";
+	}
+	
+	@RequestMapping(value = "/cartao", method=RequestMethod.POST)
+	public String GerenciarCartao(@ModelAttribute("cartao") Cartao mCartao, HttpServletRequest request) {					
+		usuarioDAO.addCartao(mCartao);		
+		return "redirect:" + request.getHeader("Referer") + "?success=cartao";
+	}
+		
+	@ModelAttribute("enderecos") 
+	public List<Endereco> modelEnderecos(Usuario usuario) {
+		return usuarioDAO.listEnderecoEntrega(usuario.getId());
+	}
+	
+	@ModelAttribute("enderecos")
+	public Endereco modelEnderecos() {
+		return new Endereco();
+	}
+	
+	@ModelAttribute("cartoes") 
+	public List<Cartao> modelCartoes(Usuario usuario) {
+		return usuarioDAO.listCartao(usuario.getId());
+	}
+	
+	@ModelAttribute("cartoes")
+	public Cartao modelCartoes() {
+		return new Cartao();
+	}
+	
+	@ModelAttribute("bandeiras") 
+	public List<Bandeira> modelBandeiras() {
+		return bandeiraDAO.list();
+	}
+	
+	@ModelAttribute("bandeira")
+	public Bandeira modelBandeira() {
+		return new Bandeira();
+	}
 }
 
 	

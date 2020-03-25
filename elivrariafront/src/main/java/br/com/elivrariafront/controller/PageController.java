@@ -2,6 +2,7 @@ package br.com.elivrariafront.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,13 +14,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariafront.exception.LivroNotFoundException;
@@ -31,6 +35,9 @@ public class PageController {
 	
 	@Autowired
 	private CategoriaDAO categoriaDAO;
+	
+	@Autowired
+	private BandeiraDAO bandeiraDAO;
 	
 	@Autowired
 	private LivroDAO livroDAO;
@@ -96,7 +103,7 @@ public class PageController {
 		
 		mv.addObject("title",categoria.getNome());
 		
-		mv.addObject("categories", categoriaDAO.list());
+		mv.addObject("categorias", categoriaDAO.list());
 		
 		mv.addObject("categoria", categoria);
 		
@@ -134,10 +141,11 @@ public class PageController {
 	}
 	
 	
-	@RequestMapping(value="/membros")
+	@RequestMapping(value="/registro")
 	public ModelAndView register() {
 		ModelAndView mv= new ModelAndView("page");
 		
+		mv.addObject("bandeiras", bandeiraDAO.list());
 		logger.info("Page Controller membership called!");
 		
 		return mv;
@@ -179,4 +187,13 @@ public class PageController {
 		mv.addObject("title", "403 Acesso Negado");		
 		return mv;
 	}	
+	@ModelAttribute("bandeiras") 
+	public List<Bandeira> modelBandeiras() {
+		return bandeiraDAO.list();
+	}
+	
+	@ModelAttribute("bandeira")
+	public Bandeira modelBandeira() {
+		return new Bandeira();
+	}
 }

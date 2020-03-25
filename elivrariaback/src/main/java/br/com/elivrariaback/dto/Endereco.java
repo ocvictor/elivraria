@@ -20,12 +20,20 @@ public class Endereco implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@NotBlank(message = "Insira o Tipo de Residência!")
+	@Column(name = "tiporesidencia")
+	private String tipoResidencia;
+	@NotBlank(message = "Insira o Tipo de Logradouro!")
+	@Column(name = "tipologradouro")
+	private String tipoLogradouro;
 	@NotBlank(message = "Insira o Logradouro!")
 	@Column(name = "logradouro")
 	private String logradouro;
 	@NotBlank(message = "Insira o Numero!")
 	@Column(name = "numero")
-	private int numero;
+	private String numero;	
+	@Column(name = "complemento")
+	private String complemento;
 	@NotBlank(message = "Insira o bairro!")	
 	@Column(name = "bairro")
 	private String bairro;
@@ -56,10 +64,10 @@ public class Endereco implements Serializable {
 	public void setLogradouro(String logradouro) {
 		this.logradouro = logradouro;
 	}
-	public int getNumero() {
+	public String getNumero() {
 		return numero;
 	}
-	public void setNumero(int numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 	public String getBairro() {
@@ -104,15 +112,37 @@ public class Endereco implements Serializable {
 	public void setCobranca(boolean cobranca) {
 		this.cobranca = cobranca;
 	}
+	
+	
+	public String getComplemento() {
+		return complemento;
+	}
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+	public String getTipoResidencia() {
+		return tipoResidencia;
+	}
+	public void setTipoResidencia(String tipoResidencia) {
+		this.tipoResidencia = tipoResidencia;
+	}
+	public String getTipoLogradouro() {
+		return tipoLogradouro;
+	}
+	public void setTipoLogradouro(String tipoLogradouro) {
+		this.tipoLogradouro = tipoLogradouro;
+	}
 	@Override
 	public String toString() {
-		return "Endereco [id=" + id + ", logradouro=" + logradouro + ", numero=" + numero + ", bairro=" + bairro
+		return "Endereco [id=" + id + ",tiporesidencia=" + tipoResidencia + ",tipologrdouro=" + tipoLogradouro 
+				+ ", logradouro=" + logradouro + ", numero=" + numero + ", complemento=" + complemento + ", bairro=" + bairro
 				+ ", cidade=" + cidade + ", estado=" + estado + ", pais=" + pais + ", cep=" + cep
 				+ ", cobranca=" + cobranca + "]";
 	}
 		
 	@Column(name = "usuario_id")
 	private int usuarioId;
+	
 	public boolean entrega() {
 		return entrega;
 	}
@@ -120,7 +150,7 @@ public class Endereco implements Serializable {
 	public int getUsuarioId() {
 		return usuarioId;
 	}
-	public void setUsuariorId(int usuarioId) {
+	public void setUsuarioId(int usuarioId) {
 		this.usuarioId = usuarioId;
 	}
 	

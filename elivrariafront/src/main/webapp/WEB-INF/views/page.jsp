@@ -65,38 +65,35 @@
 
 		<div class="content">
 			
-			<!-- Loading the home content -->
 			<c:if test="${ClickHome == true }">
 				<%@include file="home.jsp"%>
 			</c:if>
 
-			<!-- Load only when user clicks about -->
 			<c:if test="${ClickSobre == true }">
 				<%@include file="sobre.jsp"%>
 			</c:if>
 
-			<!-- Load only when user clicks contact -->
 			<c:if test="${ClickContato == true }">
 				<%@include file="contato.jsp"%>
 			</c:if>
 			
-			<!-- Load only when user clicks contact -->
 			<c:if test="${ClickTodosLivros == true or ClickCategoriaLivros == true }">
 				<%@include file="listaLivros.jsp"%>
 			</c:if>	
 			
 			
-			<!-- Load only when user clicks show product -->
 			<c:if test="${ClickMostrarLivro == true}">
 				<%@include file="LivroUnico.jsp"%>
 			</c:if>								
 
-			<!-- Load only when user clicks manage product -->
+			<c:if test="${ClickGerenciarUsuario == true}">
+				<%@include file="gerenciarUsuario.jsp"%>
+			</c:if>
+			
 			<c:if test="${ClickGerenciarLivro == true}">
 				<%@include file="gerenciarLivro.jsp"%>
-			</c:if>	
+			</c:if>
 
-			<!-- Load only when user clicks manage product -->
 			<c:if test="${ClickMostrarCarrinho == true}">
 				<%@include file="carrinho.jsp"%>
 			</c:if>	
