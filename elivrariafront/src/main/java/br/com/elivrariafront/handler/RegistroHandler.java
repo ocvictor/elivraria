@@ -16,7 +16,7 @@ import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Usuario;
-import br.com.elivrariafront.model.CheckoutModel;
+import br.com.elivrariafront.model.CheckoutModelo;
 import br.com.elivrariafront.model.RegistroModelo;
 
 @Component

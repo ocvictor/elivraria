@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "venda_item")
 public class ItemVenda implements Serializable {
 
 	/**
@@ -27,29 +27,21 @@ public class ItemVenda implements Serializable {
 	private int id;
 	
 	@OneToOne
-	private Livro product;
+	private Livro livro;
 	
 	@ManyToOne
-	@JoinColumn(name = "order_id")
-	private VendaDetalhe orderDetail;
+	@JoinColumn(name = "venda_detalhe_id")
+	private VendaDetalhe vendaDetalhe;
 
-	public VendaDetalhe getOrderDetail() {
-		return orderDetail;
-	}
 
-	public void setOrderDetail(VendaDetalhe orderDetail) {
-		this.orderDetail = orderDetail;
-	}
-
-	@Column (name = "buying_price")
-	private double buyingPrice;
+	@Column (name = "preco_compra")
+	private double compraPreco;
 	
-	@Column (name = "product_count")
-	private int productCount;
+	@Column (name = "livro_qtd")
+	private int qtdLivro;
 	
 	private double total;
 
-	
 	public int getId() {
 		return id;
 	}
@@ -58,29 +50,36 @@ public class ItemVenda implements Serializable {
 		this.id = id;
 	}
 
-	public Livro getProduct() {
-		return product;
+	public Livro getLivro() {
+		return livro;
 	}
 
-	public void setProduct(Livro product) {
-		this.product = product;
+	public void setLivro(Livro livro) {
+		this.livro = livro;
 	}
 
-
-	public double getBuyingPrice() {
-		return buyingPrice;
+	public VendaDetalhe getVendaDetalhe() {
+		return vendaDetalhe;
 	}
 
-	public void setBuyingPrice(double buyingPrice) {
-		this.buyingPrice = buyingPrice;
+	public void setVendaDetalhe(VendaDetalhe vendaDetalhe) {
+		this.vendaDetalhe = vendaDetalhe;
 	}
 
-	public int getProductCount() {
-		return productCount;
+	public double getCompraPreco() {
+		return compraPreco;
 	}
 
-	public void setProductCount(int productCount) {
-		this.productCount = productCount;
+	public void setCompraPreco(double compraPreco) {
+		this.compraPreco = compraPreco;
+	}
+
+	public int getQtdLivro() {
+		return qtdLivro;
+	}
+
+	public void setQtdLivro(int qtdLivro) {
+		this.qtdLivro = qtdLivro;
 	}
 
 	public double getTotal() {
@@ -90,5 +89,8 @@ public class ItemVenda implements Serializable {
 	public void setTotal(double total) {
 		this.total = total;
 	}
+
+	
+	
 		
 }

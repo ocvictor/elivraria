@@ -110,7 +110,7 @@ $(function() {
 					},
 					columns : [
 							{
-								data : 'ISBN',
+								data : 'isbn',
 								bSortable : false,
 								mRender : function(data, type, row) {
 
@@ -514,7 +514,7 @@ $(function() {
 			}
 			else {
 				// use the window.location.href property to send the request to the server
-				var updateUrl = window.contextRoot + '/carrinho/' + itemCarrinhoId + '/update?count=' + quantidade.val();
+				var updateUrl = window.contextRoot + '/carrinho/' + itemCarrinhoId + '/atualizar?count=' + quantidade.val();
 				window.location.href = updateUrl;
 			}
 		}
