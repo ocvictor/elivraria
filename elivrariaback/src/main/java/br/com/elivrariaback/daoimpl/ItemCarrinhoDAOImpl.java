@@ -20,14 +20,14 @@ public class ItemCarrinhoDAOImpl implements ItemCarrinhoDAO {
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public ItemCarrinho getPorCarrinhoProduto(int carinhoId, int produtoId) {
-		String query = "FROM ItemCarrinho WHERE carrinhoId = :carrinhoId AND product.id = :productId";
+	public ItemCarrinho getPorCarrinhoProduto(int carinhoId, int livroId) {
+		String query = "FROM ItemCarrinho WHERE carrinho_id = :carrinhoId AND livro_id = :livroId";
 		try {
 			
 			return sessionFactory.getCurrentSession()
 									.createQuery(query,ItemCarrinho.class)
 										.setParameter("carrinhoId", carinhoId)
-										.setParameter("productId", produtoId)
+										.setParameter("livroId", livroId)
 											.getSingleResult();
 			
 		}catch(Exception ex) {
@@ -73,7 +73,7 @@ public class ItemCarrinhoDAOImpl implements ItemCarrinhoDAO {
 
 	@Override
 	public List<ItemCarrinho> list(int carinhoId) {
-		String query = "FROM ItemCarrinho WHERE carinhoId = :carrinhoId";
+		String query = "FROM ItemCarrinho WHERE carrinho_id = :carrinhoId";
 		return sessionFactory.getCurrentSession()
 								.createQuery(query, ItemCarrinho.class)
 									.setParameter("carrinhoId", carinhoId)
@@ -98,7 +98,7 @@ public class ItemCarrinhoDAOImpl implements ItemCarrinhoDAO {
 
 	@Override
 	public List<ItemCarrinho> listarDisponivel(int carrinhoId) {
-		String query = "FROM ItemCarrinho WHERE carrinhoId = :carrinhoId AND disponivel = :disponivel";
+		String query = "FROM ItemCarrinho WHERE carrinho_id = :carrinhoId AND disponivel = :disponivel";
 		return sessionFactory.getCurrentSession()
 								.createQuery(query, ItemCarrinho.class)
 									.setParameter("carrinhoId", carrinhoId)

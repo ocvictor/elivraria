@@ -21,7 +21,7 @@ import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariaback.dto.ItemVenda;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.Usuario;
-import br.com.elivrariafront.model.CheckoutModel;
+import br.com.elivrariafront.model.CheckoutModelo;
 import br.com.elivrariafront.model.UsuarioModelo;
 
 @Component
@@ -42,13 +42,13 @@ public class CheckoutHandler {
 	private HttpSession session;
 	
 	
-	public CheckoutModel init(String name) throws Exception{
+	public CheckoutModelo init(String name) throws Exception{
 
 		Usuario user = userDAO.getByEmail(name);
-		CheckoutModel checkoutModel = null;	
+		CheckoutModelo checkoutModel = null;	
 
 		if(user!=null) {
-			checkoutModel = new CheckoutModel();
+			checkoutModel = new CheckoutModelo();
 			checkoutModel.setUser(user);
 			checkoutModel.setCart(user.getCarrinho());
 			
@@ -71,7 +71,7 @@ public class CheckoutHandler {
 	}
 	
 	
-	public List<Endereco> getShippingAddresses(CheckoutModel model) {
+	public List<Endereco> getShippingAddresses(CheckoutModelo model) {
 				
 		List<Endereco> addresses = userDAO.listEnderecoEntrega(model.getUser().getId());
 		
@@ -85,7 +85,7 @@ public class CheckoutHandler {
 		
 	}
 	
-	public String saveAddressSelection(CheckoutModel checkoutModel, int shippingId) {
+	public String saveAddressSelection(CheckoutModelo checkoutModel, int shippingId) {
 
 		String transitionValue = "success";
 		
@@ -100,7 +100,7 @@ public class CheckoutHandler {
 	}
 			
 	
-	public String saveAddress(CheckoutModel checkoutModel, Endereco shipping) {
+	public String saveAddress(CheckoutModelo checkoutModel, Endereco shipping) {
 
 		String transitionValue = "success";
 		
@@ -118,7 +118,7 @@ public class CheckoutHandler {
 	}
 		
 
-	public String saveOrder(CheckoutModel checkoutModel) {
+	public String saveOrder(CheckoutModelo checkoutModel) {
 		String transitionValue = "success";	
 		
 		// create a new order object
@@ -184,7 +184,7 @@ public class CheckoutHandler {
 		// update the cart
 		Carrinho cart = checkoutModel.getCart();
 		cart.setGrandTotal(cart.getGrandTotal() - orderTotal);
-		cart.setCartLines(cart.getCartLines() - orderCount);
+		cart.setCartLines(cart.getItensCarrinho() - orderCount);
 		cartLineDAO.updateCarrinho(cart);
 		
 		// update the cart if its in the session
@@ -198,7 +198,7 @@ public class CheckoutHandler {
 	}
 
 	
-	public VendaDetalhe getOrderDetail(CheckoutModel checkoutModel) {
+	public VendaDetalhe getOrderDetail(CheckoutModelo checkoutModel) {
 		return checkoutModel.getOrderDetail();
 	}
 	

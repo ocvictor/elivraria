@@ -29,70 +29,87 @@ public class VendaDetalhe implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private Usuario user;
-	@Column(name = "order_total")
-	private double orderTotal;
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
+	@Column(name = "venda_total")
+	private double totalVenda;
 	@ManyToOne
-	private Endereco shipping;
+	private Endereco enderecoEntrega;
 	@ManyToOne
-	private Endereco billing;
-	@OneToMany(mappedBy="orderDetail", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<ItemVenda> orderItems = new ArrayList<>();
+	private Endereco enderecoCobranca;
+	@OneToMany(mappedBy="vendaDetalhe", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<ItemVenda> itemVenda = new ArrayList<>();
 	
-	@Column(name = "order_count")
-	private int orderCount;
+	@Column(name = "venda_qtd")
+	private int qtdVenda;
 	
-	@Column(name="order_date")
-	private Date orderDate;
-	
-	public Date getOrderDate() {
-		return orderDate;
-	}
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
-	}
-	public int getOrderCount() {
-		return orderCount;
-	}
-	public void setOrderCount(int orderCount) {
-		this.orderCount = orderCount;
-	}
-	public Usuario getUser() {
-		return user;
-	}
-	public void setUser(Usuario user) {
-		this.user = user;
-	}
+	@Column(name="venda_data")
+	private Date dataVenda;
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	public double getOrderTotal() {
-		return orderTotal;
+
+	public Usuario getUsuario() {
+		return usuario;
 	}
-	public void setOrderTotal(double orderTotal) {
-		this.orderTotal = orderTotal;
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
-	public Endereco getShipping() {
-		return shipping;
+
+	public double getTotalVenda() {
+		return totalVenda;
 	}
-	public void setShipping(Endereco shipping) {
-		this.shipping = shipping;
+
+	public void setTotalVenda(double totalVenda) {
+		this.totalVenda = totalVenda;
 	}
-	public Endereco getBilling() {
-		return billing;
+
+	public Endereco getEnderecoEntrega() {
+		return enderecoEntrega;
 	}
-	public void setBilling(Endereco billing) {
-		this.billing = billing;
+
+	public void setEnderecoEntrega(Endereco enderecoEntrega) {
+		this.enderecoEntrega = enderecoEntrega;
 	}
-	public List<ItemVenda> getOrderItems() {
-		return orderItems;
+
+	public Endereco getEnderecoCobranca() {
+		return enderecoCobranca;
 	}
-	public void setOrderItems(List<ItemVenda> orderItems) {
-		this.orderItems = orderItems;
-	} 
+
+	public void setEnderecoCobranca(Endereco enderecoCobranca) {
+		this.enderecoCobranca = enderecoCobranca;
+	}
+
+	public List<ItemVenda> getItemVenda() {
+		return itemVenda;
+	}
+
+	public void setItemVenda(List<ItemVenda> itemVenda) {
+		this.itemVenda = itemVenda;
+	}
+
+	public int getQtdVenda() {
+		return qtdVenda;
+	}
+
+	public void setQtdVenda(int qtdVenda) {
+		this.qtdVenda = qtdVenda;
+	}
+
+	public Date getDataVenda() {
+		return dataVenda;
+	}
+
+	public void setDataVenda(Date dataVenda) {
+		this.dataVenda = dataVenda;
+	}
+	
+	
 	
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.elivrariafront.service.CartService;
+import br.com.elivrariafront.service.CarrinhoService;
 
 @Controller
 @RequestMapping("/carrinho")
@@ -18,82 +18,82 @@ public class CarrinhoController {
 	private final static Logger logger = LoggerFactory.getLogger(CarrinhoController.class);
 	
 	@Autowired
-	private CartService cartService;
+	private CarrinhoService carrinhoService;
 	@RequestMapping("/mostrar")
 	public ModelAndView showCart(@RequestParam(name = "result", required = false) String result) {
 		
 		ModelAndView mv = new ModelAndView("page");
-		mv.addObject("title", "Shopping Cart");
-		mv.addObject("userClickShowCart", true);
+		mv.addObject("title", "Carrinho de Compras");
+		mv.addObject("ClickMostrarCarrinho", true);
 		
 		if(result!=null) {
 			switch(result) {
 				case "added":
-					mv.addObject("message", "Product has been successfully added inside cart!");					
-					cartService.validateCartLine();
+					mv.addObject("message", "Produto adicionado ao Carrinho!");					
+					carrinhoService.validarItemCarrinho();
 					break;
 				case "unavailable":
-					mv.addObject("message", "Product quantity is not available!");					
+					mv.addObject("message", "Quantidade do produto não disponível!");					
 					break;
 				case "updated":
-					mv.addObject("message", "Cart has been updated successfully!");					
-					cartService.validateCartLine();
+					mv.addObject("message", "Carrinho atualizado!");					
+					carrinhoService.validarItemCarrinho();
 					break;
 				case "modified":
-					mv.addObject("message", "One or more items inside cart has been modified!");
+					mv.addObject("message", "Um ou mais itens do carrinho foram modificados!");
 					break;
 				case "maximum":
-					mv.addObject("message", "Maximum limit for the item has been reached!");
+					mv.addObject("message", "Limite máximo para este item atingido!");
 					break;
 				case "deleted":
-					mv.addObject("message", "CartLine has been successfully removed!");
+					mv.addObject("message", "Item removido!");
 					break;
 
 			}
 		}
 		else {
-			String response = cartService.validateCartLine();
+			String response = carrinhoService.validarItemCarrinho();
 			if(response.equals("result=modified")) {
-				mv.addObject("message", "One or more items inside cart has been modified!");
+				mv.addObject("message", "Um ou mais itens do carrinho foram modificados!");
 			}
 		}
 
-		mv.addObject("cartLines", cartService.getCartLines());
+		mv.addObject("itemCarrinho", carrinhoService.getItensCarrinho());
 		return mv;
 		
 	}
 	
 
-	@RequestMapping("/{cartLineId}/update")
-	public String udpateCartLine(@PathVariable int cartLineId, @RequestParam int count) {
-		String response = cartService.manageCartLine(cartLineId, count);		
-		return "redirect:/cart/show?"+response;		
+	@RequestMapping("/{itemCarrinhoId}/atualizar")
+	public String udpateItemCarrinho(@PathVariable int itemCarrinhoId, @RequestParam int count) {
+		String response = carrinhoService.gerenciarItemCarrinho(itemCarrinhoId, count);		
+		return "redirect:/carrinho/mostrar?"+response;		
 	}
 	
-	@RequestMapping("/add/{productId}/product")
-	public String addCartLine(@PathVariable int productId) {
-		String response = cartService.addCartLine(productId);
-		return "redirect:/cart/show?"+response;
+	@RequestMapping("/adicionar/{livroId}/livro")
+	public String addItemCarrinho(@PathVariable int livroId) {
+		String response = carrinhoService.addItemCarrinho(livroId);
+		return "redirect:/carrinho/mostrar?"+response;
 	}
 	
-	@RequestMapping("/{cartLineId}/remove")
-	public String removeCartLine(@PathVariable int cartLineId) {
-		String response = cartService.removeCartLine(cartLineId);
-		return "redirect:/cart/show?"+response;
+	@RequestMapping("/{itemCarrinhoId}/remover")
+	public String removeItemCarrinho(@PathVariable int itemCarrinhoId) {
+		String response = carrinhoService.removeItemCarrinho(itemCarrinhoId);
+		return "redirect:/carrinho/mostrar?"+response;
 	}
 	
 	/* after validating it redirect to checkout
 	 * if result received is success proceed to checkout 
 	 * else display the message to the user about the changes in cart page
 	 * */	
-	@RequestMapping("/validate")
-	public String validateCart() {	
-		String response = cartService.validateCartLine();
+	@RequestMapping("/validar")
+	public String validarCarrinho() {	
+		String response = carrinhoService.validarItemCarrinho();
 		if(!response.equals("result=success")) {
-			return "redirect:/cart/show?"+response;
+			return "redirect:/carrinho/mostrar?"+response;
 		}
 		else {
-			return "redirect:/cart/checkout";
+			return "redirect:/carrinho/checkout";
 		}
 	}	
 }
