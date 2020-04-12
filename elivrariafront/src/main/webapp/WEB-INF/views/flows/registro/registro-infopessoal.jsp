@@ -1,7 +1,16 @@
 <%@include file="../flows-shared/header.jsp" %>
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>			
 	<div class="container">
-		
+		<c:forEach var="topic" items="${model.selectedTopics}" varStatus="loop">
+		  <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+		    <c:set var="msgSrc" value="selectedTopics[${loop.index}].room"></c:set>
+		    <c:if test="${message.source eq msgSrc}">
+		        <c:if test="${message.severity eq 'INFO'}">
+		            <span class="infoText">${message.text}</span>
+		        </c:if>
+		     </c:if>
+		  </c:forEach>
+		</c:forEach>
 		
 		<div class="row">
 			
@@ -45,7 +54,7 @@
 							<div class="form-group">
 								<label class="control-label col-md-4">Data de Nascimento</label>
 								<div class="col-md-8">
-									<sf:input type="data" path="dtNascimento" class="form-control"
+									<sf:input type="date" path="dtNascimento" class="form-control"
 										placeholder="Insira a Data de Nascimento" />
 									<sf:errors path="dtNascimento" cssClass="help-block" element="em"/> 
 								</div>
@@ -54,16 +63,23 @@
 							<div class="form-group">
 								<label class="control-label col-md-4">Gênero</label>
 								<div class="col-md-8">
-									<sf:input type="text" path="genero" class="form-control"
-										placeholder="Insira o Gênero" />
+									<sf:select path="genero" id="genero">
+										<option value="Masculino">Masculino</option>
+										<option value="Feminino">Feminino</option>
+										<option value="Indefinido">Indefinido</option>
+									</sf:select>
 									<sf:errors path="genero" cssClass="help-block" element="em"/> 
+									
+<%-- 									<sf:input type="text" path="genero" class="form-control" --%>
+<%-- 										placeholder="Insira o Gênero" /> --%>
+<%-- 									<sf:errors path="genero" cssClass="help-block" element="em"/>  --%>
 								</div>
 							</div>
 						
 							<div class="form-group">
 								<label class="control-label col-md-4">Email</label>
 								<div class="col-md-8">
-									<sf:input type="text" path="email" class="form-control"
+									<sf:input type="email" path="email" class="form-control"
 										placeholder="abc@zyx.com" />
 									<sf:errors path="email" cssClass="help-block" element="em"/> 									
 								</div>
@@ -82,7 +98,7 @@
 								<label class="control-label col-md-4">Telefone</label>
 								<div class="col-md-8">
 									<sf:input type="text" path="telefone" class="form-control"
-										placeholder="XXXXXXXXXX" maxlength="10" />
+										placeholder="XXXXXXXXXX" maxlength="9" />
 									<sf:errors path="telefone" cssClass="help-block" element="em"/> 
 								</div>
 							</div>

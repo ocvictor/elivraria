@@ -7,7 +7,7 @@
 
 	<var name="usuario" class="br.com.elivrariaback.dto.Usuario"/>
 	<var name="endereco" class="br.com.elivrariaback.dto.Endereco"/>
-	<var name="cartao" class="br.com.elivrariaback.dto.Cartao"/>
+	<var name="cartao" class="br.com.elivrariafront.model.CartaoModelo"/>
 
 	<on-start>
 		<evaluate expression="registroHandler.init()" result="flowScope.registroModelo"/>
@@ -38,12 +38,16 @@
 		<on-entry>
 			<evaluate expression="registroHandler.getBandeiras(flowScope.registrotModelo)" result="viewScope.bandeiras"/>	
 		</on-entry>	
-		<transition on="confirmar" to="confirmar" />
+		<transition on="selecCartao" to="SalvarCartao" />
 		<transition on="endereco" to="endereco" />	
-		<on-exit>
-			<evaluate expression="registroHandler.addCartao(flowScope.registroModelo, cartao)" />
-		</on-exit>
+
 	</view-state>
+	
+	<action-state id="SalvarCartao">		
+		<evaluate expression="registroHandler.addCartao(flowScope.registroModelo, cartao)" />
+		<transition on="success" to="confirmar" />
+	</action-state>
+	
 	
 	<view-state id="confirmar" view="flows/registro/registro-confirmar" model="flowScope.registroModelo">		
 		<transition on="submeter" to="submeter" />

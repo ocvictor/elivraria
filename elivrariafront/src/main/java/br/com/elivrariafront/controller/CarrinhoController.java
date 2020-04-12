@@ -82,10 +82,6 @@ public class CarrinhoController {
 		return "redirect:/carrinho/mostrar?"+response;
 	}
 	
-	/* after validating it redirect to checkout
-	 * if result received is success proceed to checkout 
-	 * else display the message to the user about the changes in cart page
-	 * */	
 	@RequestMapping("/validar")
 	public String validarCarrinho() {	
 		String response = carrinhoService.validarItemCarrinho();

@@ -1,6 +1,9 @@
 package br.com.elivrariafront.controller;
 
 import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -20,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariaback.dao.CategoriaDAO;
+import br.com.elivrariaback.dao.EstoqueDAO;
+import br.com.elivrariaback.dao.FornecedorDAO;
+import br.com.elivrariaback.dao.GrupoPrecificacaoDAO;
 import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
@@ -27,16 +33,28 @@ import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Endereco;
+import br.com.elivrariaback.dto.Estoque;
+import br.com.elivrariaback.dto.Fornecedor;
+import br.com.elivrariaback.dto.GrupoPrecificacao;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariafront.util.FileUtil;
-import br.com.elivrariafront.validator.LivroValidator;
+import br.com.elivrariafront.validador.EstoqueValidador;
+import br.com.elivrariafront.validador.LivroValidador;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Controller
 @RequestMapping("/gerenciar")
 public class GerenciamentoController {
 
 	private static final Logger logger = LoggerFactory.getLogger(GerenciamentoController.class);
+	
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Autowired
 	private LivroDAO livroDAO;
@@ -51,6 +69,14 @@ public class GerenciamentoController {
 	@Autowired
 	private BandeiraDAO bandeiraDAO;
 	
+	@Autowired
+	private GrupoPrecificacaoDAO grpPrecificacaoDAO;
+	
+	@Autowired
+	private EstoqueDAO estoqueDAO;
+	
+	@Autowired
+	private FornecedorDAO fornecedorDAO;
 	
 	@RequestMapping("/livro")
 	public ModelAndView gerenciarLivro(@RequestParam(name="success",required=false)String success) {		
@@ -59,9 +85,7 @@ public class GerenciamentoController {
 		mv.addObject("title","Gerenciar Livro");		
 		mv.addObject("ClickGerenciarLivro",true);
 		
-		Livro nLivro = new Livro();
-		
-		nLivro.setFornecedorId(1);
+		Livro nLivro = new Livro();		
 		nLivro.setAtivo(true);
 
 		mv.addObject("livro", nLivro);
@@ -96,16 +120,17 @@ public class GerenciamentoController {
 	}
 	
 	
+	
 	@RequestMapping(value = "/livro", method=RequestMethod.POST)
 	public String managePostProduct(@Valid @ModelAttribute("livro") Livro mLivro, 
 			BindingResult results, Model model, HttpServletRequest request) {
 		
 		if(mLivro.getId() == 0) {
-			new LivroValidator().validate(mLivro, results);
+			new LivroValidador().validate(mLivro, results);
 		}
 		else {
 			if(!mLivro.getFile().getOriginalFilename().equals("")) {
-				new LivroValidator().validate(mLivro, results);
+				new LivroValidador().validate(mLivro, results);
 			}			
 		}
 		
@@ -245,7 +270,7 @@ public class GerenciamentoController {
 		return usuarioDAO.listEnderecoEntrega(usuario.getId());
 	}
 	
-	@ModelAttribute("enderecos")
+	@ModelAttribute("endereco")
 	public Endereco modelEnderecos() {
 		return new Endereco();
 	}
@@ -269,6 +294,148 @@ public class GerenciamentoController {
 	public Bandeira modelBandeira() {
 		return new Bandeira();
 	}
+	
+	@ModelAttribute("livros") 
+	public List<Livro> modelLivros() {
+		return livroDAO.listaAtivosLivros();
+	}
+	
+	@RequestMapping(value="/estoque")
+	public ModelAndView gerenciarEstoque(@RequestParam(name="success",required=false)String success) {
+		ModelAndView mv= new ModelAndView("page");
+		mv.addObject("title","Gerenciar Estoque");
+		mv.addObject("ClickGerenciarEstoque",true);
+		
+		Estoque estoque = new Estoque();
+		Livro livro = new Livro();
+		
+		mv.addObject("estoque", estoque);
+		mv.addObject("livros", livroDAO.list());
+		mv.addObject("livro", livro);
+		
+		if(success != null) {
+			if(success.equals("estoque")){
+				mv.addObject("message", "Estoque Adicionado com Sucesso!");
+			}	
+		}
+			
+		return mv;
+	}
+	
+	@ModelAttribute("grupoPrecificacao")
+	public List<GrupoPrecificacao> modelGrpPrecificacao() {
+		return grpPrecificacaoDAO.list();		
+	}
+	
+	@ModelAttribute("fornecedores")
+	public List<Fornecedor> modelFornecedor () {
+		return fornecedorDAO.list();
+	}
+	
+	@RequestMapping("/{id}/livro/estoque")
+	public ModelAndView gerenciarEstoqueEditar(@PathVariable int id) {		
+
+		ModelAndView mv = new ModelAndView("page");	
+		mv.addObject("title","Gerenciar Estoque");		
+		mv.addObject("ClickGerenciarEstoque",true);
+		
+		Estoque estoque = new Estoque();
+		
+		
+		mv.addObject("estoque", estoque);
+		mv.addObject("livro", livroDAO.get(id));
+
+			
+		return mv;		
+	}
+	
+	@RequestMapping(value = "/estoque", method=RequestMethod.POST)
+	public String managePostProduct(@Valid @ModelAttribute("estoque") Estoque mEstoque, 
+			BindingResult results, Model model, HttpServletRequest request) {
+		
+		
+		if(mEstoque.getId() == 0) {
+		    Date date = new Date();  
+			mEstoque.setDataEntrada(sdf.format(date));
+			mEstoque.setFlgZerado(false);
+			mEstoque.setTpoOperacao("ENTRADA");
+
+			new EstoqueValidador().validate(mEstoque, results);
+		}
+		
+		if(results.hasErrors()) {
+			model.addAttribute("message", "Falha ao Cadastrar Estoque!");
+			model.addAttribute("ClickGerenciarEstoque",true);
+			return "page";
+		}			
+
+		
+		if(mEstoque.getId() == 0 ) {
+								
+			estoqueDAO.add(mEstoque);
+			
+			//atualiza as informações do livro
+			
+			Object lstEstoque = estoqueDAO.getByLivroDataZero(mEstoque.getLivroId());
+			
+			BigDecimal maiorVlrCustoBd = (BigDecimal) lstEstoque;
+			
+			double maiorVlrCusto = maiorVlrCustoBd.doubleValue();
+			
+			Livro livro = livroDAO.get(mEstoque.getLivroId());
+			int qtdAnt = livro.getQuantidade();
+			livro.setQuantidade(qtdAnt + mEstoque.getQuantidade());
+			
+			GrupoPrecificacao grp = grpPrecificacaoDAO.get(livro.getGrupoPrecificacaoId());
+			
+			livro.setPrecoUnit(maiorVlrCusto * (grp.getPercentualLucro() + 1));
+			
+			livroDAO.update(livro);
+			
+		}
+		else {
+			estoqueDAO.update(mEstoque);
+			
+			//atualiza as informações do livro
+			
+			Object lstEstoque = estoqueDAO.getByLivroDataZero(mEstoque.getLivroId());
+			
+			BigDecimal maiorVlrCustoBd = (BigDecimal) lstEstoque;
+			
+			double maiorVlrCusto = maiorVlrCustoBd.doubleValue();
+			
+			Livro livro = livroDAO.get(mEstoque.getLivroId());
+			int qtdAnt = livro.getQuantidade();
+			livro.setQuantidade(qtdAnt + mEstoque.getQuantidade());
+			
+			GrupoPrecificacao grp = grpPrecificacaoDAO.get(livro.getGrupoPrecificacaoId());
+			
+			livro.setPrecoUnit(maiorVlrCusto * (grp.getPercentualLucro() + 1));
+			
+			livroDAO.update(livro);
+		}		
+		
+		return "redirect:/gerenciar/estoque?success=estoque";
+	}
+	
+	@RequestMapping("/vendas")
+	public ModelAndView gerenciarVendas() {		
+
+		ModelAndView mv = new ModelAndView("page");	
+		mv.addObject("title","Gerenciar Vendas");		
+		mv.addObject("ClickGerenciarVendas",true);			
+		return mv;
+		
+	}
+	
+	@RequestMapping("/vendas/{id}/avancar")
+	@ResponseBody
+	public List<Livro> getLivrosPorCategoria(@PathVariable int id) {
+		
+		return livroDAO.listaAtivosLivroCategoria(id);
+				
+	}
+	
 }
 
 	

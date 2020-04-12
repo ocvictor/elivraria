@@ -25,7 +25,7 @@
 							<div class="form-group">
 								<label class="control-label col-md-4">Bandeira</label>
 								<div class="col-md-8">
-									<sf:select path="bandeiraId" items="${bandeiras}" itemLabel="descricao" itemValue="id" class="form-control"/>
+									<sf:select path="bandeiraId" id="bandeiraSelect" items="${bandeiras}" itemLabel="descricao" itemValue="id" class="form-control"/>
 								</div>
 							</div>
 							
@@ -75,11 +75,13 @@
 							</div>
 							
 							<div class="form-group">
-								<div class="col-md-offset-4 col-md-8">
+								<div class="col-md-offset-2 col-md-12">
 									<button type="submit" name="_eventId_endereco" class="btn btn-primary">
 										<span class="glyphicon glyphicon-chevron-left"></span> Voltar - Endereço
-									</button>								
-									<button type="submit" name="_eventId_confirmar" class="btn btn-primary">
+									</button>									
+								
+																						
+									<button type="submit" name="_eventId_selecCartao" class="btn btn-primary">
 										Proximo - Confirmação<span class="glyphicon glyphicon-chevron-right"></span>
 									</button>																	 
 								</div>

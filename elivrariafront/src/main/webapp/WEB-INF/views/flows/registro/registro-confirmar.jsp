@@ -63,9 +63,10 @@
 		
 				<div class="panel-body">
 					<div class="text-center">
+						<p>${registroModelo.cartao.bandeira.descricao}, </p>
 						<p>${registroModelo.cartao.numeroCartao}, </p>
 						<p>${registroModelo.cartao.nomeCartao}, </p>
-						<p>${registroModelo.cartao.mesVencimento} - ${registroModelo.cartao.anoVencimento},</p>
+						<p>${registroModelo.cartao.mesVencimento}/${registroModelo.cartao.anoVencimento},</p>
 						<p>${registroModelo.cartao.ccv}</p>
 						<p>
 							<a href="${flowExecutionUrl}&_eventId_cartao" class="btn btn-primary">Editar</a>

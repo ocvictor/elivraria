@@ -30,9 +30,7 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 		return query.getResultList();
 	}
 
-	/*
-	 * Getting single category based on id
-	 */
+
 	@Override
 	public Categoria get(int id) {
 
@@ -55,14 +53,10 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
 	}
 
-	/*
-	 * Updating a single category
-	 */
 	@Override
 	public boolean update(Categoria categoria) {
 
 		try {
-			// add the category to the database table
 			sessionFactory.getCurrentSession().update(categoria);
 			return true;
 		} catch (Exception ex) {

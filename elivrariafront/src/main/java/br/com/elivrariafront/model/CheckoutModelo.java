@@ -5,6 +5,8 @@ import java.util.List;
 
 import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Carrinho;
+import br.com.elivrariaback.dto.Cartao;
+import br.com.elivrariaback.dto.CartaoValidador;
 import br.com.elivrariaback.dto.ItemCarrinho;
 import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariaback.dto.Usuario;
@@ -19,6 +21,8 @@ public class CheckoutModelo implements Serializable {
 	private Usuario usuario;
 	private Endereco endereco;
 	private Carrinho carrinho;
+	private Cartao cartao;
+	private CartaoValidador cartaoValidador;
 	private List<ItemCarrinho> itemCarrinho;
 	private VendaDetalhe vendaDetalhe;
 	private double checkoutTotal;
@@ -58,7 +62,17 @@ public class CheckoutModelo implements Serializable {
 	public void setCheckoutTotal(double checkoutTotal) {
 		this.checkoutTotal = checkoutTotal;
 	}
-
-	
+	public Cartao getCartao() {
+		return cartao;
+	}
+	public void setCartao(Cartao cartao) {
+		this.cartao = cartao;
+	}
+	public CartaoValidador getCartaoValidador() {
+		return cartaoValidador;
+	}
+	public void setCartaoValidador(CartaoValidador cartaoValidador) {
+		this.cartaoValidador = cartaoValidador;
+	}	
 	
 }

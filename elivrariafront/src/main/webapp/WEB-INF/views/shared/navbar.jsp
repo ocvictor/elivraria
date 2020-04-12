@@ -38,6 +38,16 @@
 	                        <a href="${contextRoot}/gerenciar/usuario">Gerenciar Usuarios</a>
 	                    </li>					
 					</security:authorize>
+					<security:authorize access="hasAuthority('ADMIN')">
+	                    <li id="gerenciarEstoque">
+	                        <a href="${contextRoot}/gerenciar/estoque">Gerenciar Estoque</a>
+	                    </li>					
+					</security:authorize>
+					<security:authorize access="hasAuthority('ADMIN')">
+	                    <li id="gerenciarVendas">
+	                        <a href="${contextRoot}/gerenciar/vendas">Gerenciar Vendas</a>
+	                    </li>					
+					</security:authorize>
                 </ul>
 			    
 			    <ul class="nav navbar-nav navbar-right">
