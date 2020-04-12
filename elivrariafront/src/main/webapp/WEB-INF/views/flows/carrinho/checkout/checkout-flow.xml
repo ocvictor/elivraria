@@ -5,56 +5,74 @@
                           http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 	
 
-	<var name="endereco" class="br.com.elivrariaback.dto.Endereco"/>
+	<var name="entrega" class="br.com.elivrariaback.dto.Endereco"/>
+	<var name="cartaoNovo" class="br.com.elivrariafront.model.CartaoModelo"/>
 	
 	<on-start>
-		<evaluate expression="checkoutHandler.init(currentUser.name)" result="flowScope.checkoutModel"/>
+		<evaluate expression="checkoutHandler.init(currentUser.name)" result="flowScope.checkoutModelo"/>
 	</on-start>
 
-	<!-- view the address selection page-->
-	<view-state id="shipping" view="flows/cart/checkout/order-address" model="shipping">
+	<view-state id="entrega" view="flows/carrinho/checkout/venda-endereco" model="entrega">
 		<on-entry>
-			<evaluate expression="checkoutHandler.getShippingAddresses(flowScope.checkoutModel)" result="viewScope.addresses"/>	
+			<evaluate expression="checkoutHandler.getEnderecoEntrega(flowScope.checkoutModelo)" result="viewScope.enderecos"/>	
 		</on-entry>
-		<transition on="addressSelection" to="saveAddressSelection" validate="false"/>
-		<transition on="saveAddress" to="saveAddress" />
+		<transition on="selecaoEndereco" to="SalvarSelecaoEndereco" validate="false"/>
+		<transition on="salvarEndereco" to="salvarEndereco" />
 	</view-state>
 
-	<!-- action state to save the address -->
-	<action-state id="saveAddressSelection">		
-		<evaluate expression="checkoutHandler.saveAddressSelection(flowScope.checkoutModel, requestParameters.shippingId)" />
-		<transition on="success" to="payment" />
+	<action-state id="SalvarSelecaoEndereco">		
+		<evaluate expression="checkoutHandler.salvarEnderecoSelecionado(flowScope.checkoutModelo, requestParameters.enderecoId)" />
+		<transition on="success" to="pagamento" />
 	</action-state>
 
 	
-	<!-- action state to save the address -->
-	<action-state id="saveAddress">		
-		<evaluate expression="checkoutHandler.saveAddress(flowScope.checkoutModel, shipping)" />
-		<transition on="success" to="payment" />
+	<action-state id="salvarEndereco">		
+		<evaluate expression="checkoutHandler.salvarEndereco(flowScope.checkoutModelo, entrega)" />
+		<transition on="success" to="pagamento" />
 	</action-state>
 
-	<!-- view the payment mode page-->
-	<view-state id="payment" view="flows/cart/checkout/order-payment" model="flowScope.checkoutModel">		
-		<transition on="pay" to="saveOrder" />	
-	</view-state>
-
-	<!-- action state to save the address -->
-	<action-state id="saveOrder">		
-		<evaluate expression="checkoutHandler.saveOrder(flowScope.checkoutModel)" />
-		<transition on="success" to="receipt"/>
-	</action-state>
-	
-	<!-- end state -->
-	<end-state id="receipt" view="flows/cart/checkout/order-confirm">
+	<view-state id="pagamento" view="flows/carrinho/checkout/venda-pagamento" model="cartaoNovo">
 		<on-entry>
-			<evaluate expression="checkoutHandler.getOrderDetail(flowScope.checkoutModel)" result="requestScope.orderDetail"/>
+			<evaluate expression="checkoutHandler.getCartao(flowScope.checkoutModelo)" result="viewScope.cartoes"/>
+			<evaluate expression="checkoutHandler.getBandeiras()" result="viewScope.bandeiras"/>
+		</on-entry>
+		<transition on="selecaoCartao" to="SalvarSelecaoCartao" validate="false"/>
+		<transition on="salvarCartao" to="salvarCartao" />
+	</view-state>
+	
+	<action-state id="SalvarSelecaoCartao">		
+		<evaluate expression="checkoutHandler.salvarCartaoSelecionado(flowScope.checkoutModelo, requestParameters.cartaoId)" />
+		<transition on="success" to="processarCartao" />
+	</action-state>
+	
+	<action-state id="salvarCartao">		
+		<evaluate expression="checkoutHandler.salvarCartao(flowScope.checkoutModelo, cartaoNovo)" />
+		<transition on="success" to="processarCartao" />
+	</action-state>
+	
+	<view-state id="processarCartao" view="flows/carrinho/checkout/venda-processamento-cartao">
+		<transition on="salvarVenda" to="salvarVenda"/>
+	</view-state>
+	
+	<action-state id="salvarVenda">		
+		<evaluate expression="checkoutHandler.salvarPedido(flowScope.checkoutModelo)" />
+		<transition on="success" to="recibo"/>
+		<transition on="errorCartao" to="erroCartao" />
+	</action-state>
+	
+	<view-state id="erroCartao" view="flows/carrinho/checkout/venda-erroCartao">		
+		<transition on="pagamento" to="pagamento" />
+	</view-state>
+	
+	<end-state id="recibo" view="flows/carrinho/checkout/venda-confirmar">
+		<on-entry>
+			<evaluate expression="checkoutHandler.getVendaDetalhe(flowScope.checkoutModelo)" result="requestScope.vendaDetalhe"/>
 		</on-entry>
 	</end-state>
-
+	
 	<end-state id="home" view="externalRedirect:contextRelative:/home" />
 	<end-state id="error" view="flows/flows-shared/error" />
 	
-	<!-- global transition -->
 	<global-transitions>
 		<transition on="home" to="home" validate="false" />
  		<transition on-exception="java.lang.Exception" to="error" />

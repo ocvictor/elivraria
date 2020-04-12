@@ -54,7 +54,6 @@ public class Carrinho implements Serializable {
 		return "Carrinho [id=" + id + ", total=" + total + ", itens=" + itens + "]";
 	}
 	
-	// linking the cart with a user
 	@OneToOne
 	private Usuario usuario;
 	

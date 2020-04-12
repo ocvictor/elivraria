@@ -25,7 +25,6 @@ public class Livro implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	// private fields
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -39,7 +38,6 @@ public class Livro implements Serializable {
 	@NotBlank(message = "Insira o Autor!")
 	private String autor;
 	@Column(name = "precoUnit")
-	@Min(value = 1, message="Insira o Preco Unitario!")
 	private double precoUnit;
 	
 	@NotNull(message = "Insira o Ano!")
@@ -67,9 +65,11 @@ public class Livro implements Serializable {
 	@Column(name = "categoria_id")
 	@JsonIgnore
 	private int categoriaId;
-	@Column(name = "fornecedor_id")
+	
+	@Column(name = "grupo_precificacao_id")
 	@JsonIgnore
-	private int fornecedorId;
+	private int grupoPrecificacaoId;
+	
 	private int compras;
 	private int visualizacoes;
 	
@@ -87,13 +87,11 @@ public class Livro implements Serializable {
 	}
 
 
-	// default constructor
 	public Livro() {		
 		
 	}
 	
 	
-	// setters and getters	
 	public int getId() {
 		return id;
 	}
@@ -163,14 +161,6 @@ public class Livro implements Serializable {
 
 	public void setCategoriaId(int categoriaId) {
 		this.categoriaId = categoriaId;
-	}
-
-	public int getFornecedorId() {
-		return fornecedorId;
-	}
-
-	public void setFornecedorId(int fornecedorId) {
-		this.fornecedorId = fornecedorId;
 	}
 
 	public int getCompras() {
@@ -262,14 +252,21 @@ public class Livro implements Serializable {
 		this.codBarras = codBarras;
 	}
 
-	// toString for debugging
 	@Override
 	public String toString() {
 		return "Livro [id=" + id + ", isbn=" + ISBN + ", titulo=" + titulo + ", editora=" + editora + ", autor="
 				+ autor + ", precoUnit=" + precoUnit + ", quantidade=" + quantidade + ", ativo=" + ativo
 				+ ", ano=" + ano + ", edicao=" + edicao + ", codbarras=" + codBarras + ", numpaginas= " + numPaginas
 				+ ", sinopse= " + sinopse + ", largura= " + largura + ", altura=" + altura + ", profundidade=" + profundidade + ", peso=" + peso
-				+ ", categoriaId=" + categoriaId + ", fornecedorID=" + fornecedorId + ", compras=" + compras + ", visualizacoes="
-				+ visualizacoes + "]";
+				+ ", categoriaId=" + categoriaId + ", compras=" + compras + ", visualizacoes="
+				+ visualizacoes + ", grupo_precificacao_id=" + grupoPrecificacaoId + "]";
+	}
+	
+	public int getGrupoPrecificacaoId() {
+		return grupoPrecificacaoId;
+	}
+
+	public void setGrupoPrecificacaoId(int grupoPrecificacaoId) {
+		this.grupoPrecificacaoId = grupoPrecificacaoId;
 	}
 }

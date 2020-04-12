@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -19,12 +21,12 @@ public class Cartao implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	@OneToOne
+	private Bandeira bandeira;
+	
 	@Column(name = "usuario_id")
 	private int usuarioId;
-	
-	@Column(name = "bandeira_id")
-	private int bandeiraId;
-	
+
 	@NotNull(message = "Insira o Numero do Cartão!")
 	@Column(name = "numero")
 	private long numeroCartao;
@@ -67,14 +69,6 @@ public class Cartao implements Serializable {
 		this.usuarioId = usuarioId;
 	}
 
-	public int getBandeiraId() {
-		return bandeiraId;
-	}
-
-	public void setBandeiraId(int bandeiraId) {
-		this.bandeiraId = bandeiraId;
-	}
-
 	public long getNumeroCartao() {
 		return numeroCartao;
 	}
@@ -113,6 +107,14 @@ public class Cartao implements Serializable {
 
 	public void setCcv(int ccv) {
 		this.ccv = ccv;
+	}
+
+	public Bandeira getBandeira() {
+		return bandeira;
+	}
+
+	public void setBandeira(Bandeira bandeira) {
+		this.bandeira = bandeira;
 	}
 	
 	

@@ -1,11 +1,11 @@
-package br.com.elivrariafront.validator;
+package br.com.elivrariafront.validador;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import br.com.elivrariaback.dto.Livro;
 
-public class LivroValidator implements Validator {
+public class LivroValidador implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {

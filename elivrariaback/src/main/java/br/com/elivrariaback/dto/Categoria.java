@@ -14,10 +14,7 @@ public class Categoria implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
-
-	
+	private static final long serialVersionUID = 1L;	
 	
 	public int getId() {
 		return id;
@@ -65,11 +62,6 @@ public class Categoria implements Serializable {
 				+ ", ativo=" + ativo + "]";
 	}
 
-
-
-	/*
-	 * Private fields
-	 * */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

@@ -139,21 +139,29 @@
 								<sf:errors path="peso" cssClass="help-block" element="em"/>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-md-4">Preço Unitário</label>
+						
+					<div class="form-group">
+						<label class="control-label col-md-4">Grupo Precificação</label>
+						<div class="col-md-8">
+							<sf:select path="grupoPrecificacaoId" items="${grupoPrecificacao}" itemLabel="descricao" itemValue="id" class="form-control"/>
+														
+						</div>							
+					</div>
+						 <div class="form-group">
+							<!-- <label class="control-label col-md-4">Preço Unitário</label> -->
 							<div class="col-md-8">
-								<sf:input type="number" path="precoUnit" class="form-control"
+								<sf:input type="hidden" path="precoUnit" class="form-control"
 									placeholder="Insira o preço unitário" />
-								<sf:errors path="precoUnit" cssClass="help-block" element="em"/>
+								<sf:errors path="precoUnit" value="0.0" cssClass="help-block" element="em"/>
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="control-label col-md-4">Quantidade em Estoque</label>
+							<!-- <label class="control-label col-md-4">Quantidade em Estoque</label>  -->
 							<div class="col-md-8">
-								<sf:input type="number" path="quantidade" class="form-control"
+								<sf:input type="hidden" path="quantidade" class="form-control"
 									placeholder="Insira quantidade" />
-								<sf:errors path="quantidade" cssClass="help-block" element="em"/> 
+								<sf:errors path="quantidade" value="0" cssClass="help-block" element="em"/> 
 							</div>
 						</div>
 

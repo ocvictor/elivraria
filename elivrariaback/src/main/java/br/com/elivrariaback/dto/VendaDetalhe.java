@@ -18,7 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "order_detail")
+@Table(name = "venda_detalhe")
 public class VendaDetalhe implements Serializable {
 
 	/**
@@ -33,10 +33,13 @@ public class VendaDetalhe implements Serializable {
 	private Usuario usuario;
 	@Column(name = "venda_total")
 	private double totalVenda;
+	
 	@ManyToOne
 	private Endereco enderecoEntrega;
+	
 	@ManyToOne
 	private Endereco enderecoCobranca;
+	
 	@OneToMany(mappedBy="vendaDetalhe", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<ItemVenda> itemVenda = new ArrayList<>();
 	
@@ -44,8 +47,16 @@ public class VendaDetalhe implements Serializable {
 	private int qtdVenda;
 	
 	@Column(name="venda_data")
-	private Date dataVenda;
-
+	private String dataVenda;
+	
+	@ManyToOne
+	@JoinColumn(name = "cartao_id")
+	private Cartao cartao;
+	
+	@ManyToOne
+	@JoinColumn(name="status_venda_id")
+	private StatusVenda statusVenda;
+	
 	public int getId() {
 		return id;
 	}
@@ -102,12 +113,28 @@ public class VendaDetalhe implements Serializable {
 		this.qtdVenda = qtdVenda;
 	}
 
-	public Date getDataVenda() {
+	public String getDataVenda() {
 		return dataVenda;
 	}
 
-	public void setDataVenda(Date dataVenda) {
+	public void setDataVenda(String dataVenda) {
 		this.dataVenda = dataVenda;
+	}
+
+	public Cartao getCartao() {
+		return cartao;
+	}
+
+	public void setCartao(Cartao cartao) {
+		this.cartao = cartao;
+	}
+
+	public StatusVenda getStatusVenda() {
+		return statusVenda;
+	}
+
+	public void setStatusVenda(StatusVenda statusVenda) {
+		this.statusVenda = statusVenda;
 	}
 	
 	

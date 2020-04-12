@@ -49,8 +49,6 @@ public class GlobalDefaultExceptionHandler {
 		
 		mv.addObject("errorTitle", "Contate o Administrador!!");
 		
-		
-		/* only for debugging your application*/
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		

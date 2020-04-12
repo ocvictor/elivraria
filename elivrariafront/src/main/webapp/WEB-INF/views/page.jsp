@@ -90,6 +90,14 @@
 				<%@include file="gerenciarUsuario.jsp"%>
 			</c:if>
 			
+			<c:if test="${ClickGerenciarEstoque == true}">
+				<%@include file="gerenciarEstoque.jsp"%>
+			</c:if>
+			
+			<c:if test="${ClickGerenciarVendas == true}">
+				<%@include file="gerenciarVendas.jsp"%>
+			</c:if>
+			
 			<c:if test="${ClickGerenciarLivro == true}">
 				<%@include file="gerenciarLivro.jsp"%>
 			</c:if>

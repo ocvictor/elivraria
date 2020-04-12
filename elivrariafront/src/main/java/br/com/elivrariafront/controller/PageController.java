@@ -22,9 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CategoriaDAO;
+import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Categoria;
+import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariafront.exception.LivroNotFoundException;
 
@@ -41,6 +43,7 @@ public class PageController {
 	
 	@Autowired
 	private LivroDAO livroDAO;
+	private EstoqueDAO estoqueDAO;
 	
 	@RequestMapping(value = {"/", "/home", "/index"})
 	public ModelAndView index(@RequestParam(name="logout",required=false)String logout) {		
@@ -125,8 +128,8 @@ public class PageController {
 		
 		if(livro == null) throw new LivroNotFoundException();
 		
-		// update the view count
-		livro.setVisualizacoes(livro.getVisualizacoes() + 1);
+		livro.setVisualizacoes(livro.getVisualizacoes() + 1);	
+		
 		livroDAO.update(livro);
 		//---------------------------
 		
@@ -168,8 +171,7 @@ public class PageController {
 	
 	@RequestMapping(value="/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		// Invalidates HTTP Session, then unbinds any objects bound to it.
-	    // Removes the authentication from securitycontext 		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    if (auth != null){    
 	        new SecurityContextLogoutHandler().logout(request, response, auth);

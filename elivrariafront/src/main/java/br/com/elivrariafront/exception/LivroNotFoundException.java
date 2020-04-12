@@ -11,7 +11,7 @@ public class LivroNotFoundException extends Exception implements Serializable {
 	private String message;
 	
 	public LivroNotFoundException() {
-		this("Product is not available!");
+		this("Livro não está disponível!");
 	}
 	
 	public LivroNotFoundException(String message) {

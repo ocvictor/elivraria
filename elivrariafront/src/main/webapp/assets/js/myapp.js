@@ -33,10 +33,16 @@ $(function() {
 		$('#listaLivros').addClass('active');
 		break;
 	case 'Gerenciar Livros':
-		$('#gerenciarLivros').addClass('active');
+		$('#gerenciarLivro').addClass('active');
 		break;
 	case 'Gerenciar Usuarios':
-		$('#gerenciarUsuarios').addClass('active');
+		$('#gerenciarUsuario').addClass('active');
+		break;
+	case 'Gerenciar Estoque':
+		$('#gerenciarEstoque').addClass('active');
+		break;
+	case 'Gerenciar Vendas':
+		$('#gerenciarVendas').addClass('active');
 		break;
 	case 'Carrinho':
 		$('#usuarioModelo').addClass('active');
@@ -46,6 +52,7 @@ $(function() {
 			break;
 		$('#listaLivros').addClass('active');
 		$('#listaUsuarios').addClass('active');
+		$('#gerenciarEstoque').addClass('active');
 		$('#a_' + menu).addClass('active');
 		break;
 	}
@@ -137,7 +144,7 @@ $(function() {
 								mRender : function(data, type, row) {
 
 									if (data < 1) {
-										return '<span style="color:red">Out of Stock!</span>';
+										return '<span style="color:red">Fora de Estoque!</span>';
 									}
 
 									return data;
@@ -331,6 +338,293 @@ $(function() {
 				});
 	}
 	
+	
+	// lista todos produtos
+	var $LivrosTableEstoque = $('#livrosTableEstoque');
+	
+	
+	if($LivrosTableEstoque.length) {
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/todos/livros';
+		console.log(jsonUrl);
+		
+		$LivrosTableEstoque.DataTable({
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{data: 'id'},
+
+
+					           	{data: 'isbn'},
+					           	{
+									data : 'titulo'
+								},							
+								{
+									data : 'quantidade',
+									mRender : function(data, type, row) {
+
+										if (data < 1) {
+											return '<span style="color:red">Fora de Estoque!</span>';
+										}
+
+										return data;
+
+									}
+								},
+								{
+									data : 'precoUnit',
+									mRender : function(data, type, row) {
+										return 'R$ ' + data
+									}
+								},
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ data
+												+ '/livro'
+												+'/estoque" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></a> &#160;';
+
+										return str;
+									}
+								}					           	
+					],
+					
+					
+					
+				});
+	}
+	
+	
+	// lista todos estoques
+	var $EstoqueTable= $('#estoqueTable');
+	
+	
+	if($EstoqueTable.length) {
+
+		var jsonUrl = window.contextRoot + '/json/data/admin/todos/estoques';
+		console.log(jsonUrl);
+		
+		$EstoqueTable.DataTable({
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{data: 'dataEntrada'
+					           	},
+
+
+					           	{data: 'livroId'
+					           	},							
+								{
+									data : 'quantidade'
+								},
+								{
+									data : 'valorCusto',
+									mRender : function(data, type, row) {
+										return 'R$ ' + data
+									}
+								},
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ data
+												+'/estoque" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></a> &#160;';
+
+										return str;
+									}
+								},
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ data
+												+'/estoque/excluir" class="btn btn-primary"><span class="glyphicon glyphicon-remove"></span></a> &#160;';
+
+										return str;
+									}
+								}					           	
+					],					
+					
+					
+				});
+	}
+	
+	// lista todos produtos
+	var $vendasAprovadasTable = $('#vendasAprovadasTable');
+	
+	
+	if($vendasAprovadasTable.length) {
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/vendas/aprovadas';
+		console.log(jsonUrl);
+		
+		$vendasAprovadasTable.DataTable({
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{
+					           		data: 'dataVenda'
+					           	},
+
+					           	{
+					           		data: 'usuario.nome'
+					           	},
+					           	{
+									data : 'qtdVenda'
+								},							
+								{
+									data : 'totalVenda'
+								},
+								{
+									data : 'status.descricao'
+								},
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ 'vendas/'
+												+ data
+												+ '/avancar" class="btn btn-primary"><span class="glyphicon glyphicon-forward"></span></a> &#160;';
+
+									return str;
+									}
+								}					           	
+					],
+					
+					
+					
+				});
+	}
+	
 	// lista todos enderecos do cliente
 	var UsuariosTable = $('#UsuariosTable');
 	
@@ -359,7 +653,6 @@ $(function() {
 									data : 'sobrenome'
 								},
 								
-								,
 								{
 									data : 'id',
 									bSortable : false,
@@ -440,10 +733,6 @@ $(function() {
 		
 	}
 	
-	/*validating the loginform*/
-	
-	// validating the product form element	
-	// fetch the form element
 	$loginForm = $('#loginForm');
 	
 	if($loginForm.length) {

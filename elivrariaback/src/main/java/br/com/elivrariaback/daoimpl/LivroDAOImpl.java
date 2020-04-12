@@ -18,9 +18,6 @@ public class LivroDAOImpl implements LivroDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-	/*
-	 * SINGLE
-	 * */
 	
 	@Override
 	public Livro get(int livroId) {
@@ -90,7 +87,6 @@ public class LivroDAOImpl implements LivroDAO {
 		try {
 			
 			livro.setAtivo(false);
-			// call the update method
 			return this.update(livro);
 		}
 		catch(Exception ex) {		
