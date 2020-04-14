@@ -28,7 +28,7 @@
 	
 	<view-state id="endereco" view="flows/registro/registro-endereco" model="endereco">		
 		<transition on="cartao" to="cartao" />
-		<transition on="infopessoal" to="infopessoal" />	
+		<transition on="infopessoal" to="infopessoal" validate="false"/>	
 		<on-exit>
 			<evaluate expression="registroHandler.addEndereco(flowScope.registroModelo, endereco)" />
 		</on-exit>
@@ -39,7 +39,7 @@
 			<evaluate expression="registroHandler.getBandeiras(flowScope.registrotModelo)" result="viewScope.bandeiras"/>	
 		</on-entry>	
 		<transition on="selecCartao" to="SalvarCartao" />
-		<transition on="endereco" to="endereco" />	
+		<transition on="endereco" to="endereco" validate="false"/>	
 
 	</view-state>
 	

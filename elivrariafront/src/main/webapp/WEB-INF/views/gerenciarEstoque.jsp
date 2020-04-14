@@ -164,7 +164,8 @@
 									
 						<thead>					
 							<tr>					
-								<th>Data Entrada</th>
+								<th>Data Movimentação</th>
+								<th>Tipo Movimentação</th>
 								<th>Livro</th>
 								<th>Quantidade Comprada</th>
 								<th>Preço Custo</th>
@@ -176,7 +177,8 @@
 						
 						<tfoot>
 							<tr>					
-								<th>Data Entrada</th>
+								<th>Data Movimentação</th>
+								<th>Tipo Movimentação</th>								
 								<th>Livro</th>
 								<th>Quantidade Comprada</th>
 								<th>Preço Custo</th>

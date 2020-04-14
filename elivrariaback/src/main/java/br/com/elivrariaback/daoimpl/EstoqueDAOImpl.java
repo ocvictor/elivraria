@@ -29,7 +29,7 @@ public class EstoqueDAOImpl implements EstoqueDAO{
 	@Override
 	public List<Estoque> listarTodos() {
 		
-		String selectCategoriaAtiva = "FROM Estoque ";
+		String selectCategoriaAtiva = "FROM Estoque order by data_entrada desc ";
 		
 		Query query = sessionFactory.getCurrentSession().createQuery(selectCategoriaAtiva, Estoque.class).setMaxResults(5);
 		

@@ -32,10 +32,11 @@
 						>
 						
 							
+							
 							<div class="form-group">
 								<label class="control-label col-md-4">Nome</label>
 								<div class="col-md-8">
-									<sf:input type="text" path="nome" class="form-control"
+									<sf:input type="text" path="nome" class="form-control" 
 										placeholder="Insira o Nome" />
 									<sf:errors path="nome" cssClass="help-block" element="em"/> 
 								</div>
@@ -48,6 +49,15 @@
 									<sf:input type="text" path="sobrenome" class="form-control"
 										placeholder="Insira o Sobrenome" />
 									<sf:errors path="sobrenome" cssClass="help-block" element="em"/> 
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label col-md-4">CPF</label>
+								<div class="col-md-8">
+									<sf:input type="text" id="cpf" path="cpf" class="form-control" minlength="11" maxlength="11" 
+									placeholder="Insira o CPF" />
+									<sf:errors path="cpf" cssClass="help-block" element="em"/> 
 								</div>
 							</div>
 							

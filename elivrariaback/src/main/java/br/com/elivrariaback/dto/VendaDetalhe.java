@@ -17,6 +17,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.elivrariaback.util.VendaDetalheSerializer;
+@JsonSerialize(using = VendaDetalheSerializer.class)
+@Component
 @Entity
 @Table(name = "venda_detalhe")
 public class VendaDetalhe implements Serializable {
@@ -28,18 +37,24 @@ public class VendaDetalhe implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	
 	@ManyToOne
 	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
+	
 	@Column(name = "venda_total")
 	private double totalVenda;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Endereco enderecoEntrega;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Endereco enderecoCobranca;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="vendaDetalhe", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<ItemVenda> itemVenda = new ArrayList<>();
 	
@@ -49,9 +64,11 @@ public class VendaDetalhe implements Serializable {
 	@Column(name="venda_data")
 	private String dataVenda;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "cartao_id")
 	private Cartao cartao;
+	
 	
 	@ManyToOne
 	@JoinColumn(name="status_venda_id")

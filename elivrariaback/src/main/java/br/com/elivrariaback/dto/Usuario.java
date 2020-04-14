@@ -14,7 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotBlank;
-
+import org.springframework.stereotype.Component;
+@Component
 @Entity
 @Table(name = "Usuario")
 public class Usuario implements Serializable{
@@ -39,6 +40,10 @@ public class Usuario implements Serializable{
 	@NotBlank(message = "Insira o gênero!")
 	@Column(name = "genero")
 	private String genero;
+	
+	@NotBlank(message = "Insira o CPF!")
+	@Column(name = "cpf")
+	private String cpf;
 	
 	@NotBlank(message = "Insira a data de nascimento!")
 	@Column(name = "dtnascimento")
@@ -141,7 +146,7 @@ public class Usuario implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nome=" + nome + ", sobrenome=" + sobrenome + ", genero=" + genero 
+		return "Usuario [id=" + id + ", cpf= "+ cpf + ", nome=" + nome + ", sobrenome=" + sobrenome + ", genero=" + genero 
 				+ ", dtnascimento=" + dtNascimento + ", email=" + email + ", ddd_telefone=" + dddTelefone
 				+ ", telefone=" + telefone + ", role=" + role + ", senha=" + senha + ", ativo="
 				+ ativo + "]";
@@ -157,5 +162,12 @@ public class Usuario implements Serializable{
 	public void setCarrinho(Carrinho carrinho) {
 		this.carrinho = carrinho;
 	}
+	public String getCpf() {
+		return cpf;
+	}
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	
 	
 }

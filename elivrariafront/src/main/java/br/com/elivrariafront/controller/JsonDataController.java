@@ -89,8 +89,20 @@ public class JsonDataController {
 	}
 	
 	@RequestMapping("/admin/vendas/aprovadas")
-	@ResponseBody
-	public List<VendaDetalhe> getVendasAprovadas() {
+	@ResponseBody	
+	public List<VendaDetalhe> getVendasAprovadasJson() {
 		return vendaDetalheDAO.getVendasAprovadas();				
+	}
+	
+	@RequestMapping("/admin/vendas/entregues")
+	@ResponseBody
+	public List<VendaDetalhe> getVendasEntregues() {
+		return vendaDetalheDAO.getVendasEntregues();				
+	}
+	
+	@RequestMapping("/admin/vendas/transporte")
+	@ResponseBody
+	public List<VendaDetalhe> getVendasTransporte() {
+		return vendaDetalheDAO.getVendasTransporte();				
 	}
 }
