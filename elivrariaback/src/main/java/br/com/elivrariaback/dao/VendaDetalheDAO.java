@@ -12,6 +12,6 @@ public interface VendaDetalheDAO {
 	List<VendaDetalhe> getVendasAprovadas();
 	List<VendaDetalhe> getVendasTransporte();
 	List<VendaDetalhe> getVendasEntregues();
-	
-	
+	boolean update(VendaDetalhe vendaDetalhe);
+
 }

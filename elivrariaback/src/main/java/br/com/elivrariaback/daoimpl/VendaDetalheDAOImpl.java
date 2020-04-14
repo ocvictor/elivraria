@@ -11,9 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Bandeira;
+import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.VendaDetalhe;
 
-@Repository("vendadetalheDAO")
+@Repository("vendaDetalheDAO")
 @Transactional
 public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 
@@ -25,7 +26,7 @@ public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 		
 		String selectBandeira = "FROM VendaDetalhe Where usuario_id= :usuarioId order by venda_data desc";
 		
-		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira);
+		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira, VendaDetalhe.class);
 		
 		query.setParameter("usuarioId", usuarioId);
 						
@@ -37,7 +38,7 @@ public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 		
 		String selectBandeira = "FROM VendaDetalhe Where status_venda_id = :statusId order by venda_data desc";
 		
-		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira);
+		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira, VendaDetalhe.class);
 		
 		query.setParameter("statusId", 1);
 						
@@ -49,7 +50,7 @@ public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 		
 		String selectBandeira = "FROM VendaDetalhe Where status_venda_id = :statusId order by venda_data desc";
 		
-		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira);
+		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira, VendaDetalhe.class);
 		
 		query.setParameter("statusId", 3);
 						
@@ -61,7 +62,7 @@ public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 		
 		String selectBandeira = "FROM VendaDetalhe Where status_venda_id = :statusId order by venda_data desc";
 		
-		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira);
+		Query query = sessionFactory.getCurrentSession().createQuery(selectBandeira, VendaDetalhe.class);
 		
 		query.setParameter("statusId", 4);
 						
@@ -76,7 +77,20 @@ public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 		return sessionFactory.getCurrentSession().get(VendaDetalhe.class, Integer.valueOf(id));
 
 	}
-
+	
+	@Override
+	public boolean update(VendaDetalhe vendaDetalhe) {
+		try {			
+			sessionFactory
+					.getCurrentSession()
+						.update(vendaDetalhe);
+			return true;
+		}
+		catch(Exception ex) {		
+			ex.printStackTrace();			
+		}		
+		return false;		
+	}
 	
 
 }

@@ -27,8 +27,10 @@ import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.FornecedorDAO;
 import br.com.elivrariaback.dao.GrupoPrecificacaoDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.StatusVendaDAO;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
+import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Categoria;
@@ -37,7 +39,9 @@ import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.Fornecedor;
 import br.com.elivrariaback.dto.GrupoPrecificacao;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.StatusVenda;
 import br.com.elivrariaback.dto.Usuario;
+import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariafront.util.FileUtil;
 import br.com.elivrariafront.validador.EstoqueValidador;
 import br.com.elivrariafront.validador.LivroValidador;
@@ -77,6 +81,12 @@ public class GerenciamentoController {
 	
 	@Autowired
 	private FornecedorDAO fornecedorDAO;
+	
+	@Autowired
+	private VendaDetalheDAO vendaDetalheDAO;
+	
+	@Autowired
+	private StatusVendaDAO statusVendaDAO;
 	
 	@RequestMapping("/livro")
 	public ModelAndView gerenciarLivro(@RequestParam(name="success",required=false)String success) {		
@@ -418,9 +428,9 @@ public class GerenciamentoController {
 		return "redirect:/gerenciar/estoque?success=estoque";
 	}
 	
-	@RequestMapping("/vendas")
+	@RequestMapping(value="/vendas")
 	public ModelAndView gerenciarVendas() {		
-
+		logger.info("Chamando controller");
 		ModelAndView mv = new ModelAndView("page");	
 		mv.addObject("title","Gerenciar Vendas");		
 		mv.addObject("ClickGerenciarVendas",true);			
@@ -428,12 +438,27 @@ public class GerenciamentoController {
 		
 	}
 	
-	@RequestMapping("/vendas/{id}/avancar")
-	@ResponseBody
-	public List<Livro> getLivrosPorCategoria(@PathVariable int id) {
+	@RequestMapping(value="/vendas/{id}/avancar")
+	public ModelAndView gerenciarVendasAvancarStatus(@PathVariable int id) {
+		logger.info("Chamando controller do avancar");
+
+		ModelAndView mv = new ModelAndView("page");
+		mv.addObject("title","Gerenciar Vendas Avançar");		
+		mv.addObject("ClickGerenciarVendas",true);
 		
-		return livroDAO.listaAtivosLivroCategoria(id);
-				
+		//Pega a venda pelo ID
+		VendaDetalhe vd = vendaDetalheDAO.get(id);
+		
+		//Atualiza para o próximo status da venda
+		StatusVenda sv = statusVendaDAO.get(vd.getStatusVenda().getId() + 1);
+		
+		//Seta o status no model VendaDetalhe
+		vd.setStatusVenda(sv);
+		
+		vendaDetalheDAO.update(vd);	
+		
+		
+		return mv;
 	}
 	
 }

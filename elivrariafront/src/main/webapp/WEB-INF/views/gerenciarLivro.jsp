@@ -107,7 +107,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">Altura</label>
 							<div class="col-md-8">
-								<sf:input type="number" path="altura" class="form-control"
+								<sf:input type="number" step="0.01" path="altura" class="form-control"
 									placeholder="Insira a altura do livro" /> 
 								<sf:errors path="altura" cssClass="help-block" element="em"/>
 							</div>
@@ -116,7 +116,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">Largura</label>
 							<div class="col-md-8">
-								<sf:input type="number" path="largura" class="form-control"
+								<sf:input type="number" step="0.01" path="largura" class="form-control"
 									placeholder="Insira a largura do livro" /> 
 								<sf:errors path="largura" cssClass="help-block" element="em"/>
 							</div>
@@ -125,7 +125,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">Profundidade</label>
 							<div class="col-md-8">
-								<sf:input type="number" path="profundidade" class="form-control"
+								<sf:input type="number" step="0.01" path="profundidade" class="form-control"
 									placeholder="Insira a profundidade do livro" /> 
 								<sf:errors path="profundidade" cssClass="help-block" element="em"/>
 							</div>
@@ -134,7 +134,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">Peso</label>
 							<div class="col-md-8">
-								<sf:input type="number" path="peso" class="form-control"
+								<sf:input type="number" step="0.01" path="peso" class="form-control"
 									placeholder="Insira o números de páginas do livro" /> 
 								<sf:errors path="peso" cssClass="help-block" element="em"/>
 							</div>
@@ -184,7 +184,6 @@
 									<br/>			
 									<sf:hidden path="id"/>
 									<sf:hidden path="categoriaId"/>
-									<sf:hidden path="fornecedorId"/>
 									<sf:hidden path="ativo"/>														
 									<button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#CategoriaModal">Adicionar Categoria</button>
 								</div>							

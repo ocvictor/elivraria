@@ -44,7 +44,6 @@ public class Estoque implements Serializable {
 	private int fornecedorId;
 		
 	@Column(name = "tipo_operacao")
-	@JsonIgnore
 	private String tpoOperacao;
 	
 	@JsonIgnore
