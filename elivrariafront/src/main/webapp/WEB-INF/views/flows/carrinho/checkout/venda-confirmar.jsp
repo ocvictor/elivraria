@@ -103,8 +103,16 @@
 		    			<div class="col-xs-6">
 		    				<address>
 		    					<strong>Método de Pagamento </strong><br>
-		    					Pagamento com Cartão <br>
-		    					${vendaDetalhe.usuario.email}
+		    					<c:if test="${vendaDetalhe.totalVenda > 0}">	
+									Cartão de Crédito<br>
+									${vendaDetalhe.cartao.bandeira.descricao}<br>
+		    						${vendaDetalhe.cartao.numeroCartao}
+								</c:if>
+		    					<c:if test="${vendaDetalhe.totalVenda == 0.0}">	
+									Cupom
+									${vendaDetalhe.cupomTroca.descricao} 
+									${vendaDetalhe.cupomPromocional.descricao} 
+								</c:if>
 		    				</address>
 		    			</div>
 		    			<div class="col-xs-6 text-right">

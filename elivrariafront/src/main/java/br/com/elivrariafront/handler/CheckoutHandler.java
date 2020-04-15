@@ -14,13 +14,18 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
 import org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CartaoDAO;
+import br.com.elivrariaback.dao.CupomPromocionalDAO;
+import br.com.elivrariaback.dao.CupomTrocaDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.ItemCarrinhoDAO;
 import br.com.elivrariaback.dao.LivroDAO;
@@ -32,6 +37,8 @@ import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.CartaoValidador;
+import br.com.elivrariaback.dto.CupomPromocional;
+import br.com.elivrariaback.dto.CupomTroca;
 import br.com.elivrariaback.dto.ItemCarrinho;
 import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariaback.dto.ItemVenda;
@@ -40,6 +47,8 @@ import br.com.elivrariaback.dto.StatusVenda;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariafront.model.CartaoModelo;
 import br.com.elivrariafront.model.CheckoutModelo;
+import br.com.elivrariafront.model.ErroModelo;
+import br.com.elivrariafront.model.FreteModelo;
 import br.com.elivrariafront.model.UsuarioModelo;
 import br.com.elivrariafront.validador.LivroValidador;
 import br.com.elivrariafront.validador.VendaValidador;
@@ -75,6 +84,13 @@ public class CheckoutHandler {
 	@Autowired
 	private HttpSession session;
 	
+	@Autowired
+	private CupomTrocaDAO cupomTrocaDAO;
+	
+	@Autowired
+	private CupomPromocionalDAO cupomPromocionalDAO;
+	
+	//private FreteHandler freteHandler;
 	
 	public CheckoutModelo init(String nome) throws Exception{
 
@@ -119,14 +135,48 @@ public class CheckoutHandler {
 		
 	}
 	
-	public String salvarEnderecoSelecionado(CheckoutModelo checkoutModel, int enderecoId) {
+	public String salvarEnderecoSelecionado(CheckoutModelo checkoutModelo, int enderecoId) {
 
 		String transitionValue = "success";
 		
 		
 		Endereco enderecoEntrega = usuarioDAO.getEndereco(enderecoId);		
 		
-		checkoutModel.setEndereco(enderecoEntrega);
+		checkoutModelo.setEndereco(enderecoEntrega);
+		
+		Double dValorFrete = 0.0;
+		Double pesoItens = 0.0;
+		
+		for (ItemCarrinho itens : checkoutModelo.getItemCarrinho()) {
+			
+			pesoItens += itens.getLivro().getPeso() * itens.getLivroQtd();
+			
+			
+		}
+		FreteModelo freteModelo = new FreteModelo();
+		
+		freteModelo.setnCdEmpresa("");
+		freteModelo.setsDsSenha("");
+		freteModelo.setnCdServico("04014");
+		freteModelo.setsCepOrigem("01001001");
+		freteModelo.setsCepDestino(checkoutModelo.getEndereco().getCep().replace("-", ""));
+		freteModelo.setnVlPeso(String.valueOf(pesoItens));				
+		freteModelo.setnCdFormato("3");
+		freteModelo.setsCdMaoPropria("N");
+		freteModelo.setnVlValorDeclarado("0");				
+		freteModelo.setsCdAvisoRecebimento("S");
+		freteModelo.setStrRetorno("xml");
+		
+		logger.info("Aqui montou o frete modelo" + freteModelo);
+
+		String valorFrete = new FreteHandler().calcularFrete(freteModelo);
+		
+		logger.info("executou com sucesso o calcular, valor frete " + valorFrete);
+
+		dValorFrete = Double.valueOf(valorFrete.replace(",","."));
+		
+		checkoutModelo.setValorFrete(dValorFrete);
+		checkoutModelo.setCheckoutTotal(checkoutModelo.getCheckoutTotal() + checkoutModelo.getValorFrete());
 		
 		return transitionValue;
 		
@@ -142,6 +192,35 @@ public class CheckoutHandler {
 		usuarioDAO.addEndereco(endereco);
 		
 		checkoutModelo.setEndereco(endereco);
+		
+		String valorFrete = "0";
+		Double dValorFrete = 0.0;
+		
+		for (ItemCarrinho itens : checkoutModelo.getItemCarrinho()) {
+			FreteModelo freteModelo = new FreteModelo();
+			
+			freteModelo.setnCdEmpresa("");
+			freteModelo.setsDsSenha("");
+			freteModelo.setnCdServico("04014");
+			freteModelo.setsCepOrigem("01001001");
+			freteModelo.setsCepDestino(checkoutModelo.getEndereco().getCep());
+			freteModelo.setnVlPeso(String.valueOf(itens.getLivro().getPeso()));				
+			freteModelo.setnCdFormato("1");
+			freteModelo.setnVlComprimento(String.valueOf(itens.getLivro().getProfundidade()));				
+			freteModelo.setnVlAltura(String.valueOf(itens.getLivro().getAltura()));				
+			freteModelo.setnVlLargura(String.valueOf(itens.getLivro().getLargura()));				
+			freteModelo.setnVlDiametro("0");
+			freteModelo.setsCdMaoPropria("N");
+			freteModelo.setnVlValorDeclarado("0");				
+			freteModelo.setsCdAvisoRecebimento("S");
+			freteModelo.setStrRetorno("xml");
+			
+			valorFrete = new FreteHandler().calcularFrete(freteModelo);
+			dValorFrete = dValorFrete + (Double.valueOf(valorFrete) * itens.getLivroQtd());
+			
+		}
+		checkoutModelo.setValorFrete(dValorFrete);
+		checkoutModelo.setCheckoutTotal(checkoutModelo.getCheckoutTotal() + checkoutModelo.getValorFrete());
 		
 		return transitionValue;
 		
@@ -168,6 +247,18 @@ public class CheckoutHandler {
 
 		return bandeiras;
 	}
+	
+	public List<CupomTroca> getCupomTroca(CheckoutModelo modelo) {
+		
+		List<CupomTroca> cupons = cupomTrocaDAO.listByUsuario(modelo.getUsuario().getId());				
+		
+		if(cupons.size() == 0) {
+			cupons = new ArrayList<>();
+		}
+
+		return cupons;
+	}
+	
 	
 	public String salvarCartaoSelecionado(CheckoutModelo checkoutModelo, int cartaoId) {
 
@@ -207,7 +298,70 @@ public class CheckoutHandler {
 		
 	}
 	
+	public String salvarCupomTroca(CheckoutModelo checkoutModelo, int cupomTrocaId) {
+		String transitionValue = "success";
+		double vlrRestante = 0.0;
+		
+		CupomTroca cupomTroca = cupomTrocaDAO.get(cupomTrocaId);
+		logger.info("até aqui chegou");
+		checkoutModelo.setCupomTroca(cupomTroca);
+		
+		
+		if(checkoutModelo.getCheckoutTotal() < cupomTroca.getValorCupom()) {
+			checkoutModelo.setCheckoutTotal(0.0);
+			
+			
+			
+			transitionValue = "totalZerado";
+			return transitionValue;
+			
+		}
+		else {
+			vlrRestante = checkoutModelo.getCheckoutTotal() - cupomTroca.getValorCupom();
+			checkoutModelo.setCheckoutTotal(vlrRestante);			
+			return transitionValue;
+		}
+			
+	}
+	
+	public String salvarCupomPromocional(CheckoutModelo checkoutModelo, String cupomPromocionalDesc, MessageContext error) {
+		String transitionValue = "success";
+		cupomPromocionalDesc = cupomPromocionalDesc.toUpperCase();
+		logger.info("Cupom informado: " + cupomPromocionalDesc);
+		
+		List<CupomPromocional> lCupons = cupomPromocionalDAO.getByDescricao(cupomPromocionalDesc);
+		
+		if(lCupons.isEmpty() || lCupons == null)
+		{
+			ErroModelo er = new ErroModelo();
+			
+			er.setMsg("Cupom Inválido");
+			
+			error.addMessage(new MessageBuilder().error().source(
+				      "cupompromocional").defaultText("Cupom Inválido").build());
+			return "falha";
+		}
+		
+		CupomPromocional cp = lCupons.get(0);
+		checkoutModelo.setCupomPromocional(cp);
 
+		
+		double vlrRestante = 0.0;		
+		
+		
+		if(checkoutModelo.getCheckoutTotal() < cp.getValorCupom()) {
+			checkoutModelo.setCheckoutTotal(0.0);		
+			transitionValue = "totalZerado";
+			return transitionValue;
+			
+		}
+		else {
+			vlrRestante = checkoutModelo.getCheckoutTotal() - cp.getValorCupom();
+			checkoutModelo.setCheckoutTotal(vlrRestante);			
+			return transitionValue;
+		}
+			
+	}
 	public String salvarPedido(CheckoutModelo checkoutModelo) {
 		String transitionValue = "success";
 		BindingResult results;
@@ -218,9 +372,11 @@ public class CheckoutHandler {
 				
 		detalhePedido.setUsuario(checkoutModelo.getUsuario());
 		detalhePedido.setCartao(checkoutModelo.getCartao());
-				
+		detalhePedido.setCupomTroca(checkoutModelo.getCupomTroca());
+		detalhePedido.setCupomPromocional(checkoutModelo.getCupomPromocional());
 		detalhePedido.setEnderecoEntrega(checkoutModelo.getEndereco());
-		
+		detalhePedido.setValorFrete(checkoutModelo.getValorFrete());
+
 		Endereco cobranca = usuarioDAO.getEnderecoCobranca(checkoutModelo.getUsuario().getId());		
 		detalhePedido.setEnderecoCobranca(cobranca);
 			
@@ -248,41 +404,66 @@ public class CheckoutHandler {
 			vendaQtd++;			
 		}
 		
+		//caso valor cupom de troca maior que valor total venda, calcula diferenca e gera novo cupom
+		
+		if(detalhePedido.getCupomTroca().getValorCupom() > (vendaTotal + detalhePedido.getValorFrete())) {
+			Double vlrRestante = detalhePedido.getCupomTroca().getValorCupom() - (vendaTotal + detalhePedido.getValorFrete());
+			
+			//cria novo cupom de troca com valor da diferença
+			CupomTroca novoCupomTroca = new CupomTroca();
+			novoCupomTroca.setUsuario(checkoutModelo.getUsuario());
+			novoCupomTroca.setValorCupom(vlrRestante);
+			novoCupomTroca.setDescricao("CUPOM DIFERENCA - R$ " + String.valueOf(vlrRestante));
+			novoCupomTroca.setAtivo(true);			
+			cupomTrocaDAO.add(novoCupomTroca);
+			
+			//Inativa o cupom atual
+			cupomTrocaDAO.delete(detalhePedido.getCupomTroca());
+		}
+		else {
+			
+			cupomTrocaDAO.delete(detalhePedido.getCupomTroca());
+		}
+		
+		
 
-		detalhePedido.setTotalVenda(vendaTotal);
+		detalhePedido.setTotalVenda(checkoutModelo.getCheckoutTotal());
 		detalhePedido.setQtdVenda(vendaQtd);
 		
 		LocalDateTime ldt = LocalDateTime.now(ZoneId.of("America/Sao_Paulo")); 
 		String dataString = ldt.format(sdf);
 		detalhePedido.setDataVenda(dataString);	
 		
-		List<CartaoValidador> lCartaoValidador= cartaoDAO.validar(checkoutModelo.getCartao().getBandeira().getId(),
-				checkoutModelo.getCartao().getNomeCartao(),checkoutModelo.getCartao().getNumeroCartao(),
-				checkoutModelo.getCartao().getMesVencimento(),checkoutModelo.getCartao().getAnoVencimento(), 
-				checkoutModelo.getCartao().getCcv());
-		
-		if(lCartaoValidador.isEmpty()) {
-			StatusVenda sv = statusVendaDAO.get(2);
-			detalhePedido.setStatusVenda(sv);			
-			itemCarrinhoDAO.addVendaDetalhe(detalhePedido);
-			return "errorCartao";			
+		if(checkoutModelo.getCheckoutTotal() > 0)
+		{
+			List<CartaoValidador> lCartaoValidador= cartaoDAO.validar(checkoutModelo.getCartao().getBandeira().getId(),
+					checkoutModelo.getCartao().getNomeCartao(),checkoutModelo.getCartao().getNumeroCartao(),
+					checkoutModelo.getCartao().getMesVencimento(),checkoutModelo.getCartao().getAnoVencimento(), 
+					checkoutModelo.getCartao().getCcv());
+			
+			if(lCartaoValidador.isEmpty()) {
+				StatusVenda sv = statusVendaDAO.get(2);
+				detalhePedido.setStatusVenda(sv);			
+				itemCarrinhoDAO.addVendaDetalhe(detalhePedido);
+				return "errorCartao";			
+			}
+			
+			CartaoValidador cartaoValidador = lCartaoValidador.get(0);		
+			checkoutModelo.setCartaoValidador(cartaoValidador);
+					
+			
+			String ReturnErroCartao = new VendaValidador().validate(checkoutModelo);	
+			logger.info("Cartao validado");
+			
+			if(ReturnErroCartao == "error") {
+				StatusVenda sv = statusVendaDAO.get(2);
+				detalhePedido.setStatusVenda(sv);
+				
+				itemCarrinhoDAO.addVendaDetalhe(detalhePedido);
+				return "errorCartao";
+			}		
 		}
 		
-		CartaoValidador cartaoValidador = lCartaoValidador.get(0);		
-		checkoutModelo.setCartaoValidador(cartaoValidador);
-				
-		
-		String ReturnErroCartao = new VendaValidador().validate(checkoutModelo);	
-		logger.info("Cartao validado");
-		
-		if(ReturnErroCartao == "error") {
-			StatusVenda sv = statusVendaDAO.get(2);
-			detalhePedido.setStatusVenda(sv);
-			
-			itemCarrinhoDAO.addVendaDetalhe(detalhePedido);
-			return "errorCartao";
-		}		
-
 		for(ItemCarrinho itemCarrinho : itensCarrinho) {
 
 			livro = itemCarrinho.getLivro();
@@ -333,10 +514,7 @@ public class CheckoutHandler {
 	
 	public VendaDetalhe getVendaDetalhe(CheckoutModelo checkoutModelo) {
 		return checkoutModelo.getVendaDetalhe();
-	}
-	
-	
-	
+	}	
 }
 
 

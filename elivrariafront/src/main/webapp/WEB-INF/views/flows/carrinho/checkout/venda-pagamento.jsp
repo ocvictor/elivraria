@@ -22,15 +22,57 @@
 					<div>
 						<h3>${itemCarrinho.livro.titulo}</h3>
 						<hr/>
-						<h4>Quantidade - ${itemCarrinho.livroQtd}</h4>
+						<h5>Quantidade - ${itemCarrinho.livroQtd}</h4>
 						<h5>Preço - R$ ${itemCarrinho.precoCompra}</h5>							
 					</div>						
 					<hr/>
 					<div class="text-right">
-						<h3>Total - R$ ${itemCarrinho.total}</h3>
+						<h4>Total Item - R$ ${itemCarrinho.total}</h3>
+						<hr/>				
 					</div>						
 				</div>
+
 				</c:forEach>
+				<div class="text-right">
+					<div>
+						<c:if test="${not empty cuponsTroca}" >
+							<h4>Selecionar Cupom Troca</h4>
+							<c:forEach items="${cuponsTroca}" var="cupom">					
+								<div class="cols-xs-12">
+									<h6>Cupom: ${cupom.descricao}</h6>
+									<h6>Valor: ${cupom.valorCupom}</h6>
+									<c:if test="${empty checkoutModelo.cupomTroca.id}" >
+										<a href="${flowExecutionUrl}&_eventId_selecaoCupomTroca&cupomTrocaId=${cupom.id}" class="btn btn-primary">Adicionar</a>
+									</c:if>
+									<hr/>						
+									<br>
+								</div>
+							</c:forEach>
+						</c:if>
+						<div class="text-right">
+							<h4>Cupom Promocional</h4>
+							<div class="col-md-12">					
+								<input type ="text" id="cupompromocional">
+								<br>
+								<br>
+								<c:if test="${empty checkoutModelo.cupomPromocional.id}">
+									<a href="javascript:;" onclick="this.href='${flowExecutionUrl}&_eventId_selecaoCupomPromocional&cupomPromocionalId='+ document.getElementById('cupompromocional').value" class="btn btn-primary">Adicionar</a>
+								</c:if>
+						 		<hr/>
+						 	</div>
+						 </div>
+					 	<h3>Frete - R$ ${checkoutModelo.valorFrete}</h3>
+					 	<c:if test="${not empty checkoutModelo.cupomTroca.valorCupom }">
+					 		<h3>Cupom Troca - R$ -${checkoutModelo.cupomTroca.valorCupom}</h3>
+						</c:if>
+						<c:if test="${not empty checkoutModelo.cupomPromocional.valorCupom}">
+					 		<h3>Cupom Promocional - R$ -${checkoutModelo.cupomPromocional.valorCupom}</h3>
+						</c:if>
+						<hr/>			
+						<h2> Total Pedido - R$ ${checkoutModelo.checkoutTotal}</h2>				
+					</div>				
+				</div>
+				
 			</div>			
 		</div>
 			

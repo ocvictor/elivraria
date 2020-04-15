@@ -7,6 +7,8 @@ import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.CartaoValidador;
+import br.com.elivrariaback.dto.CupomPromocional;
+import br.com.elivrariaback.dto.CupomTroca;
 import br.com.elivrariaback.dto.ItemCarrinho;
 import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariaback.dto.Usuario;
@@ -17,7 +19,8 @@ public class CheckoutModelo implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	private Double valorFrete;
 	private Usuario usuario;
 	private Endereco endereco;
 	private Carrinho carrinho;
@@ -26,6 +29,9 @@ public class CheckoutModelo implements Serializable {
 	private List<ItemCarrinho> itemCarrinho;
 	private VendaDetalhe vendaDetalhe;
 	private double checkoutTotal;
+	private CupomTroca cupomTroca;
+	private CupomPromocional cupomPromocional;
+	
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -73,6 +79,25 @@ public class CheckoutModelo implements Serializable {
 	}
 	public void setCartaoValidador(CartaoValidador cartaoValidador) {
 		this.cartaoValidador = cartaoValidador;
-	}	
+	}
+	public Double getValorFrete() {
+		return valorFrete;
+	}
+	public void setValorFrete(Double valorFrete) {
+		this.valorFrete = valorFrete;
+	}
+	public CupomTroca getCupomTroca() {
+		return cupomTroca;
+	}
+	public void setCupomTroca(CupomTroca cupomTroca) {
+		this.cupomTroca = cupomTroca;
+	}
+	public CupomPromocional getCupomPromocional() {
+		return cupomPromocional;
+	}
+	public void setCupomPromocional(CupomPromocional cupomPromocional) {
+		this.cupomPromocional = cupomPromocional;
+	}
+	
 	
 }
