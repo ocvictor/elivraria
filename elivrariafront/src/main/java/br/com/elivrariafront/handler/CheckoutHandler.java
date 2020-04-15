@@ -303,7 +303,6 @@ public class CheckoutHandler {
 		double vlrRestante = 0.0;
 		
 		CupomTroca cupomTroca = cupomTrocaDAO.get(cupomTrocaId);
-		logger.info("até aqui chegou");
 		checkoutModelo.setCupomTroca(cupomTroca);
 		
 		
@@ -406,25 +405,26 @@ public class CheckoutHandler {
 		
 		//caso valor cupom de troca maior que valor total venda, calcula diferenca e gera novo cupom
 		
-		if(detalhePedido.getCupomTroca().getValorCupom() > (vendaTotal + detalhePedido.getValorFrete())) {
-			Double vlrRestante = detalhePedido.getCupomTroca().getValorCupom() - (vendaTotal + detalhePedido.getValorFrete());
-			
-			//cria novo cupom de troca com valor da diferença
-			CupomTroca novoCupomTroca = new CupomTroca();
-			novoCupomTroca.setUsuario(checkoutModelo.getUsuario());
-			novoCupomTroca.setValorCupom(vlrRestante);
-			novoCupomTroca.setDescricao("CUPOM DIFERENCA - R$ " + String.valueOf(vlrRestante));
-			novoCupomTroca.setAtivo(true);			
-			cupomTrocaDAO.add(novoCupomTroca);
-			
-			//Inativa o cupom atual
-			cupomTrocaDAO.delete(detalhePedido.getCupomTroca());
+		if(detalhePedido.getCupomTroca() != null) {
+			if(detalhePedido.getCupomTroca().getValorCupom() > (vendaTotal + detalhePedido.getValorFrete())) {
+				Double vlrRestante = detalhePedido.getCupomTroca().getValorCupom() - (vendaTotal + detalhePedido.getValorFrete());
+				
+				//cria novo cupom de troca com valor da diferença
+				CupomTroca novoCupomTroca = new CupomTroca();
+				novoCupomTroca.setUsuario(checkoutModelo.getUsuario());
+				novoCupomTroca.setValorCupom(vlrRestante);
+				novoCupomTroca.setDescricao("CUPOM DIFERENCA - R$ " + String.valueOf(vlrRestante));
+				novoCupomTroca.setAtivo(true);			
+				cupomTrocaDAO.add(novoCupomTroca);
+				
+				//Inativa o cupom atual
+				cupomTrocaDAO.delete(detalhePedido.getCupomTroca());
+			}
+			else {
+				
+				cupomTrocaDAO.delete(detalhePedido.getCupomTroca());
+			}
 		}
-		else {
-			
-			cupomTrocaDAO.delete(detalhePedido.getCupomTroca());
-		}
-		
 		
 
 		detalhePedido.setTotalVenda(checkoutModelo.getCheckoutTotal());

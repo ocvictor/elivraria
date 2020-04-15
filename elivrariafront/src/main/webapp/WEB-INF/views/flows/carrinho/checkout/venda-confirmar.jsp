@@ -106,10 +106,14 @@
 		    					<c:if test="${vendaDetalhe.totalVenda > 0}">	
 									Cartão de Crédito<br>
 									${vendaDetalhe.cartao.bandeira.descricao}<br>
-		    						${vendaDetalhe.cartao.numeroCartao}
+		    						${vendaDetalhe.cartao.numeroCartao}<br>
+		    						Cupons Utilizados
+									${vendaDetalhe.cupomTroca.descricao} <br>
+									${vendaDetalhe.cupomPromocional.descricao} <br>
+									
 								</c:if>
 		    					<c:if test="${vendaDetalhe.totalVenda == 0.0}">	
-									Cupom
+									Pagamento com Cupom
 									${vendaDetalhe.cupomTroca.descricao} 
 									${vendaDetalhe.cupomPromocional.descricao} 
 								</c:if>
