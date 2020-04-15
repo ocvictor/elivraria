@@ -439,7 +439,7 @@ public class GerenciamentoController {
 	}
 	
 	@RequestMapping(value="/vendas/{id}/avancar")
-	public ModelAndView gerenciarVendasAvancarStatus(@PathVariable int id) {
+	public String gerenciarVendasAvancarStatus(@PathVariable int id) {
 		logger.info("Chamando controller do avancar");
 
 		ModelAndView mv = new ModelAndView("page");
@@ -448,9 +448,21 @@ public class GerenciamentoController {
 		
 		//Pega a venda pelo ID
 		VendaDetalhe vd = vendaDetalheDAO.get(id);
+		StatusVenda sv = new StatusVenda();
 		
 		//Atualiza para o próximo status da venda
-		StatusVenda sv = statusVendaDAO.get(vd.getStatusVenda().getId() + 1);
+		
+		logger.info("status venda: " + vd.getStatusVenda().getDescricao());
+		
+		if (vd.getStatusVenda().getId() ==  1)
+		{
+			 sv = statusVendaDAO.get(vd.getStatusVenda().getId() + 2);
+		} 
+		if (vd.getStatusVenda().getId() == 3) {
+			 sv = statusVendaDAO.get(vd.getStatusVenda().getId() + 1);
+		}
+		
+		
 		
 		//Seta o status no model VendaDetalhe
 		vd.setStatusVenda(sv);
@@ -458,7 +470,7 @@ public class GerenciamentoController {
 		vendaDetalheDAO.update(vd);	
 		
 		
-		return mv;
+		return "redirect:/gerenciar/vendas";
 	}
 	
 }

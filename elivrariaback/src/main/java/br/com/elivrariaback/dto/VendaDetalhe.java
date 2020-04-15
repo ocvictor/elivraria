@@ -64,15 +64,27 @@ public class VendaDetalhe implements Serializable {
 	@Column(name="venda_data")
 	private String dataVenda;
 	
+	@Column(name="valor_frete")
+	private double valorFrete;
+	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "cartao_id")
 	private Cartao cartao;
 	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="cupom_troca_id")
+	private CupomTroca cupomTroca;
 	
 	@ManyToOne
 	@JoinColumn(name="status_venda_id")
 	private StatusVenda statusVenda;
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="cupom_promocional_id")
+	private CupomPromocional cupomPromocional;
 	
 	public int getId() {
 		return id;
@@ -152,6 +164,30 @@ public class VendaDetalhe implements Serializable {
 
 	public void setStatusVenda(StatusVenda statusVenda) {
 		this.statusVenda = statusVenda;
+	}
+
+	public double getValorFrete() {
+		return valorFrete;
+	}
+
+	public void setValorFrete(double valorFrete) {
+		this.valorFrete = valorFrete;
+	}
+
+	public CupomTroca getCupomTroca() {
+		return cupomTroca;
+	}
+
+	public void setCupomTroca(CupomTroca cupomTroca) {
+		this.cupomTroca = cupomTroca;
+	}
+
+	public CupomPromocional getCupomPromocional() {
+		return cupomPromocional;
+	}
+
+	public void setCupomPromocional(CupomPromocional cupomPromocional) {
+		this.cupomPromocional = cupomPromocional;
 	}
 	
 	
