@@ -13,6 +13,12 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import br.com.elivrariaback.util.CartaoSerializer;
+
+
+import br.com.elivrariaback.util.VendaDetalheSerializer;
+@JsonSerialize(using = CartaoSerializer.class)
 @Entity
 public class Cartao implements Serializable {
 	

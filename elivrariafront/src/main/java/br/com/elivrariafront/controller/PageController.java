@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +21,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import br.com.elivrariafront.model.UsuarioModelo;
 
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariafront.exception.LivroNotFoundException;
 
 @Controller
@@ -43,7 +48,15 @@ public class PageController {
 	
 	@Autowired
 	private LivroDAO livroDAO;
+	
+	@Autowired
 	private EstoqueDAO estoqueDAO;
+	
+	@Autowired
+	private UsuarioDAO usuarioDAO;
+	
+	@Autowired
+	private HttpSession session;
 	
 	@RequestMapping(value = {"/", "/home", "/index"})
 	public ModelAndView index(@RequestParam(name="logout",required=false)String logout) {		
@@ -197,5 +210,17 @@ public class PageController {
 	@ModelAttribute("bandeira")
 	public Bandeira modelBandeira() {
 		return new Bandeira();
+	}
+	
+	@RequestMapping(value = "/meuPerfil")
+	public ModelAndView meuPerfil() {
+		Usuario usuario = usuarioDAO.get(((UsuarioModelo)session.getAttribute("usuarioModelo")).getId());
+		ModelAndView mv = new ModelAndView("page");		
+		mv.addObject("titulo","Meu Perfil");
+		mv.addObject("ClickMeuPerfil",true);
+		mv.addObject("usuario", usuario);
+		
+	    
+		return mv;				
 	}
 }

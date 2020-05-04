@@ -1,6 +1,5 @@
 <div class="container">
 
-	<!-- Breadcrumb -->
 	<div class="row">
 		
 		<div class="col-xs-12">
@@ -23,7 +22,6 @@
 	
 	<div class="row">
 	
-		<!-- Display the product image -->
 		<div class="col-xs-12 col-sm-4">
 		
 			<div class="thumbnail">
@@ -35,7 +33,6 @@
 		</div>
 	
 		
-		<!-- Display the product description -->	
 		<div class="col-xs-12 col-sm-8">
 		
 			<h3>${livro.titulo}</h3>

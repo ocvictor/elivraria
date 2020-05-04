@@ -25,6 +25,7 @@ public interface UsuarioDAO {
 	List<Cartao> listCartao(int usuarioId);
 	List<Endereco> listEnderecoEntrega(int usuarioId);
 	List<Usuario> listUsuarios();
+	List<Endereco> listEnderecos (int usuarioId);
 	
 
 	

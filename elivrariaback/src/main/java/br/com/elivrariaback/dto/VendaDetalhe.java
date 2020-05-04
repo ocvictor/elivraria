@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import br.com.elivrariaback.util.VendaDetalheSerializer;
+
 @JsonSerialize(using = VendaDetalheSerializer.class)
 @Component
 @Entity
