@@ -1,18 +1,15 @@
 $(function() {
 	
-	// for adding a loader
 	$(window).load(function(){
 		setTimeout(function() {
 			$(".se-pre-con").fadeOut("slow");
 		}, 500);			
 	});	
 	
-	// for handling CSRF token
 	var token = $('meta[name="_csrf"]').attr('content');
 	var header = $('meta[name="_csrf_header"]').attr('content');
 	
 	if((token!=undefined && header !=undefined) && (token.length > 0 && header.length > 0)) {		
-		// set the token header for the ajax request
 		$(document).ajaxSend(function(e, xhr, options) {			
 			xhr.setRequestHeader(header,token);			
 		});				
@@ -20,7 +17,6 @@ $(function() {
 	
 	
 	
-	// solving the active menu problem
 	switch (menu) {
 
 	case 'Sobre':
@@ -58,12 +54,9 @@ $(function() {
 		break;
 	}
 
-	// code for jquery dataTable
 	var $table = $('#LivroListaTabela');
 
-	// execute the below code only where we have this table
 	if ($table.length) {
-		// console.log('Inside the table!');
 
 		var jsonUrl = '';
 		if (window.categoriaId == '') {
@@ -835,30 +828,306 @@ $(function() {
 	}
 	
 	
-	
-	
-	// jQuery Validation Code
+	var $table = $('#pedidosCliente');
 
-	//methods required for validation
+	if ($table.length) {
+
+		var jsonUrl = '';
+		if (window.usuarioId == '') {
+			
+		} else {
+			jsonUrl = window.contextRoot + '/json/data/meuperfil/'
+					+ window.usuarioId + '/pedidos';
+		}
+
+		$table
+				.DataTable({
+					
+					"language": {
+						
+						    "sEmptyTable": "Nenhum registro encontrado",
+						    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+						    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+						    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+						    "sInfoPostFix": "",
+						    "sInfoThousands": ".",
+						    "sLengthMenu": "_MENU_ resultados por pagina",
+						    "sLoadingRecords": "Carregando...",
+						    "sProcessing": "Processando...",
+						    "sZeroRecords": "Nenhum registro encontrado",
+						    "sSearch": "Pesquisar",
+						    "oPaginate": {
+						        "sNext": "Proximo",
+						        "sPrevious": "Anterior",
+						        "sFirst": "Primeiro",
+						        "sLast": "Ultimo"
+						    },
+						    "oAria": {
+						        "sSortAscending": ": Ordenar colunas de forma ascendente",
+						        "sSortDescending": ": Ordenar colunas de forma descendente"
+						    },
+						    "select": {
+						        "rows": {
+						            "_": "Selecionado %d linhas",
+						            "0": "Nenhuma linha selecionada",
+						            "1": "Selecionado 1 linha"
+						        }
+						    }
+						
+			        },
+				
+					lengthMenu : [ [ 3, 5, 10, -1 ],
+							[ '3 ', '5 ', '10 ', 'Todos' ] ],
+					pageLength : 5,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [
+							{
+								data : 'dataVenda'
+							},
+							{
+								data : 'id'
+							},
+							{
+								data : 'qtdVenda'
+							},
+							{
+								data : 'totalVenda'
+							},
+							{
+								data : 'statusDescricao'
+							},
+							{
+								data : 'id',
+								bSortable : false,
+								mRender : function(data, type, row) {
+
+									var str = '';
+									str += '<a href="'
+											+ window.contextRoot
+											+ '/mostrar/'
+											+ data
+											+ '/pedido" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
+									
+									return str;
+
+								}
+
+							} ]
+				});
+	}
+	
+	var $table = $('#enderecosCliente');
+
+	if ($table.length) {
+
+		var jsonUrl = '';
+		if (window.usuarioId == '') {
+			
+		} else {
+			jsonUrl = window.contextRoot + '/json/data/meuperfil/'
+					+ window.usuarioId + '/enderecos';
+		}
+
+		$table
+				.DataTable({
+					
+					"order" : [[1, "desc"]],
+					
+					"language": {
+						
+						    "sEmptyTable": "Nenhum registro encontrado",
+						    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+						    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+						    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+						    "sInfoPostFix": "",
+						    "sInfoThousands": ".",
+						    "sLengthMenu": "_MENU_ resultados por pagina",
+						    "sLoadingRecords": "Carregando...",
+						    "sProcessing": "Processando...",
+						    "sZeroRecords": "Nenhum registro encontrado",
+						    "sSearch": "Pesquisar",
+						    "oPaginate": {
+						        "sNext": "Proximo",
+						        "sPrevious": "Anterior",
+						        "sFirst": "Primeiro",
+						        "sLast": "Ultimo"
+						    },
+						    "oAria": {
+						        "sSortAscending": ": Ordenar colunas de forma ascendente",
+						        "sSortDescending": ": Ordenar colunas de forma descendente"
+						    },
+						    "select": {
+						        "rows": {
+						            "_": "Selecionado %d linhas",
+						            "0": "Nenhuma linha selecionada",
+						            "1": "Selecionado 1 linha"
+						        }
+						    }
+						
+			        },
+				
+					lengthMenu : [ [ 3, 5, 10, -1 ],
+							[ '3 ', '5 ', '10 ', 'Todos' ] ],
+					pageLength : 5,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [
+							{
+								data : 'tipoResidencia'
+							},
+							{
+								data : 'logradouro'
+							},
+							
+							{
+								data : 'numero'
+							},
+							
+							{
+								data : 'cep'
+							},
+							{
+								data : 'bairro'
+							},
+							{
+								data : 'cidade'
+							},
+							{
+								data : 'estado'
+							},
+							{
+								data : 'pais'
+							},
+							{
+								data : 'id',
+								bSortable : false,
+								mRender : function(data, type, row) {
+
+									var str = '';
+									str += '<a href="'
+											+ window.contextRoot
+											+ '/editar/'
+											+ data
+											+ '/endereco" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
+									
+									return str;
+
+								}
+
+							} ]
+				});
+	}
+	
+	var $table = $('#cartoesCliente');
+
+	if ($table.length) {
+
+		var jsonUrl = '';
+		if (window.usuarioId == '') {
+			
+		} else {
+			jsonUrl = window.contextRoot + '/json/data/meuperfil/'
+					+ window.usuarioId + '/cartoes';
+		}
+
+		$table
+				.DataTable({
+					
+					"language": {
+						
+						    "sEmptyTable": "Nenhum registro encontrado",
+						    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+						    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+						    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+						    "sInfoPostFix": "",
+						    "sInfoThousands": ".",
+						    "sLengthMenu": "_MENU_ resultados por pagina",
+						    "sLoadingRecords": "Carregando...",
+						    "sProcessing": "Processando...",
+						    "sZeroRecords": "Nenhum registro encontrado",
+						    "sSearch": "Pesquisar",
+						    "oPaginate": {
+						        "sNext": "Proximo",
+						        "sPrevious": "Anterior",
+						        "sFirst": "Primeiro",
+						        "sLast": "Ultimo"
+						    },
+						    "oAria": {
+						        "sSortAscending": ": Ordenar colunas de forma ascendente",
+						        "sSortDescending": ": Ordenar colunas de forma descendente"
+						    },
+						    "select": {
+						        "rows": {
+						            "_": "Selecionado %d linhas",
+						            "0": "Nenhuma linha selecionada",
+						            "1": "Selecionado 1 linha"
+						        }
+						    }
+						
+			        },
+				
+					lengthMenu : [ [ 3, 5, 10, -1 ],
+							[ '3 ', '5 ', '10 ', 'Todos' ] ],
+					pageLength : 5,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [
+							{
+								data : 'bandeiraDescricao'
+							},
+							{
+								data : 'numeroCartao'
+							},
+							
+							{
+								data : 'nomeCartao'
+							},
+							
+							{
+								data : 'mesVencimento'
+							},
+							{
+								data : 'anoVencimento'
+							},
+							{
+								data : 'id',
+								bSortable : false,
+								mRender : function(data, type, row) {
+
+									var str = '';
+									str += '<a href="'
+											+ window.contextRoot
+											+ '/editar/'
+											+ data
+											+ '/cartao" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
+									
+									return str;
+
+								}
+
+							} ]
+				});
+	}
 	
 	function errorPlacement(error, element) {
-		// Add the 'help-block' class to the error element
 		error.addClass("help-block");
 		
-		// add the error label after the input element
 		error.insertAfter(element);
 		
 		
-		// add the has-feedback class to the
-		// parent div.validate in order to add icons to inputs
 		element.parents(".validate").addClass("has-feedback");	
 
 	}	
 	
 	
 	
-	// validating the product form element	
-	// fetch the form element
 	$categoriaForm = $('#categoria');
 	
 	if($categoriaForm.length) {
@@ -876,12 +1145,12 @@ $(function() {
 				},
 				messages: {					
 					nome: {
-						required: 'Please enter product name!',
-						minlength: 'Please enter atleast five characters'
+						required: 'Insira o Livro!',
+						minlength: 'Minimo de 5 caracteres'
 					},
 					descricao: {
-						required: 'Please enter product name!',
-						minlength: 'Please enter atleast five characters'
+						required: 'Insira o Livro!',
+						minlength: 'Minimo de 5 caracteres'
 					}					
 				},
 				errorElement : "em",
@@ -920,10 +1189,8 @@ $(function() {
 				},
 				errorElement : "em",
 				errorPlacement : function(error, element) {
-					// Add the 'help-block' class to the error element
 					error.addClass("help-block");
 					
-					// add the error label after the input element
 					error.insertAfter(element);
 				}				
 			}
@@ -934,8 +1201,7 @@ $(function() {
 		
 	
 	
-	/*------*/
-	/* for fading out the alert message after 3 seconds */
+
 	$alert = $('.alert');
 	if($alert.length) {
 		setTimeout(function() {
@@ -944,17 +1210,13 @@ $(function() {
 		);		
 	}
 		
-	/*------*/
-	/* handle refresh cart*/	
+	
 	$('button[name="refreshCart"]').click(function(){
 		var itemCarrinhoId = $(this).attr('value');
 		var quantidade = $('#count_' + itemCarrinhoId);
 		var originalCount = quantidade.attr('value');
-		// do the checking only the count has changed
 		if(quantidade.val() !== originalCount) {	
-			// check if the quantity is within the specified range
 			if(quantidade.val() < 1 || quantidade.val() > 3) {
-				// set the field back to the original field
 				quantidade.val(originalCount);
 				bootbox.alert({
 					size: 'medium',
@@ -963,7 +1225,6 @@ $(function() {
 				});
 			}
 			else {
-				// use the window.location.href property to send the request to the server
 				var updateUrl = window.contextRoot + '/carrinho/' + itemCarrinhoId + '/atualizar?count=' + quantidade.val();
 				window.location.href = updateUrl;
 			}

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dto.Livro;
 
-public class ProductTestCase {
+public class LivroTest {
 
 	private static AnnotationConfigApplicationContext context;
 	
@@ -17,7 +17,7 @@ public class ProductTestCase {
 	private static LivroDAO livroDAO;
 	
 	
-	private Livro product;
+	private Livro livro;
 	
 	
 	@BeforeClass
@@ -46,7 +46,7 @@ public class ProductTestCase {
 	
 	@Test
 	public void testeGetUltimosAtivosLivros() {
-		assertEquals("Something went wrong while fetching the list of products!",
+		assertEquals("Erro ao listar os livros na vitrine!",
 				3,livroDAO.getUltimosAtivosLivros(3).size());
 		
 	} 

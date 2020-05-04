@@ -1,6 +1,15 @@
-<div class="container">
+<!-- DataTable Bootstrap Script -->
+<script src="${js}/angular.js"></script>
 
+<!-- DataTable Bootstrap Script -->
+<script src="${js}/livroController.js"></script>
 
+<div class="container" ng-app="elivraria">
+
+	<script>
+		window.usuarioId = '${usuario.id}';
+	</script>
+	
 	<c:if test="${not empty message}">
 		
 		<div class="alert alert-info">
@@ -9,40 +18,54 @@
 	
 	</c:if>
 	
+	<h2>Bem vindo,  ${usuario.nome}  </h2>
+	<hr/>
+	
 	<div class="row">
     	<div class="col-md-12">
     		<div class="panel panel-default">
     			<div class="panel-heading">
     				<h3 class="panel-title"><strong>Meus Pedidos</strong></h3>
+    				
     			</div>
-    			<div class="panel-body">
-    				<div class="table-responsive">
-    					<table class="table table-condensed">
-    						<thead>
-                                <tr>
-        							<td><strong>Item</strong></td>
-        							<td class="text-center"><strong>Preço</strong></td>
-        							<td class="text-center"><strong>Quantidade</strong></td>
-        							<td class="text-right"><strong>Total</strong></td>
-                                </tr>
-    						</thead>
-    						<tbody>
-    							<!-- foreach ($order->lineItems as $line) or some such thing here -->
-    							<c:forEach items="${vendaDetalhe.itemVenda}" var="itemVenda">
-	    							<tr>
-	    								<td>${itemVenda.livro.titulo}</td>
-	    								<td class="text-center">R$ ${itemVenda.compraPreco}</td>
-	    								<td class="text-center">${itemVenda.qtdLivro}</td>
-	    								<td class="text-right">R$ ${itemVenda.total}</td>
-	    							</tr>
-    							</c:forEach>
-    						</tbody>
-    					</table>
-    				</div>
-    			</div>
+    		
+    			<div class='col-xs-12'>
+				
+					<br>
+					<table id="pedidosCliente" class="table table-condensed table-bordered">
+									
+						<thead>					
+							<tr>					
+								<th>Data</th>
+								<th>Nº Pedido</th>
+								<th>Qtd Itens</th>
+								<th>Valor Total</th>
+								<th>Status</th>
+								<th>Visualizar</th>
+							</tr>					
+						</thead>
+						
+						<tfoot>
+							<tr>					
+								<th>Data</th>
+								<th>Nº Pedido</th>
+								<th>Qtd Itens</th>
+								<th>Valor Total</th>
+								<th>Status</th>
+								<th>Visualizar</th>
+							</tr>									
+						</tfoot>
+						
+									
+					</table>
+				
+				
+				</div>
     		</div>
     	</div>
     </div>
+    
+    <hr/>
     
     <div class="row">
     	<div class="col-md-12">
@@ -50,34 +73,50 @@
     			<div class="panel-heading">
     				<h3 class="panel-title"><strong>Meus Endereços</strong></h3>
     			</div>
-    			<div class="panel-body">
-    				<div class="table-responsive">
-    					<table class="table table-condensed">
-    						<thead>
-                                <tr>
-        							<td><strong>Item</strong></td>
-        							<td class="text-center"><strong>Preço</strong></td>
-        							<td class="text-center"><strong>Quantidade</strong></td>
-        							<td class="text-right"><strong>Total</strong></td>
-                                </tr>
-    						</thead>
-    						<tbody>
-    							<!-- foreach ($order->lineItems as $line) or some such thing here -->
-    							<c:forEach items="${vendaDetalhe.itemVenda}" var="itemVenda">
-	    							<tr>
-	    								<td>${itemVenda.livro.titulo}</td>
-	    								<td class="text-center">R$ ${itemVenda.compraPreco}</td>
-	    								<td class="text-center">${itemVenda.qtdLivro}</td>
-	    								<td class="text-right">R$ ${itemVenda.total}</td>
-	    							</tr>
-    							</c:forEach>
-    						</tbody>
-    					</table>
-    				</div>
-    			</div>
+    			<div class='col-xs-12'>
+				
+									<br>
+				
+					<table id="enderecosCliente" class="table table-condensed table-bordered">
+									
+						<thead>					
+							<tr>					
+								<th>Tipo</th>
+								<th>Logradouro</th>
+								<th>Numero</th>
+								<th>CEP</th>
+								<th>Bairro</th>
+								<th>Cidade</th>
+								<th>Estado</th>
+								<th>País</th>
+								<th>Editar</th>
+							</tr>					
+						</thead>
+						
+						<tfoot>
+							<tr>					
+								<th>Tipo</th>
+								<th>Logradouro</th>
+								<th>Numero</th>
+								<th>CEP</th>
+								<th>Bairro</th>
+								<th>Cidade</th>
+								<th>Estado</th>
+								<th>País</th>
+								<th>Editar</th>
+							</tr>									
+						</tfoot>
+						
+									
+					</table>
+				
+				
+				</div>
     		</div>
     	</div>
     </div>
+    
+    <hr/>
     
     <div class="row">
     	<div class="col-md-12">
@@ -85,31 +124,39 @@
     			<div class="panel-heading">
     				<h3 class="panel-title"><strong>Meus Cartões</strong></h3>
     			</div>
-    			<div class="panel-body">
-    				<div class="table-responsive">
-    					<table class="table table-condensed">
-    						<thead>
-                                <tr>
-        							<td><strong>Item</strong></td>
-        							<td class="text-center"><strong>Preço</strong></td>
-        							<td class="text-center"><strong>Quantidade</strong></td>
-        							<td class="text-right"><strong>Total</strong></td>
-                                </tr>
-    						</thead>
-    						<tbody>
-    							<!-- foreach ($order->lineItems as $line) or some such thing here -->
-    							<c:forEach items="${vendaDetalhe.itemVenda}" var="itemVenda">
-	    							<tr>
-	    								<td>${itemVenda.livro.titulo}</td>
-	    								<td class="text-center">R$ ${itemVenda.compraPreco}</td>
-	    								<td class="text-center">${itemVenda.qtdLivro}</td>
-	    								<td class="text-right">R$ ${itemVenda.total}</td>
-	    							</tr>
-    							</c:forEach>
-    						</tbody>
-    					</table>
-    				</div>
-    			</div>
+    			<div class='col-xs-12'>
+				
+									<br>
+				
+					<table id="cartoesCliente" class="table table-condensed table-bordered">
+									
+						<thead>					
+							<tr>					
+								<th>Bandeira</th>
+								<th>Numero</th>
+								<th>Nome</th>
+								<th>Mes Venc</th>
+								<th>Ano Venc</th>
+								<th>Editar</th>
+							</tr>					
+						</thead>
+						
+						<tfoot>
+							<tr>					
+								<th>Bandeira</th>
+								<th>Numero</th>
+								<th>Nome</th>
+								<th>Mes Venc</th>
+								<th>Ano Venc</th>
+								<th>Editar</th>
+							</tr>									
+						</tfoot>
+						
+									
+					</table>
+				
+				
+				</div>
     		</div>
     	</div>
     </div>

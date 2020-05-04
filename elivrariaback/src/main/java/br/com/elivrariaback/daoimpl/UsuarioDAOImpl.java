@@ -102,6 +102,17 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 							.getResultList();
 		
 	}
+	
+	@Override
+	public List<Endereco> listEnderecos(int usuarioId) {
+		String selectQuery = "FROM Endereco WHERE usuarioId = :usuarioId ORDER BY id DESC";
+		return sessionFactory
+				.getCurrentSession()
+					.createQuery(selectQuery,Endereco.class)
+						.setParameter("usuarioId", usuarioId)
+							.getResultList();
+		
+	}
 
 	@Override
 	public List<Endereco> listEnderecoEntrega(int usuarioId) {

@@ -14,6 +14,8 @@ import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
+import br.com.elivrariaback.dto.Cartao;
+import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.Usuario;
@@ -104,5 +106,23 @@ public class JsonDataController {
 	@ResponseBody
 	public List<VendaDetalhe> getVendasTransporte() {
 		return vendaDetalheDAO.getVendasTransporte();				
+	}
+	
+	@RequestMapping("/meuperfil/{id}/pedidos")
+	@ResponseBody
+	public List<VendaDetalhe> getPedidosCliente(@PathVariable int id) {
+		return vendaDetalheDAO.listByUsuario(id);
+	}
+	
+	@RequestMapping("/meuperfil/{id}/enderecos")
+	@ResponseBody
+	public List<Endereco> getEnderecoCliente(@PathVariable int id) {
+		return usuarioDAO.listEnderecos(id);
+	}
+	
+	@RequestMapping("/meuperfil/{id}/cartoes")
+	@ResponseBody
+	public List<Cartao> getCartoesCliente(@PathVariable int id) {
+		return usuarioDAO.listCartao(id);
 	}
 }

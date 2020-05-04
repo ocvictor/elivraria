@@ -44,12 +44,6 @@
 <!-- Custom CSS -->
 <link href="${css}/myapp.css" rel="stylesheet">
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
 </head>
 
@@ -58,10 +52,8 @@
 	<div class="se-pre-con"></div>
 	<div class="wrapper">
 
-		<!-- Navigation -->
 		<%@include file="./shared/navbar.jsp"%>
 
-		<!-- Page Content -->
 
 		<div class="content">
 			
@@ -102,6 +94,10 @@
 				<%@include file="gerenciarLivro.jsp"%>
 			</c:if>
 
+			<c:if test="${ClickMeuPerfil == true}">
+				<%@include file="meuPerfil.jsp"%>
+			</c:if>
+			
 			<c:if test="${ClickMostrarCarrinho == true}">
 				<%@include file="carrinho.jsp"%>
 			</c:if>	
@@ -109,7 +105,6 @@
 		</div>
 
 
-		<!-- Footer comes here -->
 		<%@include file="./shared/footer.jsp"%>
 
 		<!-- jQuery -->
