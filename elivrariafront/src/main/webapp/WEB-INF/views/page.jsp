@@ -93,13 +93,27 @@
 			<c:if test="${ClickGerenciarLivro == true}">
 				<%@include file="gerenciarLivro.jsp"%>
 			</c:if>
+			
+			<c:if test="${ClickGerenciarTrocasCancelamentos == true}">
+				<%@include file="gerenciarTrocasCancelamentos.jsp"%>
+			</c:if>
 
 			<c:if test="${ClickMeuPerfil == true}">
 				<%@include file="meuPerfil.jsp"%>
 			</c:if>
 			
+			<c:if test="${ClickMostrarPedido == true}">
+				<%@include file="PedidoUnico.jsp"%>
+			</c:if>
+			
 			<c:if test="${ClickMostrarCarrinho == true}">
 				<%@include file="carrinho.jsp"%>
+			</c:if>
+			<c:if test="${ClickSolicitarTroca == true}">
+				<%@include file="solicitarTroca.jsp"%>
+			</c:if>
+			<c:if test="${ClickAnalisarTroca == true}">
+				<%@include file="analisarTroca.jsp"%>
 			</c:if>	
 
 		</div>

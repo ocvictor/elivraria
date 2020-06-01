@@ -1,4 +1,4 @@
-package br.com.elivrariaback.dto;
+package br.com.elivrariafront.model;
 
 import java.io.Serializable;
 
@@ -7,21 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import br.com.elivrariaback.util.TrocaSerializer;
-
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-@JsonSerialize(using = TrocaSerializer.class)
 @Entity
 @Table(name = "troca")
-public class Troca implements Serializable {
+public class TrocaModelo implements Serializable {
 
 	/**
 	 * 
@@ -38,13 +32,14 @@ public class Troca implements Serializable {
 	@Column(name = "livro_id")
 	private int livroId;
 	
-	@OneToOne
-	@JoinColumn(name = "venda_detalhe_id")
-	private VendaDetalhe vendaDetalhe;
+	@Column(name = "venda_item_id")
+	private int itemVendaId;
 	
-	@OneToOne
-	@JoinColumn(name = "venda_item_id")
-	private ItemVenda itemVenda;
+	@Column(name = "venda_detalhe_id")
+	private int vendaDetalheId;
+	
+	@Column(name = "usuario_id")
+	private int usuarioId;
 	
 	@Column(name = "status_troca_id")
 	private int statusTrocaId;
@@ -75,12 +70,21 @@ public class Troca implements Serializable {
 
 
 
-	public ItemVenda getItemVenda() {
-		return itemVenda;
+
+	public int getItemVendaId() {
+		return itemVendaId;
 	}
 
-	public void setItemVenda(ItemVenda itemVenda) {
-		this.itemVenda = itemVenda;
+	public void setItemVendaId(int itemVendaId) {
+		this.itemVendaId = itemVendaId;
+	}
+
+	public int getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(int usuarioId) {
+		this.usuarioId = usuarioId;
 	}
 
 	public int getStatusTrocaId() {
@@ -113,16 +117,14 @@ public class Troca implements Serializable {
 
 	public void setDataSolicitacao(String dataSolicitacao) {
 		this.dataSolicitacao = dataSolicitacao;
+	}
+
+	public int getVendaDetalheId() {
+		return vendaDetalheId;
+	}
+
+	public void setVendaDetalheId(int vendaDetalheId) {
+		this.vendaDetalheId = vendaDetalheId;
 	}	
-	
-	
-	public VendaDetalhe getVendaDetalhe() {
-		return vendaDetalhe;
-	}
-
-	public void setVendaDetalhe(VendaDetalhe vendaDetalhe) {
-		this.vendaDetalhe = vendaDetalhe;
-	}
-
-
+			
 }

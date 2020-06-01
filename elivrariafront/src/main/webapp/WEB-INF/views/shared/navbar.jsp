@@ -33,17 +33,22 @@
 					</security:authorize>
 					<security:authorize access="hasAuthority('ADMIN')">
 	                    <li id="gerenciarUsuario" style="font-size:14px">
-	                        <a href="${contextRoot}/gerenciar/usuario">Gerenciar Usuarios</a>
+	                        <a href="${contextRoot}/gerenciar/usuario"> Usuarios</a>
 	                    </li>					
 					</security:authorize>
 					<security:authorize access="hasAuthority('ADMIN')">
 	                    <li id="gerenciarEstoque" style="font-size:14px">
-	                        <a href="${contextRoot}/gerenciar/estoque">Gerenciar Estoque</a>
+	                        <a href="${contextRoot}/gerenciar/estoque"> Estoque</a>
 	                    </li>					
 					</security:authorize>
 					<security:authorize access="hasAuthority('ADMIN')">
 	                    <li id="gerenciarVendas" style="font-size:14px">
-	                        <a href="${contextRoot}/gerenciar/vendas">Gerenciar Vendas</a>
+	                        <a href="${contextRoot}/gerenciar/vendas"> Vendas</a>
+	                    </li>					
+					</security:authorize>
+					<security:authorize access="hasAuthority('ADMIN')">
+	                    <li id="gerenciarTrocasCancelamentos" style="font-size:14px">
+	                        <a href="${contextRoot}/gerenciar/trocasCancelamentos"> Trocas/Cancelamentos</a>
 	                    </li>					
 					</security:authorize>
                 </ul>
@@ -58,14 +63,14 @@
 	                    </li> 			    	
 			    	</security:authorize>
 			    	<security:authorize access="isAuthenticated()">
-						<li class="dropdown" id="usuarioModelo">
+						<li class="dropdown" id="usuarioModelo" style="font-size:12px">
 						  <a class="btn btn-default dropdown-toggle" href="javascript:void(0)" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 						    ${usuarioModelo.nomeCompleto}
 						    <span class="caret"></span>
 						  </a>
 						  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 		                    <security:authorize access="hasAuthority('USER')">
-			                    <li id="carrinho">
+			                    <li id="carrinho" >
 			                        <a href="${contextRoot}/carrinho/mostrar">
 			                        	<span class="glyphicon glyphicon-shopping-cart"></span>&#160;<span class="badge">${usuarioModelo.carrinho.itens}</span> - R$; ${usuarioModelo.carrinho.total} 
 			                        </a>
