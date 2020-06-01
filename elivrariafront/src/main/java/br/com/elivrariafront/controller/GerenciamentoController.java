@@ -23,23 +23,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariaback.dao.CategoriaDAO;
+import br.com.elivrariaback.dao.CupomTrocaDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.FornecedorDAO;
 import br.com.elivrariaback.dao.GrupoPrecificacaoDAO;
 import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dao.StatusVendaDAO;
+import br.com.elivrariaback.dao.TrocaDAO;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Categoria;
+import br.com.elivrariaback.dto.CupomTroca;
 import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.Fornecedor;
 import br.com.elivrariaback.dto.GrupoPrecificacao;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.StatusVenda;
+import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariafront.util.FileUtil;
@@ -87,6 +91,12 @@ public class GerenciamentoController {
 	
 	@Autowired
 	private StatusVendaDAO statusVendaDAO;
+	
+	@Autowired
+	private TrocaDAO trocaDAO;
+	
+	@Autowired
+	private CupomTrocaDAO cupomTrocaDAO;
 	
 	@RequestMapping("/livro")
 	public ModelAndView gerenciarLivro(@RequestParam(name="success",required=false)String success) {		
@@ -473,6 +483,92 @@ public class GerenciamentoController {
 		return "redirect:/gerenciar/vendas";
 	}
 	
+	@RequestMapping(value="/trocasCancelamentos")
+	public ModelAndView gerenciarTrocasCancelamentos(@RequestParam(name="success",required=false)String success) {		
+		ModelAndView mv = new ModelAndView("page");	
+		mv.addObject("title","Gerenciar Trocas e Cancelamentos");		
+		mv.addObject("ClickGerenciarTrocasCancelamentos",true);
+		
+		if(success != null) {
+			if(success.equals("troca")){
+				mv.addObject("message", "Troca Confirmada com sucesso!");
+			}	
+		}
+		return mv;
+		
+	}
+	
+	@RequestMapping(value="/troca/{id}/analisar")
+	public ModelAndView gerenciarTrocaAnalisar(@PathVariable int id) {		
+	
+		ModelAndView mv = new ModelAndView("page");
+		
+		Troca troca = trocaDAO.get(id);
+		
+		logger.info("status: " + troca.getStatusTrocaId());
+		
+		if (troca.getStatusTrocaId() == 4) {
+			troca.setStatusTrocaId(3);
+			trocaDAO.update(troca);
+		}
+		
+		mv.addObject("troca", troca);
+		mv.addObject("ClickAnalisarTroca", true);
+
+		
+		return mv;
+		
+	}
+	
+	@RequestMapping(value="/troca/{id}/confirmar")
+	public String gerenciarTrocaConfirmar(@PathVariable int id) {		
+	
+		
+		Troca troca = trocaDAO.get(id);
+		
+		troca.setStatusTrocaId(2);
+		
+		trocaDAO.update(troca);
+		
+		//dar entrada em estoque do produto trocado		
+		
+		Estoque estoque = new Estoque();
+		Date date = new Date();
+		estoque.setDataEntrada(sdf.format(date));
+		estoque.setFornecedorId(1);
+		estoque.setValorCusto(0);
+		estoque.setFlgZerado(false);
+		estoque.setLivroId(troca.getLivroId());
+		estoque.setQuantidade(troca.getQtdTroca());
+		estoque.setTpoOperacao("ENTRADA");		
+		estoqueDAO.add(estoque);
+		
+		//atualiza quantidade total do livro trocado
+		Livro livro = livroDAO.get(troca.getLivroId());
+		int qtdAtual = livro.getQuantidade();
+		
+		livro.setQuantidade(qtdAtual + troca.getQtdTroca());
+		livroDAO.update(livro);
+		
+		//gera cupom de troca para cliente
+		CupomTroca cupomTroca = new CupomTroca();
+		cupomTroca.setAtivo(true);
+		cupomTroca.setDescricao("CUPOM TROCA PEDIDO: " + troca.getVendaDetalhe().getId());
+		cupomTroca.setUsuario(troca.getVendaDetalhe().getUsuario());
+		cupomTroca.setValorCupom(troca.getVendaDetalhe().getTotalVenda());		
+		cupomTrocaDAO.add(cupomTroca);
+		
+		//atualiza o status da venda para trocado
+		
+		VendaDetalhe vendaDetalhe = troca.getVendaDetalhe();
+		StatusVenda statusVenda = statusVendaDAO.get(6);
+		vendaDetalhe.setStatusVenda(statusVenda);
+		vendaDetalheDAO.update(vendaDetalhe);
+
+		
+		return "redirect:/gerenciar/trocasCancelamentos?success=troca";
+		
+	}
 }
 
 	

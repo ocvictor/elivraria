@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.elivrariaback.dao.CupomTrocaDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.TrocaDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Cartao;
+import br.com.elivrariaback.dto.CupomTroca;
 import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariaback.dto.VendaDetalhe;
 
@@ -39,6 +43,12 @@ public class JsonDataController {
 	
 	@Autowired
 	private VendaDetalheDAO vendaDetalheDAO;
+	
+	@Autowired
+	private TrocaDAO trocaDAO;
+	
+	@Autowired
+	private CupomTrocaDAO cupomTrocaDAO;
 	
 	@RequestMapping("/admin/todos/livros")
 	@ResponseBody
@@ -114,6 +124,12 @@ public class JsonDataController {
 		return vendaDetalheDAO.listByUsuario(id);
 	}
 	
+	@RequestMapping("/meuperfil/{id}/cupons")
+	@ResponseBody
+	public List<CupomTroca> getCuponsCliente(@PathVariable int id) {
+		return cupomTrocaDAO.listByUsuario(id);
+	}
+	
 	@RequestMapping("/meuperfil/{id}/enderecos")
 	@ResponseBody
 	public List<Endereco> getEnderecoCliente(@PathVariable int id) {
@@ -124,5 +140,17 @@ public class JsonDataController {
 	@ResponseBody
 	public List<Cartao> getCartoesCliente(@PathVariable int id) {
 		return usuarioDAO.listCartao(id);
+	}
+	
+	@RequestMapping("/admin/trocas/solicitadas")
+	@ResponseBody
+	public List<Troca> getTrocasSolicitadas() {
+		return trocaDAO.getSolicitadas();
+	}
+	
+	@RequestMapping("/admin/trocas/analise")
+	@ResponseBody
+	public List<Troca> getTrocasAnalise() {
+		return trocaDAO.getEmAnalise();
 	}
 }

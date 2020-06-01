@@ -2,12 +2,14 @@ package br.com.elivrariafront.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,29 +18,45 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import br.com.elivrariafront.model.UsuarioModelo;
 
+import br.com.elivrariafront.model.TrocaModelo;
+import br.com.elivrariafront.model.UsuarioModelo;
+import br.com.elivrariafront.validador.EstoqueValidador;
+import br.com.elivrariafront.validador.TrocaValidador;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
+import br.com.elivrariaback.dao.ItemVendaDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.StatusVendaDAO;
+import br.com.elivrariaback.dao.TrocaDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
+import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Estoque;
+import br.com.elivrariaback.dto.ItemVenda;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.StatusVenda;
+import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
+import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariafront.exception.LivroNotFoundException;
 
 @Controller
 public class PageController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PageController.class);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	
 	@Autowired
 	private CategoriaDAO categoriaDAO;
@@ -57,6 +75,19 @@ public class PageController {
 	
 	@Autowired
 	private HttpSession session;
+	
+	@Autowired
+	private VendaDetalheDAO vendaDetalheDAO;
+	
+	@Autowired
+	private ItemVendaDAO itemVendaDAO;
+	
+	@Autowired
+	private TrocaDAO trocaDAO;
+	
+	@Autowired
+	private StatusVendaDAO statusVendaDAO;
+
 	
 	@RequestMapping(value = {"/", "/home", "/index"})
 	public ModelAndView index(@RequestParam(name="logout",required=false)String logout) {		
@@ -213,14 +244,104 @@ public class PageController {
 	}
 	
 	@RequestMapping(value = "/meuPerfil")
-	public ModelAndView meuPerfil() {
+	public ModelAndView meuPerfil(@RequestParam(name="success",required=false)String success) {
 		Usuario usuario = usuarioDAO.get(((UsuarioModelo)session.getAttribute("usuarioModelo")).getId());
 		ModelAndView mv = new ModelAndView("page");		
 		mv.addObject("titulo","Meu Perfil");
 		mv.addObject("ClickMeuPerfil",true);
 		mv.addObject("usuario", usuario);
 		
+		if(success != null) {
+			if(success.equals("troca")){
+				mv.addObject("message", "Troca Solicitada com sucesso!");
+			}	
+		}
+		
 	    
 		return mv;				
+	}
+	
+	
+	
+	@RequestMapping(value = "/mostrar/{id}/pedido") 
+	public ModelAndView MostrarUnicoPedido(@PathVariable int id)  {
+		
+		ModelAndView mv = new ModelAndView("page");
+		
+		VendaDetalhe vendaDetalhe = vendaDetalheDAO.get(id);		
+	
+		//---------------------------
+		
+		mv.addObject("vendaDetalhe", vendaDetalhe);
+		
+		mv.addObject("ClickMostrarPedido", true);
+		
+		
+		return mv;
+		
+	}
+	@RequestMapping(value = "/solicitar/troca/{id}") 
+	public ModelAndView SolicitarTroca(@PathVariable int id)  {
+		
+		ModelAndView mv = new ModelAndView("page");
+		
+		ItemVenda itemVenda = itemVendaDAO.get(id);
+		VendaDetalhe vendaDetalhe = itemVenda.getVendaDetalhe();
+		TrocaModelo troca = new TrocaModelo();
+	
+		//---------------------------
+		
+		mv.addObject("itemVenda", itemVenda);
+		mv.addObject("vendaDetalhe", vendaDetalhe);
+		mv.addObject("troca", troca);
+		
+		mv.addObject("ClickSolicitarTroca", true);
+		
+		
+		return mv;
+		
+	}
+	@RequestMapping(value = "/troca", method=RequestMethod.POST)
+	public String salvarTroca(@Valid @ModelAttribute("troca") TrocaModelo mTroca, 
+			BindingResult results, Model model, HttpServletRequest request) {
+		
+		
+		Date date = new Date();  
+		mTroca.setDataSolicitacao(sdf.format(date));
+		mTroca.setStatusTrocaId(4); // 4 - SOLICITADA
+		
+		//Alimenta o Dominio que vai para o banco
+		Troca troca = new Troca();
+		
+		troca.setDataSolicitacao(mTroca.getDataSolicitacao());
+		troca.setItemVenda(itemVendaDAO.get(mTroca.getItemVendaId()));
+		troca.setLivroId(mTroca.getLivroId());
+		troca.setMotivo(mTroca.getMotivo());
+		troca.setQtdTroca(mTroca.getQtdTroca());
+		troca.setStatusTrocaId(mTroca.getStatusTrocaId());
+		troca.setVendaDetalhe(troca.getItemVenda().getVendaDetalhe());
+		
+		VendaDetalhe vendaDetalhe = troca.getItemVenda().getVendaDetalhe();
+		new TrocaValidador().validate(troca, results);
+	
+		
+		if(results.hasErrors()) {
+			model.addAttribute("message", "Quantidade para troca inválida!");
+			model.addAttribute("ClickSolicitarTroca",true);
+			model.addAttribute("itemVenda", troca.getItemVenda());
+			model.addAttribute("vendaDetalhe", troca.getVendaDetalhe());
+			return "page";
+		}
+		
+		logger.info("Troca= " + troca);
+		StatusVenda statusVenda = statusVendaDAO.get(5);
+		vendaDetalhe.setStatusVenda(statusVenda);
+		
+		trocaDAO.add(troca);
+		vendaDetalheDAO.update(vendaDetalhe);		
+
+		return "redirect:/meuPerfil?success=troca";
+
+		
 	}
 }

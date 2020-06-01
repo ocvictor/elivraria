@@ -40,8 +40,11 @@ $(function() {
 	case 'Gerenciar Vendas':
 		$('#gerenciarVendas').addClass('active');
 		break;
+	case 'Gerenciar Trocas e Cancelamentos':
+		$('#gerenciarTrocasCancelamentos').addClass('active');
+		break;
 	case 'Carrinho':
-		$('#usuarioModelo').addClass('active');
+		$('#carrinho').addClass('active');
 		break;		
 	default:
 		if (menu == "Home")
@@ -50,6 +53,7 @@ $(function() {
 		$('#listaUsuarios').addClass('active');
 		$('#gerenciarEstoque').addClass('active');
 		$('#gerenciarVendas').addClass('active');
+		$('#gerenciarTrocasCancelamentos').addClass('active');
 		$('#a_' + menu).addClass('active');
 		break;
 	}
@@ -690,7 +694,7 @@ $(function() {
 				});
 	}
 	
-	// lista todos produtos
+	// lista as vendas em transporte
 	var $vendasTransporteTable = $('#vendasTransporteTable');
 	
 	
@@ -919,6 +923,73 @@ $(function() {
 				});
 	}
 	
+	var $table = $('#cuponsCliente');
+
+	if ($table.length) {
+
+		var jsonUrl = '';
+		if (window.usuarioId == '') {
+			
+		} else {
+			jsonUrl = window.contextRoot + '/json/data/meuperfil/'
+					+ window.usuarioId + '/cupons';
+		}
+
+		$table
+				.DataTable({
+					
+					"language": {
+						
+						    "sEmptyTable": "Nenhum registro encontrado",
+						    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+						    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+						    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+						    "sInfoPostFix": "",
+						    "sInfoThousands": ".",
+						    "sLengthMenu": "_MENU_ resultados por pagina",
+						    "sLoadingRecords": "Carregando...",
+						    "sProcessing": "Processando...",
+						    "sZeroRecords": "Nenhum registro encontrado",
+						    "sSearch": "Pesquisar",
+						    "oPaginate": {
+						        "sNext": "Proximo",
+						        "sPrevious": "Anterior",
+						        "sFirst": "Primeiro",
+						        "sLast": "Ultimo"
+						    },
+						    "oAria": {
+						        "sSortAscending": ": Ordenar colunas de forma ascendente",
+						        "sSortDescending": ": Ordenar colunas de forma descendente"
+						    },
+						    "select": {
+						        "rows": {
+						            "_": "Selecionado %d linhas",
+						            "0": "Nenhuma linha selecionada",
+						            "1": "Selecionado 1 linha"
+						        }
+						    }
+						
+			        },
+				
+					lengthMenu : [ [ 3, 5, 10, -1 ],
+							[ '3 ', '5 ', '10 ', 'Todos' ] ],
+					pageLength : 5,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [
+							{
+								data : 'id'
+							},
+							{
+								data : 'descricao'
+							},
+							{
+								data : 'valorCupom'
+							}]
+				});
+	}
 	var $table = $('#enderecosCliente');
 
 	if ($table.length) {
@@ -1023,6 +1094,182 @@ $(function() {
 				});
 	}
 	
+	// lista todos produtos
+	var $table = $('#trocasSolicitadasTable');
+	
+	
+	if($table.length) {
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/trocas/solicitadas';
+		console.log(jsonUrl);
+		
+		$table.DataTable({
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{
+					           		data: 'dataSolicitacao'
+					           	},
+
+					           	{
+					           		data: 'usuarioNome'
+					           	},
+					           	{
+									data : 'vendaDetalheId'
+								},
+					           	{
+									data : 'titulo'
+								},							
+								{
+									data : 'qtdTroca'
+								},
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ 'troca/'
+												+ data
+												+ '/analisar" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
+
+									return str;
+									}
+								}					           	
+					],
+					
+					
+					
+				});
+	}
+	
+	
+	// lista todos produtos
+	var $trocasAnaliseTable = $('#trocasAnaliseTable');
+	
+	
+	if($trocasAnaliseTable.length) {
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/trocas/analise';
+		console.log(jsonUrl);
+		
+		$trocasAnaliseTable.DataTable({
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{
+					           		data: 'dataSolicitacao'
+					           	},
+
+					           	{
+					           		data: 'usuarioNome'
+					           	},
+					           	{
+									data : 'vendaDetalheId'
+								},
+					           	{
+									data : 'titulo'
+								},							
+								{
+									data : 'qtdTroca'
+								},
+								{
+									data : 'id',
+									bSortable : false,
+									mRender : function(data, type, row) {
+
+										var str = '';
+										str += '<a href="'
+												+ window.contextRoot
+												+ '/gerenciar/'
+												+ 'troca/'
+												+ data
+												+ '/analisar" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
+
+									return str;
+									}
+								}					           	
+					],
+					
+					
+					
+				});
+	}
 	var $table = $('#cartoesCliente');
 
 	if ($table.length) {
