@@ -555,7 +555,7 @@ public class GerenciamentoController {
 		cupomTroca.setAtivo(true);
 		cupomTroca.setDescricao("CUPOM TROCA PEDIDO: " + troca.getVendaDetalhe().getId());
 		cupomTroca.setUsuario(troca.getVendaDetalhe().getUsuario());
-		cupomTroca.setValorCupom(troca.getVendaDetalhe().getTotalVenda());		
+		cupomTroca.setValorCupom(troca.getItemVenda().getCompraPreco() * troca.getQtdTroca());
 		cupomTrocaDAO.add(cupomTroca);
 		
 		//atualiza o status da venda para trocado

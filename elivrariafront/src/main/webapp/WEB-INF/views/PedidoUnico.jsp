@@ -119,6 +119,7 @@
 		    					<strong>Data Pedido:</strong><br>
 		    					${vendaDetalhe.dataVenda}<br><br>
 		    				</address>
+		    				<a href="${contextRoot}/meuPerfil" class="btn btn-md btn-info" >Voltar</a>
 		    			</div>
 		    		</div>
 		    	</div>

@@ -4,7 +4,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +29,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.elivrariafront.model.RelatorioModelo;
 import br.com.elivrariafront.model.TrocaModelo;
 import br.com.elivrariafront.model.UsuarioModelo;
 import br.com.elivrariafront.validador.EstoqueValidador;
+import br.com.elivrariafront.validador.RelatorioValidador;
 import br.com.elivrariafront.validador.TrocaValidador;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CategoriaDAO;
@@ -341,6 +345,43 @@ public class PageController {
 		vendaDetalheDAO.update(vendaDetalhe);		
 
 		return "redirect:/meuPerfil?success=troca";
+
+		
+	}
+	
+	@RequestMapping(value = "/gerenciar/relatorios")
+	public ModelAndView gerenciarRelatorios() {
+		ModelAndView mv = new ModelAndView("page");
+		RelatorioModelo relatorioModelo = new RelatorioModelo();
+		mv.addObject("title", "Gerenciar Relatorios");
+		mv.addObject("relatorioModelo", relatorioModelo);
+		mv.addObject("ClickGerenciarRelatorios", true);		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/gerenciar/relatorios", method=RequestMethod.POST)
+	public String gerarRelatorio(@Valid @ModelAttribute("relatorioModelo") RelatorioModelo mRelatorioModelo, 
+			BindingResult results, Model model, HttpServletRequest request) {
+		
+		
+		new RelatorioValidador().validate(mRelatorioModelo, results);
+		
+	
+		
+		if(results.hasErrors()) {
+			model.addAttribute("message", "Data inicial maior que a data final!");
+			model.addAttribute("ClickGerenciarRelatorios",true);
+			model.addAttribute("relatorioModelo", mRelatorioModelo);
+			return "page";
+		}
+		Map<String, Integer> surveyMap = new LinkedHashMap<>();
+		surveyMap.put("Java", 40);
+		surveyMap.put("Dev oops", 25);
+		surveyMap.put("Python", 20);
+		surveyMap.put(".Net", 15);
+		model.addAttribute("surveyMap", surveyMap);
+		model.addAttribute("ClickGrafico", true);
+		return "page";
 
 		
 	}

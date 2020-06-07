@@ -73,7 +73,7 @@
 						<div class="col-md-offset-4 col-md-4">
 						
 							<a href="${contextRoot}/gerenciar/trocasCancelamentos" class="btn btn-md btn-info" >Voltar</a>
-							<a href="${contextRoot}/gerenciar/trocas/confirmar/salvar" class="btn btn-md btn-info">Confirmar</a>
+							<a href="${contextRoot}/gerenciar/troca/${troca.id}/confirmar" class="btn btn-md btn-info">Confirmar</a>
 						</div>
 					</div>
 				</sf:form>

@@ -9,8 +9,7 @@
 
 <c:set var="contextRoot" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 
 <meta charset="utf-8">
@@ -20,6 +19,7 @@
 <meta name="author" content="MV Consult">
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
+<meta charset="ISO-8859-1" />
 
 <title>eLivraria - ${title}</title>
 
@@ -115,6 +115,12 @@
 			<c:if test="${ClickAnalisarTroca == true}">
 				<%@include file="analisarTroca.jsp"%>
 			</c:if>	
+			<c:if test="${ClickGerenciarRelatorios == true}">
+				<%@include file="gerenciarRelatorios.jsp"%>
+			</c:if>
+			<c:if test="${ClickGrafico == true}">
+				<%@include file="grafico.jsp"%>
+			</c:if>
 
 		</div>
 
@@ -140,6 +146,7 @@
 		
 		<!-- Self coded javascript -->
 		<script src="${js}/myapp.js"></script>
+		
 
 	</div>
 

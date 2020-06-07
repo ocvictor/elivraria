@@ -24,7 +24,7 @@ public class TrocaValidador implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return Estoque.class.equals(clazz);
+		return Troca.class.equals(clazz);
 	}
 
 	@Override
