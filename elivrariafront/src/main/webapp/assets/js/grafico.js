@@ -1,31 +1,30 @@
-<div class="container">
+$ajax({
 
-		<div id="container"
-			style="width: 550px; height: 400px; margin: 0 auto"></div>
-	</div>
-
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script type="text/javascript">
-    Highcharts.chart('container', {
+	url: "/gerenciar/relatorios",
+	success: function(result){
+		/* line chart single starts here */
+		var category = categoriaMap;
+	}
+});
+Highcharts.chart('container', {
         chart: {
             type: 'column'
         },
         title: {
-            text: 'Relatório de Venda Por ${relatorioModelo.tipo} '
+            text: 'Technology Popularity In India'
         },
         subtitle: {
-            text: 'Período de ${relatorioModelo.dataInicial} até ${relatorioModelo.dataFinal} Gênero: ${relatorioModelo.genero}'
+            text: 'All Details is not true its a dummy Map'
         },
         xAxis: {
-            categories: ${categoriaMap.keySet()},
+            categories: category.keySet(),
             crosshair: true
         },
         yAxis: {
             min: 0,
             max:100,
             title: {
-                text: 'Quantidade Vendidas'
+                text: 'Technology rating [in %]'
             }
         },
         tooltip: {
@@ -43,9 +42,7 @@
             }
         },
         series: [{
-            name: '${relatorioModelo.tipo}',
-            data: ${categoriaMap.values()}
+            name: 'Technology',
+            data: category.values()
         }]
     });
-   
-</script>

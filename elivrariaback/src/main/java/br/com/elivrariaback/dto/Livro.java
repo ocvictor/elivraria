@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -62,9 +64,11 @@ public class Livro implements Serializable {
 	private int quantidade;
 	@Column(name = "ativo")	
 	private boolean ativo;
-	@Column(name = "categoria_id")
+	
 	@JsonIgnore
-	private int categoriaId;
+	@ManyToOne
+	@JoinColumn(name = "categoria_id")	
+	private Categoria categoria;
 	
 	@Column(name = "grupo_precificacao_id")
 	@JsonIgnore
@@ -155,12 +159,14 @@ public class Livro implements Serializable {
 		this.ativo = ativo;
 	}
 
-	public int getCategoriaId() {
-		return categoriaId;
+
+
+	public Categoria getCategoria() {
+		return categoria;
 	}
 
-	public void setCategoriaId(int categoriaId) {
-		this.categoriaId = categoriaId;
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 
 	public int getCompras() {
@@ -258,7 +264,7 @@ public class Livro implements Serializable {
 				+ autor + ", precoUnit=" + precoUnit + ", quantidade=" + quantidade + ", ativo=" + ativo
 				+ ", ano=" + ano + ", edicao=" + edicao + ", codbarras=" + codBarras + ", numpaginas= " + numPaginas
 				+ ", sinopse= " + sinopse + ", largura= " + largura + ", altura=" + altura + ", profundidade=" + profundidade + ", peso=" + peso
-				+ ", categoriaId=" + categoriaId + ", compras=" + compras + ", visualizacoes="
+				+ ", categoriaId=" + categoria + ", compras=" + compras + ", visualizacoes="
 				+ visualizacoes + ", grupo_precificacao_id=" + grupoPrecificacaoId + "]";
 	}
 	

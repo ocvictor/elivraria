@@ -10,6 +10,7 @@ public class RelatorioModelo{
 	private String dataInicial;
 	private String dataFinal;
 	private String genero;
+	private String tipo;
 	
 	
 	public String getDataInicial() {
@@ -29,6 +30,12 @@ public class RelatorioModelo{
 	}
 	public void setGenero(String genero) {
 		this.genero = genero;
+	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 	
 	

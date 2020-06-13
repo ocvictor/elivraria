@@ -178,12 +178,12 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">Categoria</label>
 							<div class="col-md-8">
-								<sf:select path="categoriaId" items="${categorias}" itemLabel="nome" itemValue="id" class="form-control"/>
+								<sf:select path="categoria.id" items="${categorias}" itemLabel="nome" itemValue="id" class="form-control"/>
 							
 								<div class="text-right">
 									<br/>			
 									<sf:hidden path="id"/>
-									<sf:hidden path="categoriaId"/>
+									<sf:hidden path="categoria.id"/>
 									<sf:hidden path="ativo"/>														
 									<button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#CategoriaModal">Adicionar Categoria</button>
 								</div>							

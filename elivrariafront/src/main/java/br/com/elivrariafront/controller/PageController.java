@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariafront.model.RelatorioModelo;
@@ -49,6 +52,7 @@ import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.ItemVenda;
 import br.com.elivrariaback.dto.Livro;
+import br.com.elivrariaback.dto.RelatorioVenda;
 import br.com.elivrariaback.dto.StatusVenda;
 import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
@@ -364,9 +368,7 @@ public class PageController {
 			BindingResult results, Model model, HttpServletRequest request) {
 		
 		
-		new RelatorioValidador().validate(mRelatorioModelo, results);
-		
-	
+		new RelatorioValidador().validate(mRelatorioModelo, results);	
 		
 		if(results.hasErrors()) {
 			model.addAttribute("message", "Data inicial maior que a data final!");
@@ -374,15 +376,39 @@ public class PageController {
 			model.addAttribute("relatorioModelo", mRelatorioModelo);
 			return "page";
 		}
-		Map<String, Integer> surveyMap = new LinkedHashMap<>();
-		surveyMap.put("Java", 40);
-		surveyMap.put("Dev oops", 25);
-		surveyMap.put("Python", 20);
-		surveyMap.put(".Net", 15);
-		model.addAttribute("surveyMap", surveyMap);
-		model.addAttribute("ClickGrafico", true);
-		return "page";
-
 		
+		logger.info("Vai executar a query");
+
+		List <RelatorioVenda> relatorioVenda = vendaDetalheDAO.relatorioVenda(mRelatorioModelo.getDataInicial(),
+				mRelatorioModelo.getDataFinal(), mRelatorioModelo.getGenero(), mRelatorioModelo.getTipo());
+		
+		logger.info("Executou a query");
+
+		Map<String, Integer> categoriaMap = new LinkedHashMap<>();
+		
+		logger.info("Qtd " + relatorioVenda.size());
+//		relatorioVenda.forEach(reg->{
+//			categoriaMap.put('"'+ reg.getAtributo().toString()+'"', reg.getQuantidade());
+//		});
+		
+		for (RelatorioVenda reg : relatorioVenda) {
+			logger.info("atributo" + reg.getAtributo());
+			categoriaMap.put('"'+ reg.getAtributo().toString()+'"', reg.getQuantidade());
+		}
+		logger.info("Mapa" + categoriaMap);
+		
+		model.addAttribute("relatorioModelo", mRelatorioModelo);
+		model.addAttribute("categoriaMap", categoriaMap);
+		model.addAttribute("ClickGrafico", true);
+		
+		return "page";	
+	}
+	
+		
+	@RequestMapping(value="grafico")
+	@ResponseBody
+	public String gerarGrafico(@RequestParam(name="json",required=true) String json) {
+		
+		return json.toString();
 	}
 }

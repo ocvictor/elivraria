@@ -12,7 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "venda_item")
 public class ItemVenda implements Serializable {
@@ -27,6 +29,7 @@ public class ItemVenda implements Serializable {
 	private int id;
 	
 	@OneToOne
+	@JoinColumn(name = "livro_id")
 	private Livro livro;
 	
 	@ManyToOne
