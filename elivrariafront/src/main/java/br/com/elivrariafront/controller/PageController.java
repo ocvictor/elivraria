@@ -2,15 +2,22 @@ package br.com.elivrariafront.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.common.collect.*;
+ 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +74,11 @@ import br.com.elivrariafront.exception.LivroNotFoundException;
 public class PageController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PageController.class);
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
+    private static final SimpleDateFormat sdfRelatorio = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat sdfRelatorioAnoMes = new SimpleDateFormat("MM/yyyy");
+
+
 
 	
 	@Autowired
@@ -374,6 +385,7 @@ public class PageController {
 	public String gerarRelatorio(@Valid @ModelAttribute("relatorioModelo") RelatorioModelo mRelatorioModelo, 
 			BindingResult results, Model model, HttpServletRequest request) {
 		
+
 		
 		new RelatorioValidador().validate(mRelatorioModelo, results);	
 		
@@ -404,18 +416,79 @@ public class PageController {
 			List <RelatorioVendaLinha> lstRelatorioVendaLinha = relatorioVendaDAO.relatorioVendaLinha(mRelatorioModelo.getDataInicial(),
 					mRelatorioModelo.getDataFinal(), mRelatorioModelo.getIndicador());
 			
-			Map<String, String> graficoXMap = new HashMap<>();
-			Map<String, Integer> graficoYMap = new HashMap<>();
 			
-			for (RelatorioVendaLinha regLinha : lstRelatorioVendaLinha) {
-					graficoXMap.put(regLinha.getAtributo(), regLinha.getAnoMes());
-					graficoYMap.put(regLinha.getAtributo(), regLinha.getQuantidade());
+			Calendar beginCalendar = Calendar.getInstance();
+	        Calendar finishCalendar = Calendar.getInstance();
+	        
+	        try {
+	            beginCalendar.setTime(sdfRelatorio.parse(mRelatorioModelo.getDataInicial()));
+	            finishCalendar.setTime(sdfRelatorio.parse(mRelatorioModelo.getDataFinal()));
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        ArrayList<String> anoMeses = new ArrayList<>();
+	        
+	        while (beginCalendar.compareTo(finishCalendar) <= 0) {
+
+	            anoMeses.add('"' + sdfRelatorioAnoMes.format(beginCalendar.getTime()).toUpperCase() + '"');
+	            beginCalendar.add(Calendar.MONTH, 1);
+	            
+	            if(beginCalendar.compareTo(finishCalendar) > 0) {
+	            	if (!anoMeses.contains('"' + sdfRelatorioAnoMes.format(beginCalendar.getTime()).toUpperCase() + '"')) {
+	            		anoMeses.add('"' + sdfRelatorioAnoMes.format(beginCalendar.getTime()).toUpperCase() + '"');
+	            	}
+	            }
+	        }
+			
+			Map<String, List<Integer>> graficoMapTemp = new HashMap<>();
+			
+
+			
+			
+			for (RelatorioVendaLinha regLinha : lstRelatorioVendaLinha) {				
+					
+					if(graficoMapTemp.containsKey(regLinha.getAtributo())) {
+						graficoMapTemp.get(regLinha.getAtributo()).add(regLinha.getQuantidade());
+					}else {
+						List<Integer> tempList = new ArrayList<Integer>();
+						tempList.add(regLinha.getQuantidade());
+						graficoMapTemp.put(regLinha.getAtributo(), tempList);
+						
+					}
+
+					
+				}
+				
+			ListMultimap<String, Object> graficoMap = ArrayListMultimap.create() ;
+			
+			StringBuilder sb = new StringBuilder();
+			int count = 0;
+			
+			for (Map.Entry<String, List<Integer>> entry : graficoMapTemp.entrySet()) {
+				if (count == 0){
+					sb.append("{");
+
+				}else
+				{
+					sb.append(",{");
+
+				}
+				sb.append("name: ");
+				sb.append('"'+ entry.getKey() + '"');
+				sb.append(", ");
+				sb.append("data: ");
+				sb.append(entry.getValue());
+				sb.append("}");
+				count++;
 			}
 			
+        
+			model.addAttribute("anoMeses", anoMeses);
 			model.addAttribute("relatorioModelo", mRelatorioModelo);
-			model.addAttribute("graficoXMap", graficoXMap);
-			model.addAttribute("graficoYMap", graficoYMap);
+			model.addAttribute("graficoMap", graficoMap);
 			model.addAttribute("ClickGraficoLinha", true);
+			model.addAttribute("series", sb);
 			
 			return "page";
 		}
@@ -423,11 +496,4 @@ public class PageController {
 	
 	}
 	
-		
-//	@RequestMapping(value="grafico")
-//	@ResponseBody
-//	public String gerarGrafico(@RequestParam(name="json",required=true) String json) {
-//		
-//		return json.toString();
-//	}
 }

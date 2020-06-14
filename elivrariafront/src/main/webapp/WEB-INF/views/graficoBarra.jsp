@@ -1,6 +1,6 @@
 <div class="container">
 
-		<div id="container"
+	<div id="container"
 			style="width: 550px; height: 400px; margin: 0 auto"></div>
 	</div>
 
