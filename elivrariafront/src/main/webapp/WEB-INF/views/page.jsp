@@ -118,10 +118,12 @@
 			<c:if test="${ClickGerenciarRelatorios == true}">
 				<%@include file="gerenciarRelatorios.jsp"%>
 			</c:if>
-			<c:if test="${ClickGrafico == true}">
-				<%@include file="grafico.jsp"%>
+			<c:if test="${ClickGraficoBarra == true}">
+				<%@include file="graficoBarra.jsp"%>
 			</c:if>
-
+			<c:if test="${ClickGraficoLinha == true}">
+				<%@include file="graficoLinha.jsp"%>
+			</c:if>
 		</div>
 
 

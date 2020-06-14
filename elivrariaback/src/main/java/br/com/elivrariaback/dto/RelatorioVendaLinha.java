@@ -27,7 +27,7 @@ import br.com.elivrariaback.util.VendaDetalheSerializer;
 
 @Component
 @Entity
-public class RelatorioVendaBarra implements Serializable {
+public class RelatorioVendaLinha implements Serializable {
 
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class RelatorioVendaBarra implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	
+	private String anoMes;
 	private String atributo;
 	
 	private int quantidade;
@@ -65,9 +65,12 @@ public class RelatorioVendaBarra implements Serializable {
 	public void setQuantidade(int quantidade) {
 		this.quantidade = quantidade;
 	}
+	
+	public String getAnoMes() {
+		return anoMes;
+	}
 
-	
-
-	
-	
+	public void setAnoMes(String anoMes) {
+		this.anoMes = anoMes;
+	}	
 }

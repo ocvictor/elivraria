@@ -9,9 +9,8 @@ public class RelatorioModelo{
 	 */
 	private String dataInicial;
 	private String dataFinal;
-	private String genero;
+	private String indicador;
 	private String tipo;
-	
 	
 	public String getDataInicial() {
 		return dataInicial;
@@ -25,11 +24,11 @@ public class RelatorioModelo{
 	public void setDataFinal(String dataFinal) {
 		this.dataFinal = dataFinal;
 	}
-	public String getGenero() {
-		return genero;
+	public String getIndicador() {
+		return indicador;
 	}
-	public void setGenero(String genero) {
-		this.genero = genero;
+	public void setIndicador(String indicador) {
+		this.indicador = indicador;
 	}
 	public String getTipo() {
 		return tipo;
@@ -37,6 +36,8 @@ public class RelatorioModelo{
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+	
+	
 	
 	
 	

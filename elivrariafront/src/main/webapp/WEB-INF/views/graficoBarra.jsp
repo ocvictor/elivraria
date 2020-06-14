@@ -12,13 +12,13 @@
             type: 'column'
         },
         title: {
-            text: 'Relatório de Venda Por ${relatorioModelo.tipo} '
+            text: 'Relatório de Venda Por ${relatorioModelo.indicador} '
         },
         subtitle: {
-            text: 'Período de ${relatorioModelo.dataInicial} até ${relatorioModelo.dataFinal} Gênero: ${relatorioModelo.genero}'
+            text: 'Período de ${relatorioModelo.dataInicial} até ${relatorioModelo.dataFinal}'
         },
         xAxis: {
-            categories: ${categoriaMap.keySet()},
+            categories: ${graficoMap.keySet()},
             crosshair: true
         },
         yAxis: {
@@ -31,7 +31,7 @@
         tooltip: {
             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} K</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
             footerFormat: '</table>',
             shared: true,
             useHTML: true
@@ -43,8 +43,8 @@
             }
         },
         series: [{
-            name: '${relatorioModelo.tipo}',
-            data: ${categoriaMap.values()}
+            name: '${relatorioModelo.indicador}',
+            data: ${graficoMap.values()}
         }]
     });
    

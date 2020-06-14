@@ -3,7 +3,9 @@ package br.com.elivrariafront.controller;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,7 @@ import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.ItemVendaDAO;
 import br.com.elivrariaback.dao.LivroDAO;
+import br.com.elivrariaback.dao.RelatorioVendaDAO;
 import br.com.elivrariaback.dao.StatusVendaDAO;
 import br.com.elivrariaback.dao.TrocaDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
@@ -52,7 +55,8 @@ import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.ItemVenda;
 import br.com.elivrariaback.dto.Livro;
-import br.com.elivrariaback.dto.RelatorioVenda;
+import br.com.elivrariaback.dto.RelatorioVendaLinha;
+import br.com.elivrariaback.dto.RelatorioVendaBarra;
 import br.com.elivrariaback.dto.StatusVenda;
 import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
@@ -95,6 +99,9 @@ public class PageController {
 	
 	@Autowired
 	private StatusVendaDAO statusVendaDAO;
+	
+	@Autowired
+	private RelatorioVendaDAO relatorioVendaDAO;
 
 	
 	@RequestMapping(value = {"/", "/home", "/index"})
@@ -376,39 +383,51 @@ public class PageController {
 			model.addAttribute("relatorioModelo", mRelatorioModelo);
 			return "page";
 		}
-		
-		logger.info("Vai executar a query");
 
-		List <RelatorioVenda> relatorioVenda = vendaDetalheDAO.relatorioVenda(mRelatorioModelo.getDataInicial(),
-				mRelatorioModelo.getDataFinal(), mRelatorioModelo.getGenero(), mRelatorioModelo.getTipo());
-		
-		logger.info("Executou a query");
+		if (mRelatorioModelo.getTipo().equals("Barra")) {
+			List <RelatorioVendaBarra> lstRelatorioVendaBarra = relatorioVendaDAO.relatorioVendaBarra(mRelatorioModelo.getDataInicial(),
+					mRelatorioModelo.getDataFinal(), mRelatorioModelo.getIndicador());
 
-		Map<String, Integer> categoriaMap = new LinkedHashMap<>();
-		
-		logger.info("Qtd " + relatorioVenda.size());
-//		relatorioVenda.forEach(reg->{
-//			categoriaMap.put('"'+ reg.getAtributo().toString()+'"', reg.getQuantidade());
-//		});
-		
-		for (RelatorioVenda reg : relatorioVenda) {
-			logger.info("atributo" + reg.getAtributo());
-			categoriaMap.put('"'+ reg.getAtributo().toString()+'"', reg.getQuantidade());
+			Map<String, Integer> graficoMap = new LinkedHashMap<>();
+			
+			for (RelatorioVendaBarra reg : lstRelatorioVendaBarra) {
+				graficoMap.put('"'+ reg.getAtributo().toString()+'"', reg.getQuantidade());
+			}
+			
+			model.addAttribute("relatorioModelo", mRelatorioModelo);
+			model.addAttribute("graficoMap", graficoMap);
+			model.addAttribute("ClickGraficoBarra", true);
+			
+			return "page";	
 		}
-		logger.info("Mapa" + categoriaMap);
+		else {
+			List <RelatorioVendaLinha> lstRelatorioVendaLinha = relatorioVendaDAO.relatorioVendaLinha(mRelatorioModelo.getDataInicial(),
+					mRelatorioModelo.getDataFinal(), mRelatorioModelo.getIndicador());
+			
+			Map<String, String> graficoXMap = new HashMap<>();
+			Map<String, Integer> graficoYMap = new HashMap<>();
+			
+			for (RelatorioVendaLinha regLinha : lstRelatorioVendaLinha) {
+					graficoXMap.put(regLinha.getAtributo(), regLinha.getAnoMes());
+					graficoYMap.put(regLinha.getAtributo(), regLinha.getQuantidade());
+			}
+			
+			model.addAttribute("relatorioModelo", mRelatorioModelo);
+			model.addAttribute("graficoXMap", graficoXMap);
+			model.addAttribute("graficoYMap", graficoYMap);
+			model.addAttribute("ClickGraficoLinha", true);
+			
+			return "page";
+		}
 		
-		model.addAttribute("relatorioModelo", mRelatorioModelo);
-		model.addAttribute("categoriaMap", categoriaMap);
-		model.addAttribute("ClickGrafico", true);
-		
-		return "page";	
+	
 	}
 	
 		
-	@RequestMapping(value="grafico")
-	@ResponseBody
-	public String gerarGrafico(@RequestParam(name="json",required=true) String json) {
-		
-		return json.toString();
-	}
+//	@RequestMapping(value="grafico")
+//	@ResponseBody
+//	public String gerarGrafico(@RequestParam(name="json",required=true) String json) {
+//		
+//		return json.toString();
+//	}
 }

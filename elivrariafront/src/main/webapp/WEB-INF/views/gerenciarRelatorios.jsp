@@ -26,15 +26,10 @@
 	
 	</c:if>
 	<h2 align="center">Gerenciar Relatórios</h2>
-	<br>
 	<br>	
 	<div class="row">
     	<div class="col-md-12">
     		<div class="panel panel-default">
-    			<div class="panel-heading">
-    				<h3 class="panel-title"><strong>Relatorio Vendas por Categoria (Gênero/Periodo)</strong></h3>
-    				
-    			</div>
     		
     			<div class='col-xs-12'>
     				
@@ -59,30 +54,31 @@
 									<sf:errors path="dataFinal" cssClass="help-block" element="em"/> 
 								</div>
 							</div>
-								
-							<div class="form-group">
-								<label class="control-label col-md-4">Gênero</label>
-								<div class="col-md-8">
-									<sf:select path="genero" id="genero">
-										<option value="Masculino">Masculino</option>
-										<option value="Feminino">Feminino</option>
-										<option value="Indefinido">Indefinido</option>
-									</sf:select>
-									<sf:errors path="genero" cssClass="help-block" element="em"/> 
-								</div>
-							</div>
 							
 							<div class="form-group">
-								<label class="control-label col-md-4">Relatório</label>
+								<label class="control-label col-md-4">Indicadores</label>
+								<div class="col-md-8">
+									<sf:select path="indicador" id="indicador">
+										<option value="Categoria">Por Categoria</option>
+										<option value="Livro">Por Livro</option>
+										<option value="GrupoPrecificacao">Por Grupo de Precificação</option>
+									</sf:select>
+									<sf:errors path="indicador" cssClass="help-block" element="em"/> 
+								</div>
+							</div>
+								
+							<div class="form-group">
+								<label class="control-label col-md-4">Tipo de Gráfico</label>
 								<div class="col-md-8">
 									<sf:select path="tipo" id="tipo">
-										<option value="Categoria">Vendas por Categoria</option>
-										<option value="Livro">Vendas por Livro</option>
-										<option value="Grupo de Precificação">Vendas por Grupo de Precificação</option>
+										<option value="Barra">Barra</option>
+										<option value="Linha">Linha</option>
 									</sf:select>
 									<sf:errors path="tipo" cssClass="help-block" element="em"/> 
 								</div>
 							</div>
+							
+							
 							
 		
 						
