@@ -39,7 +39,7 @@
 							
 							<div class="form-group">
 								<label class="control-label col-md-4">Data Inicial</label>
-								<div class="col-md-8">
+								<div class="col-md-4">
 									<sf:input type="date" path="dataInicial" class="form-control"
 										placeholder="Insira a Data Inicial" />
 									<sf:errors path="dataInicial" cssClass="help-block" element="em"/> 
@@ -48,7 +48,7 @@
 								
 							<div class="form-group">
 								<label class="control-label col-md-4">Data Final</label>
-								<div class="col-md-8">
+								<div class="col-sm-4">
 									<sf:input type="date" path="dataFinal" class="form-control"
 										placeholder="Insira a Data Final" />
 									<sf:errors path="dataFinal" cssClass="help-block" element="em"/> 
@@ -57,11 +57,13 @@
 							
 							<div class="form-group">
 								<label class="control-label col-md-4">Indicadores</label>
-								<div class="col-md-8">
-									<sf:select path="indicador" id="indicador">
+								<div class="col-md-4">
+									<sf:select path="indicador" id="indicador" class="form-control">
 										<option value="Categoria">Por Categoria</option>
 										<option value="Livro">Por Livro</option>
-										<option value="GrupoPrecificacao">Por Grupo de Precificação</option>
+										<option value="Grupo de Precificação">Por Grupo de Precificação</option>
+										<option value="Vendas Entregues/Trocadas">Por Vendas Entregues/Trocadas</option>										
+										
 									</sf:select>
 									<sf:errors path="indicador" cssClass="help-block" element="em"/> 
 								</div>
@@ -69,8 +71,8 @@
 								
 							<div class="form-group">
 								<label class="control-label col-md-4">Tipo de Gráfico</label>
-								<div class="col-md-8">
-									<sf:select path="tipo" id="tipo">
+								<div class="col-md-4">
+									<sf:select path="tipo" id="tipo" class="form-control">
 										<option value="Barra">Barra</option>
 										<option value="Linha">Linha</option>
 									</sf:select>

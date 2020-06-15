@@ -52,7 +52,7 @@ public class RelatorioVendaDAOImpl implements RelatorioVendaDAO {
 					+ " group by 1,2";
 		}
 		
-		if(indicador.equals("GrupoPrecificacao")) {
+		if(indicador.equals("Grupo de Precificação")) {
 			select =  " select t3.id as id, t3.descricao as atributo, sum(t1.livro_qtd) as quantidade"
 				    + " from venda_item t1 "
 					+ " join livro t2 on t2.id = t1.livro_id "
@@ -62,6 +62,18 @@ public class RelatorioVendaDAOImpl implements RelatorioVendaDAO {
 					+ " and   date(t4.venda_data) <= :dataFim "
 					+ " and   t4.status_venda_id = 4"
 					+ " group by 1,2";
+		}
+		
+		if(indicador.equals("Vendas Entregues/Trocadas")) {
+		
+			select = "select t1.id as id, t1.descricao as atributo, count(t4.id) as quantidade" + 
+					"		from status_venda t1 " + 
+					"		left join venda_detalhe t4 " + 
+					"		on t4.status_venda_id = t1.id" + 
+					"		and date(t4.venda_data) >= :dataInicio" + 
+					"		and date(t4.venda_data) <= :dataFim" + 
+					"		where t1.id in(4,6)" + 
+					"		group by 1,2" ;
 		}
 		
 		
@@ -106,8 +118,8 @@ public class RelatorioVendaDAOImpl implements RelatorioVendaDAO {
 					+ " coalesce(sum(t1.livro_qtd),0) as quantidade "
 					+ " from livro t2 "
 					+ " left join time_dimension t5 "
-					+ " on year(t5.db_date) >= year(:dataInicio) "
-					+ " and  year(t5.db_date) <= year(:dataFim) "
+					+ " on t5.db_date >= :dataInicio "
+					+ " and  t5.db_date <= :dataFim "
 					+ " and month(t5.db_date) >= month(:dataInicio) "
 					+ " and  month(t5.db_date) <= month(:dataFim) "
 					+ " left join venda_detalhe t4  "
@@ -119,7 +131,7 @@ public class RelatorioVendaDAOImpl implements RelatorioVendaDAO {
 					+ " order by 2, year(t5.db_date),month(t5.db_date) " ;
 		}
 		
-		if(indicador.equals("GrupoPrecificacao")) {
+		if(indicador.equals("Grupo de Precificação")) {
 			select = " select "
 					+ " concat(t3.id,coalesce (concat(month(t4.venda_data),year(t4.venda_data)),concat(month(t5.db_date),year(t5.db_date)))) as id, "
 					+ " t3.descricao as atributo, "
@@ -139,6 +151,25 @@ public class RelatorioVendaDAOImpl implements RelatorioVendaDAO {
 					+ " order by 2, year(t5.db_date),month(t5.db_date) " ;
 		}
 		
+		if(indicador.equals("Vendas Entregues/Trocadas")) {
+			select = " select "  
+					 + " concat(t1.id,coalesce (concat(month(t4.venda_data),year(t4.venda_data)),concat(month(t5.db_date),year(t5.db_date)))) as id,"
+					 + " case t1.descricao when 'ENTREGUE' then 'PEDIDOS ENTREGUES' "
+					 + " when 'TROCADO' then 'PEDIDOS TROCADOS' end as atributo, "
+					 + " coalesce (concat(month(t4.venda_data),'/',year(t4.venda_data)),concat(month(t5.db_date),'/',year(t5.db_date))) as AnoMes, "
+					 + " count(t4.id) as quantidade "
+					 + " from status_venda t1 "
+					 + " left join time_dimension t5 "
+					 + " on t5.db_date >= :dataInicio "
+					 + " and t5.db_date <= :dataFim "
+					 + " left join venda_detalhe t4 "
+					 + " on t1.id = t4.status_venda_id "
+					 + " and month(t5.db_date) = month(t4.venda_data) "
+					 + " and year(t5.db_date) = year(t4.venda_data) "
+					 + " where t1.id in (4,6) "
+					 + " group by 3,2,1 "
+					 + " order by 2, year(t5.db_date),month(t5.db_date) " ;
+		}		
 		
 		Query query = sessionFactory.getCurrentSession().createNativeQuery(select,RelatorioVendaLinha.class);
 		
