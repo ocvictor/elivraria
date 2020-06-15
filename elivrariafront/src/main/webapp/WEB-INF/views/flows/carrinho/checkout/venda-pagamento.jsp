@@ -99,7 +99,7 @@
 								<h5>CCV: ${cartao.ccv}</h5>
 								<hr/>
 								<div class="text-center">
-									<a href="${flowExecutionUrl}&_eventId_selecaoCartao&cartaoId=${cartao.id}" class="btn btn-primary">Selecionar</a>
+									<a href="${flowExecutionUrl}&_eventId_selecaoCartao&cartaoId=${cartao.id}" class="btn btn-primary">Pagar Com Este Cartão</a>
 									<hr/>						
 									<br>
 								</div>												
@@ -111,6 +111,7 @@
 			
 			<hr/>
 			<hr/>						
+			<a href="${flowExecutionUrl}&_eventId_pagarDoisCartoes" class="btn btn-primary">Pagar Com Dois Cartões</a>
 							
 			<div class="panel-heading">
 				<h4>Registrar - Cartão</h4>
@@ -190,12 +191,6 @@
 				</sf:form>
 			
 			</div>
-            <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#"><span class="badge pull-right"> R$ ${checkoutModelo.checkoutTotal}</span> Pagamento Finalizar</a></li>
-            </ul>
-            <br/>
-<%--             <a href="${flowExecutionUrl}&_eventId_pagar" class="btn btn-success btn-lg btn-block" role="button">Pagamento</a> --%>
-			
 		</div>
 	</div>
 </div>

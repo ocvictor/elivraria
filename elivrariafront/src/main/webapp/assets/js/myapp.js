@@ -445,6 +445,8 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$EstoqueTable.DataTable({
+			 order : [[ 1, "desc" ]],
+			 
 			"language": {
 				
 			    "sEmptyTable": "Nenhum registro encontrado",
@@ -544,6 +546,8 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$vendasAprovadasTable.DataTable({
+			 order : [[ 1, "desc" ]],
+			 
 			"language": {
 				
 			    "sEmptyTable": "Nenhum registro encontrado",
@@ -632,6 +636,8 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$vendasEntreguesTable.DataTable({
+			 order : [[ 1, "desc" ]],
+			 
 			"language": {
 				
 			    "sEmptyTable": "Nenhum registro encontrado",
@@ -704,6 +710,8 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$vendasTransporteTable.DataTable({
+			 order : [[ 1, "desc" ]],
+			 
 			"language": {
 				
 			    "sEmptyTable": "Nenhum registro encontrado",
@@ -846,6 +854,7 @@ $(function() {
 
 		$table
 				.DataTable({
+					 order : [[ 1, "desc" ]],
 					
 					"language": {
 						
@@ -1094,7 +1103,6 @@ $(function() {
 				});
 	}
 	
-	// lista todos produtos
 	var $table = $('#trocasSolicitadasTable');
 	
 	
@@ -1104,6 +1112,8 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$table.DataTable({
+			 order : [[ 1, "desc" ]],
+			 
 			"language": {
 				
 			    "sEmptyTable": "Nenhum registro encontrado",
@@ -1183,7 +1193,6 @@ $(function() {
 	}
 	
 	
-	// lista todos produtos
 	var $trocasAnaliseTable = $('#trocasAnaliseTable');
 	
 	
@@ -1193,6 +1202,9 @@ $(function() {
 		console.log(jsonUrl);
 		
 		$trocasAnaliseTable.DataTable({
+			
+			 order : [[ 1, "desc" ]],
+			 
 			"language": {
 				
 			    "sEmptyTable": "Nenhum registro encontrado",

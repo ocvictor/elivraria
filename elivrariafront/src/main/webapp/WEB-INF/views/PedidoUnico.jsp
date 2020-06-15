@@ -98,13 +98,21 @@
 		    			<div class="col-xs-6">
 		    				<address>
 		    					<strong>Método de Pagamento </strong><br>
-		    					<c:if test="${vendaDetalhe.totalVenda > 0}">	
-									Cartão de Crédito<br>
-									${vendaDetalhe.cartao.bandeira.descricao}<br>
-		    						${vendaDetalhe.cartao.numeroCartao}<br>
-		    						Cupons Utilizados
-									${vendaDetalhe.cupomTroca.descricao} <br>
-									${vendaDetalhe.cupomPromocional.descricao} <br>
+		    					<c:if test="${vendaDetalhe.totalVenda > 0}">
+		    						<c:if test="${not empty vendaDetalhe.cartaoDois}">
+		    							Pagamento com Dois Cartões de Crédito<br>
+		    							Cartão 1: ${vendaDetalhe.cartaoUm.bandeira.descricao}-${vendaDetalhe.cartaoUm.numeroCartao}<br>
+		    							Cartão 2: ${vendaDetalhe.cartaoDois.bandeira.descricao}-${vendaDetalhe.cartaoDois.numeroCartao}<br>
+		    						</c:if>
+		    						
+		    						<c:if test="${empty vendaDetalhe.cartaoDois}">		    						
+										Cartão de Crédito<br>
+										${vendaDetalhe.cartaoUm.bandeira.descricao}<br>
+			    						${vendaDetalhe.cartaoUm.numeroCartao}<br>
+			    						Cupons Utilizados
+										${vendaDetalhe.cupomTroca.descricao} <br>
+										${vendaDetalhe.cupomPromocional.descricao} <br>
+									</c:if>
 									
 								</c:if>
 		    					<c:if test="${vendaDetalhe.totalVenda == 0.0}">	

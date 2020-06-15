@@ -7,6 +7,10 @@
 
 	<var name="entrega" class="br.com.elivrariaback.dto.Endereco"/>
 	<var name="cartaoNovo" class="br.com.elivrariafront.model.CartaoModelo"/>
+	<var name="doisCartoes" class="br.com.elivrariafront.model.DoisCartoesModelo" />
+	<var name="cartaoUm" class="br.com.elivrariaback.dto.Cartao" />
+	<var name="cartaoDois" class="br.com.elivrariaback.dto.Cartao" />
+	
 	
 	<on-start>
 		<evaluate expression="checkoutHandler.init(currentUser.name)" result="flowScope.checkoutModelo"/>
@@ -41,6 +45,7 @@
 		<transition on="salvarCartao" to="salvarCartao" />
 		<transition on="selecaoCupomTroca" to="selecaoCupomTroca" validate="false"/>
 		<transition on="selecaoCupomPromocional" to="selecaoCupomPromocional" validate="false"/>
+		<transition on="pagarDoisCartoes" to="pagarDoisCartoes" validate="false"/>
 	</view-state>
 	
 	<action-state id="selecaoCupomPromocional">		
@@ -63,7 +68,7 @@
 	
 	<action-state id="salvarCartao">		
 		<evaluate expression="checkoutHandler.salvarCartao(flowScope.checkoutModelo, cartaoNovo)" />
-		<transition on="success" to="processarCartao" />
+		<transition on="success" to="pagamento" />
 	</action-state>
 	
 	<view-state id="processarCartao" view="flows/carrinho/checkout/venda-processamento-cartao">
@@ -85,6 +90,23 @@
 			<evaluate expression="checkoutHandler.getVendaDetalhe(flowScope.checkoutModelo)" result="requestScope.vendaDetalhe"/>
 		</on-entry>
 	</end-state>
+	
+	<view-state id="pagarDoisCartoes" view="flows/carrinho/checkout/venda-pagamento-dois-cartoes" model="doisCartoes">
+		<on-entry>
+			<evaluate expression="checkoutHandler.getCartaoDoisCartoes(flowScope.checkoutModelo)" result="viewScope.cartao"/>
+			<evaluate expression="checkoutHandler.getBandeiras()" result="viewScope.bandeiras"/>
+			<set name="doisCartoes.primeiroCartao" value="cartaoUm"/>
+       		<set name="doisCartoes.segundoCartao" value="cartaoDois"/>
+		</on-entry>
+		<transition on="processarDoisCartoes" to="processarDoisCartoes" />
+	</view-state>
+	
+	<action-state id="processarDoisCartoes">		
+		<evaluate expression="checkoutHandler.processarDoisCartoes(flowScope.checkoutModelo, doisCartoes, messageContext)" />
+		<transition on="success" to="salvarVenda" />
+		<transition on="error" to="pagarDoisCartoes" />
+		
+	</action-state>
 	
 	<end-state id="home" view="externalRedirect:contextRelative:/home" />
 	<end-state id="error" view="flows/flows-shared/error" />

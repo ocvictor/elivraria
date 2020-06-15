@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.protobuf.Empty;
 
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CartaoDAO;
@@ -47,9 +50,11 @@ import br.com.elivrariaback.dto.StatusVenda;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariafront.model.CartaoModelo;
 import br.com.elivrariafront.model.CheckoutModelo;
+import br.com.elivrariafront.model.DoisCartoesModelo;
 import br.com.elivrariafront.model.ErroModelo;
 import br.com.elivrariafront.model.FreteModelo;
 import br.com.elivrariafront.model.UsuarioModelo;
+import br.com.elivrariafront.validador.DoisCartaoValidador;
 import br.com.elivrariafront.validador.LivroValidador;
 import br.com.elivrariafront.validador.VendaValidador;
 
@@ -232,9 +237,33 @@ public class CheckoutHandler {
 		
 		if(cartoes.size() == 0) {
 			cartoes = new ArrayList<>();
-		}
-
+		}		
+		
 		return cartoes;
+	}
+	
+public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
+		
+		List<Cartao> cartoes = usuarioDAO.listCartao(modelo.getUsuario().getId());				
+		
+		if(cartoes.size() == 0) {
+			cartoes = new ArrayList<>();
+		}
+		
+		List<CartaoModelo> lstCartaoModelo = new ArrayList<CartaoModelo>();
+		
+		for (Cartao cartao : cartoes) {
+			CartaoModelo cartaoModelo = new CartaoModelo();
+			cartaoModelo.setCartaoId(cartao.getId());
+			cartaoModelo.setBandeiraId(cartao.getBandeira().getId());
+			cartaoModelo.setAnoVencimento(cartao.getAnoVencimento());
+			cartaoModelo.setCcv(cartao.getCcv());
+			String finalNumero = String.valueOf(cartao.getNumeroCartao()).substring(12, 16);
+			cartaoModelo.setDescricao(cartao.getBandeira().getDescricao() + " - XXXX-XXXX-XXXX-" + finalNumero);
+			lstCartaoModelo.add(cartaoModelo);
+		}
+		
+		return lstCartaoModelo;
 	}
 	
 	public List<Bandeira> getBandeiras() {
@@ -267,7 +296,7 @@ public class CheckoutHandler {
 		
 		Cartao cartao = usuarioDAO.getCartao(cartaoId);
 		
-		checkoutModelo.setCartao(cartao);
+		checkoutModelo.setCartaoUm(cartao);
 		
 		return transitionValue;
 		
@@ -291,8 +320,6 @@ public class CheckoutHandler {
 		cartao.setNumeroCartao(cartaoModelo.getNumeroCartao());
 
 		usuarioDAO.addCartao(cartao);
-		
-		checkoutModelo.setCartao(cartao);
 		
 		return transitionValue;
 		
@@ -361,6 +388,85 @@ public class CheckoutHandler {
 		}
 			
 	}
+	
+	public String processarDoisCartoes(CheckoutModelo checkoutModelo, DoisCartoesModelo doisCartoes, MessageContext error) {
+		String transitionValue = "success";
+		String results = "";
+		
+		logger.info("Valor segundo cartao: " + doisCartoes.getValorSegundoCartao());
+		results = new DoisCartaoValidador().validar(doisCartoes, results);
+		
+		
+		
+		if (!results.isEmpty()) {
+			if(results.equals("erroCartao")) {
+				error.addMessage(new MessageBuilder().error().source(
+					      "segundoCartao.id").defaultText("Cartões devem ser diferentes").build());
+					    transitionValue = "error";
+					    return transitionValue;
+			}
+			if(results.equals("erroValorPrimeiro")) {
+				error.addMessage(new MessageBuilder().error().source(
+					      "valorPrimeiroCartao").defaultText("Valor para pagamento deve ser superior a R$ 10,00").build());
+					    transitionValue = "error";
+					    return transitionValue;
+
+			}
+			if(results.equals("erroValorSegundo")) {
+				error.addMessage(new MessageBuilder().error().source(
+					      "valorSegundoCartao").defaultText("Valor para pagamento deve ser superior a R$ 10,00").build());
+					    transitionValue = "error";
+					    return transitionValue;
+
+			}
+		}
+		
+		if (doisCartoes.getValorPrimeiroCartao() > checkoutModelo.getCheckoutTotal())
+		{
+			error.addMessage(new MessageBuilder().error().source(
+				      "valorPrimeiroCartao").defaultText("Valor para pagamento maior que o valor da venda!").build());
+				    transitionValue = "error";
+				    return transitionValue;			
+		}
+		
+		Cartao cartao = cartaoDAO.getCartao(doisCartoes.getPrimeiroCartao().getId());
+		
+		logger.info("pegou o cartão");
+		
+		List<CartaoValidador> lCartaoValidador= cartaoDAO.validar(cartao.getBandeira().getId(),
+				cartao.getNomeCartao(),cartao.getNumeroCartao(),
+				cartao.getMesVencimento(),cartao.getAnoVencimento(), 
+				cartao.getCcv());
+		
+		logger.info("processou lista de cartao validos");
+		
+		if(lCartaoValidador.isEmpty()) {
+			error.addMessage(new MessageBuilder().error().source(
+				      "primeiroCartao.id").defaultText("Cartão Inválido").build());
+				    transitionValue = "error";
+				    return transitionValue;		
+		}
+		
+		cartao = cartaoDAO.getCartao(doisCartoes.getSegundoCartao().getId());
+		
+		lCartaoValidador= cartaoDAO.validar(cartao.getBandeira().getId(),
+				cartao.getNomeCartao(),cartao.getNumeroCartao(),
+				cartao.getMesVencimento(),cartao.getAnoVencimento(), 
+				cartao.getCcv());
+		
+		if(lCartaoValidador.isEmpty()) {
+			error.addMessage(new MessageBuilder().error().source(
+				      "segundoCartao.id").defaultText("Cartão Inválido").build());
+				    transitionValue = "error";
+				    return transitionValue;			
+		}
+		
+		checkoutModelo.setCartaoUm(usuarioDAO.getCartao(doisCartoes.getPrimeiroCartao().getId()));
+		checkoutModelo.setCartaoDois(usuarioDAO.getCartao(doisCartoes.getSegundoCartao().getId()));
+		
+		return transitionValue;
+	}
+	
 	public String salvarPedido(CheckoutModelo checkoutModelo) {
 		String transitionValue = "success";
 		BindingResult results;
@@ -370,7 +476,8 @@ public class CheckoutHandler {
 		VendaDetalhe detalhePedido = new VendaDetalhe();
 				
 		detalhePedido.setUsuario(checkoutModelo.getUsuario());
-		detalhePedido.setCartao(checkoutModelo.getCartao());
+		detalhePedido.setCartaoUm(checkoutModelo.getCartaoUm());
+		detalhePedido.setCartaoDois(checkoutModelo.getCartaoDois());
 		detalhePedido.setCupomTroca(checkoutModelo.getCupomTroca());
 		detalhePedido.setCupomPromocional(checkoutModelo.getCupomPromocional());
 		detalhePedido.setEnderecoEntrega(checkoutModelo.getEndereco());
@@ -434,12 +541,12 @@ public class CheckoutHandler {
 		String dataString = ldt.format(sdf);
 		detalhePedido.setDataVenda(dataString);	
 		
-		if(checkoutModelo.getCheckoutTotal() > 0)
+		if(checkoutModelo.getCheckoutTotal() > 0 && checkoutModelo.getCartaoDois() == null)
 		{
-			List<CartaoValidador> lCartaoValidador= cartaoDAO.validar(checkoutModelo.getCartao().getBandeira().getId(),
-					checkoutModelo.getCartao().getNomeCartao(),checkoutModelo.getCartao().getNumeroCartao(),
-					checkoutModelo.getCartao().getMesVencimento(),checkoutModelo.getCartao().getAnoVencimento(), 
-					checkoutModelo.getCartao().getCcv());
+			List<CartaoValidador> lCartaoValidador= cartaoDAO.validar(checkoutModelo.getCartaoUm().getBandeira().getId(),
+					checkoutModelo.getCartaoUm().getNomeCartao(),checkoutModelo.getCartaoUm().getNumeroCartao(),
+					checkoutModelo.getCartaoUm().getMesVencimento(),checkoutModelo.getCartaoUm().getAnoVencimento(), 
+					checkoutModelo.getCartaoUm().getCcv());
 			
 			if(lCartaoValidador.isEmpty()) {
 				StatusVenda sv = statusVendaDAO.get(2);

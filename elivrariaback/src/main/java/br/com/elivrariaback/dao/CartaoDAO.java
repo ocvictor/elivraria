@@ -9,6 +9,8 @@ public interface CartaoDAO {
 	
 	
 	List<CartaoValidador> validar(int bandeiraId, String nome, long numero, int mes, int ano, int ccv);
+	Cartao getCartao(int cartaoId);
+
 	
 	
 }

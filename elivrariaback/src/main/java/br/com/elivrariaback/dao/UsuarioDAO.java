@@ -21,7 +21,7 @@ public interface UsuarioDAO {
 	boolean updateCartao(Cartao cartao);
 	boolean updateUsuario(Usuario usuario);
 	Endereco getEnderecoCobranca(int usuarioId);
-	Cartao getCartao(int usuarioId);
+	Cartao getCartao(int cartaoId);
 	List<Cartao> listCartao(int usuarioId);
 	List<Endereco> listEnderecoEntrega(int usuarioId);
 	List<Usuario> listUsuarios();

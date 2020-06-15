@@ -16,6 +16,9 @@ public class CartaoModelo implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private int cartaoId;
+
+	
 	@NotNull(message = "Insira a bandeira do Cartão")
 	private int bandeiraId;
 	
@@ -33,7 +36,9 @@ public class CartaoModelo implements Serializable {
 	
 	@NotNull(message = "Insira o CCV!")
 	private int ccv;
-
+	
+	private String descricao;
+	
 	public int getBandeiraId() {
 		return bandeiraId;
 	}
@@ -81,8 +86,21 @@ public class CartaoModelo implements Serializable {
 	public void setCcv(int ccv) {
 		this.ccv = ccv;
 	}
-	
-			
-	
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public int getCartaoId() {
+		return cartaoId;
+	}
+
+	public void setCartaoId(int cartaoId) {
+		this.cartaoId = cartaoId;
+	}	
 	
 }

@@ -70,8 +70,13 @@ public class VendaDetalhe implements Serializable {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "cartao_id")
-	private Cartao cartao;
+	@JoinColumn(name = "cartao_um_id")
+	private Cartao cartaoUm;
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "cartao_dois_id")
+	private Cartao cartaoDois;
 	
 	@JsonIgnore
 	@ManyToOne
@@ -150,13 +155,21 @@ public class VendaDetalhe implements Serializable {
 	public void setDataVenda(String dataVenda) {
 		this.dataVenda = dataVenda;
 	}
-
-	public Cartao getCartao() {
-		return cartao;
+	
+	public Cartao getCartaoUm() {
+		return cartaoUm;
 	}
 
-	public void setCartao(Cartao cartao) {
-		this.cartao = cartao;
+	public void setCartaoUm(Cartao cartaoUm) {
+		this.cartaoUm = cartaoUm;
+	}
+
+	public Cartao getCartaoDois() {
+		return cartaoDois;
+	}
+
+	public void setCartaoDois(Cartao cartaoDois) {
+		this.cartaoDois = cartaoDois;
 	}
 
 	public StatusVenda getStatusVenda() {

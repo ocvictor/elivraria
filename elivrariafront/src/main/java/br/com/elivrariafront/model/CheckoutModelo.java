@@ -24,7 +24,8 @@ public class CheckoutModelo implements Serializable {
 	private Usuario usuario;
 	private Endereco endereco;
 	private Carrinho carrinho;
-	private Cartao cartao;
+	private Cartao cartaoUm;
+	private Cartao cartaoDois;
 	private CartaoValidador cartaoValidador;
 	private List<ItemCarrinho> itemCarrinho;
 	private VendaDetalhe vendaDetalhe;
@@ -68,11 +69,18 @@ public class CheckoutModelo implements Serializable {
 	public void setCheckoutTotal(double checkoutTotal) {
 		this.checkoutTotal = checkoutTotal;
 	}
-	public Cartao getCartao() {
-		return cartao;
+
+	public Cartao getCartaoUm() {
+		return cartaoUm;
 	}
-	public void setCartao(Cartao cartao) {
-		this.cartao = cartao;
+	public void setCartaoUm(Cartao cartaoUm) {
+		this.cartaoUm = cartaoUm;
+	}
+	public Cartao getCartaoDois() {
+		return cartaoDois;
+	}
+	public void setCartaoDois(Cartao cartaoDois) {
+		this.cartaoDois = cartaoDois;
 	}
 	public CartaoValidador getCartaoValidador() {
 		return cartaoValidador;

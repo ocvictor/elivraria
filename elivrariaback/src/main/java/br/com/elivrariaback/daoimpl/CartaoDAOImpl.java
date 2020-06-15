@@ -45,6 +45,16 @@ public class CartaoDAOImpl implements CartaoDAO {
 
 		return query.getResultList();
 	}
-
+	
+	@Override
+	public Cartao getCartao(int cartaoId) {
+		try {			
+			return sessionFactory.getCurrentSession().get(Cartao.class, cartaoId);			
+		}
+		catch(Exception ex) {
+			System.out.println(ex.getMessage());
+			return null;
+		}
+	}
 
 }
