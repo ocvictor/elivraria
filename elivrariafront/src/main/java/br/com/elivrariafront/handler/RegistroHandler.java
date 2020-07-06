@@ -2,8 +2,6 @@ package br.com.elivrariafront.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,16 +12,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import br.com.elivrariaback.dao.BandeiraDAO;
+import br.com.elivrariaback.dao.CartaoDAO;
+import br.com.elivrariaback.dao.EnderecoDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dto.Endereco;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Usuario;
-import br.com.elivrariafront.controller.GerenciamentoController;
 import br.com.elivrariafront.model.CartaoModelo;
-import br.com.elivrariafront.model.CheckoutModelo;
 import br.com.elivrariafront.model.RegistroModelo;
+import br.com.elivrariafront.validador.RegistroValidador;
 
 @Component
 public class RegistroHandler {
@@ -40,9 +39,16 @@ private static final Logger logger = LoggerFactory.getLogger(RegistroHandler.cla
  @Autowired
  private BandeiraDAO bandeiraDAO;
  
+ @Autowired
+ private CartaoDAO cartaoDAO;
+ 
+ @Autowired
+ private EnderecoDAO enderecoDAO; 
+ 
  public RegistroModelo init() { 
   return new RegistroModelo();
  } 
+
  public void addUsuario(RegistroModelo registroModelo, Usuario usuario) {
   registroModelo.setUsuario(usuario);
  } 
@@ -72,56 +78,85 @@ private static final Logger logger = LoggerFactory.getLogger(RegistroHandler.cla
 	
  }
  
-
  public String validarUsuario(Usuario usuario, MessageContext error) {
 	 error.clearMessages();
-  String transitionValue = "sucesso";
-  boolean hasUpperCase = !usuario.getSenha().equals(usuario.getSenha().toLowerCase());
-  boolean hasLowercase = !usuario.getSenha().equals(usuario.getSenha().toUpperCase());
-  boolean isAtLeast8   = usuario.getSenha().length() >= 8;
-  boolean hasSpecial   = !usuario.getSenha().matches("[A-Za-z0-9 ]*");
 
-   if(!usuario.getSenha().equals(usuario.getConfirmaSenha())) {
-    error.addMessage(new MessageBuilder().error().source(
-      "confirmarSenha").defaultText("Senhas não correspondem!").build());
-    transitionValue = "falha";    
-   }  
-   if(usuarioDAO.getByEmail(usuario.getEmail())!=null) {
-    error.addMessage(new MessageBuilder().error().source(
-      "email").defaultText("Email já utilizado!").build());
-    transitionValue = "falha";
-   }
-   if(!isAtLeast8) {
-	   error.addMessage(new MessageBuilder().error().source(
-			   "senha").defaultText("Senha deve conter mais que 8 caractéres").build());
-	   transitionValue = "falha";
-   }
-   if (!hasLowercase) {
-	   error.addMessage(new MessageBuilder().error().source(
+	 String validacaoRegistro = new RegistroValidador().validate(usuario);
+	 
+	  String transitionValue = "sucesso";
+	  
+	  if(usuarioDAO.getByEmail(usuario.getEmail())!=null) {
+	    error.addMessage(new MessageBuilder().error().source(
+	      "email").defaultText("Email já utilizado!").build());
+	    transitionValue = "falha";
+	  }
+	  
+	  if(validacaoRegistro.equals("erroConfirmarSenha")) {
+		  error.addMessage(new MessageBuilder().error().source(
+				  "confirmaSenha").defaultText("Senhas não batem!").build());
+		  transitionValue = "falha";	        
+		}	 
+		
+		 
+		if(validacaoRegistro.equals("senha8caracteres")) {	
+			error.addMessage(new MessageBuilder().error().source(
+			  "senha").defaultText("Senha deve conter mais que 8 caractéres").build());
+			transitionValue = "falha";
+		}
+		 
+		if (validacaoRegistro.equals("senhaMinusculo")) {			 
+			   error.addMessage(new MessageBuilder().error().source(
 			   "senha").defaultText("Senha deve conter pelo menos 1 caracter minúsculo").build());
 	   transitionValue = "falha";
-	   
-   }
-   if(!hasUpperCase) {
-	   error.addMessage(new MessageBuilder().error().source(
+			   
+		}
+		if(validacaoRegistro.equals("senhaMaiusculo")) {
+			   error.addMessage(new MessageBuilder().error().source(
 			   "senha").defaultText("Senha deve conter pelo menos 1 caracter maiúsculo").build());
 	   transitionValue = "falha";
-	   
-   }
-   if(!hasSpecial) {
-	   error.addMessage(new MessageBuilder().error().source(
+			   
+		}
+		if(validacaoRegistro.equals("senhaEspecial")) {
+			   error.addMessage(new MessageBuilder().error().source(
 			   "senha").defaultText("Senha deve conter pelo menos 1 caracter especial").build());
 	   transitionValue = "falha";
-	   
-   }
-   
-   
-
-   
-   
-
-   
-  return transitionValue;
+		}
+		
+//	  boolean hasUpperCase = !usuario.getSenha().equals(usuario.getSenha().toLowerCase());
+//	  boolean hasLowercase = !usuario.getSenha().equals(usuario.getSenha().toUpperCase());
+//	  boolean isAtLeast8   = usuario.getSenha().length() >= 8;
+//	  boolean hasSpecial   = !usuario.getSenha().matches("[A-Za-z0-9 ]*");
+//
+//	   
+//	   if(usuarioDAO.getByEmail(usuario.getEmail())!=null) {
+//	    error.addMessage(new MessageBuilder().error().source(
+//	      "email").defaultText("Email já utilizado!").build());
+//	    transitionValue = "falha";
+//	   }
+//	   if(!isAtLeast8) {
+//		   error.addMessage(new MessageBuilder().error().source(
+//				   "senha").defaultText("Senha deve conter mais que 8 caractéres").build());
+//		   transitionValue = "falha";
+//	   }
+//	   if (!hasLowercase) {
+//		   error.addMessage(new MessageBuilder().error().source(
+//				   "senha").defaultText("Senha deve conter pelo menos 1 caracter minúsculo").build());
+//		   transitionValue = "falha";
+//		   
+//	   }
+//	   if(!hasUpperCase) {
+//		   error.addMessage(new MessageBuilder().error().source(
+//				   "senha").defaultText("Senha deve conter pelo menos 1 caracter maiúsculo").build());
+//		   transitionValue = "falha";
+//		   
+//	   }
+//	   if(!hasSpecial) {
+//		   error.addMessage(new MessageBuilder().error().source(
+//				   "senha").defaultText("Senha deve conter pelo menos 1 caracter especial").build());
+//		   transitionValue = "falha";
+//		   
+//	   }
+	   return transitionValue;
  }
  
 public List<Bandeira> getBandeiras(RegistroModelo model) {
@@ -152,10 +187,10 @@ public List<Bandeira> getBandeiras(RegistroModelo model) {
   Endereco endereco = registroModelo.getEndereco();
   endereco.setUsuarioId(usuario.getId());
   endereco.setCobranca(true); 
-  usuarioDAO.addEndereco(endereco);
+  enderecoDAO.addEndereco(endereco);
   Cartao cartao = registroModelo.getCartao();
   cartao.setUsuarioId(usuario.getId());
-  usuarioDAO.addCartao(cartao);
+  cartaoDAO.addCartao(cartao);
   return transitionValue ;
  } 
 }

@@ -11,18 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.elivrariaback.dao.CartaoDAO;
-import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.CartaoValidador;
-import br.com.elivrariaback.dto.Categoria;
 
 @Repository("cartaoDAO")
 @Transactional
 public class CartaoDAOImpl implements CartaoDAO {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CartaoDAOImpl.class);
-
-
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -41,8 +36,6 @@ public class CartaoDAOImpl implements CartaoDAO {
 		query.setParameter("ano", ano);
 		query.setParameter("ccv", ccv);
 		
-		logger.info("Aqui está a query: " + query);
-
 		return query.getResultList();
 	}
 	
@@ -54,6 +47,27 @@ public class CartaoDAOImpl implements CartaoDAO {
 		catch(Exception ex) {
 			System.out.println(ex.getMessage());
 			return null;
+		}
+	}
+	@Override
+	public boolean addCartao(Cartao cartao) {
+		try {			
+			sessionFactory.getCurrentSession().persist(cartao);			
+			return true;
+		}
+		catch(Exception ex) {
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean updateCartao(Cartao cartao) {
+		try {			
+			sessionFactory.getCurrentSession().update(cartao);			
+			return true;
+		}
+		catch(Exception ex) {
+			return false;
 		}
 	}
 

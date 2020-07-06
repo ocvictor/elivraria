@@ -11,10 +11,7 @@ public interface LivroDAO {
 	boolean add(Livro livro);
 	boolean update(Livro livro);
 	boolean delete(Livro livro);
-
-	List<Livro> getLivrosByParam(String param, int count);	
-	
-	
+	List<Livro> getLivrosByParam(String param, int count);		
 	List<Livro> listaAtivosLivros();	
 	List<Livro> listaAtivosLivroCategoria(int categoryId);
 	List<Livro> getUltimosAtivosLivros(int count);

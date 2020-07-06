@@ -1,7 +1,6 @@
 package br.com.elivrariafront.controller;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,23 +11,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.common.collect.*;
  
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,18 +31,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariafront.model.RelatorioModelo;
 import br.com.elivrariafront.model.TrocaModelo;
 import br.com.elivrariafront.model.UsuarioModelo;
-import br.com.elivrariafront.validador.EstoqueValidador;
+import br.com.elivrariafront.validador.RegistroValidador;
 import br.com.elivrariafront.validador.RelatorioValidador;
 import br.com.elivrariafront.validador.TrocaValidador;
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CategoriaDAO;
-import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.ItemVendaDAO;
 import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dao.RelatorioVendaDAO;
@@ -59,7 +50,6 @@ import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Bandeira;
 import br.com.elivrariaback.dto.Categoria;
-import br.com.elivrariaback.dto.Estoque;
 import br.com.elivrariaback.dto.ItemVenda;
 import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.RelatorioVendaLinha;
@@ -69,18 +59,19 @@ import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariaback.dto.VendaDetalhe;
 import br.com.elivrariafront.exception.LivroNotFoundException;
+import br.com.elivrariafront.handler.EstoqueHandler;
+import br.com.elivrariafront.handler.RegistroHandler;
 
 @Controller
 public class PageController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PageController.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
     private static final SimpleDateFormat sdfRelatorio = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat sdfRelatorioAnoMes = new SimpleDateFormat("MM/yyyy");
-
-
-
 	
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
 	@Autowired
 	private CategoriaDAO categoriaDAO;
 	
@@ -89,9 +80,6 @@ public class PageController {
 	
 	@Autowired
 	private LivroDAO livroDAO;
-	
-	@Autowired
-	private EstoqueDAO estoqueDAO;
 	
 	@Autowired
 	private UsuarioDAO usuarioDAO;
@@ -113,15 +101,11 @@ public class PageController {
 	
 	@Autowired
 	private RelatorioVendaDAO relatorioVendaDAO;
-
 	
 	@RequestMapping(value = {"/", "/home", "/index"})
 	public ModelAndView index(@RequestParam(name="logout",required=false)String logout) {		
 		ModelAndView mv = new ModelAndView("page");		
 		mv.addObject("title","Home");
-		
-		logger.info("Inside PageController index method - INFO");
-		logger.debug("Inside PageController index method - DEBUG");
 		
 		mv.addObject("categorias", categoriaDAO.list());
 		
@@ -219,8 +203,6 @@ public class PageController {
 		ModelAndView mv= new ModelAndView("page");
 		
 		mv.addObject("bandeiras", bandeiraDAO.list());
-		logger.info("Page Controller membership called!");
-		
 		return mv;
 	}
 	
@@ -280,10 +262,10 @@ public class PageController {
 		if(success != null) {
 			if(success.equals("troca")){
 				mv.addObject("message", "Troca Solicitada com sucesso!");
-			}	
+			}else if (success.equals("senha")) {
+			mv.addObject("message", "Senha Alterada com sucesso!");			
+			}
 		}
-		
-	    
 		return mv;				
 	}
 	
@@ -359,7 +341,6 @@ public class PageController {
 			return "page";
 		}
 		
-		logger.info("Troca= " + troca);
 		StatusVenda statusVenda = statusVendaDAO.get(5);
 		vendaDetalhe.setStatusVenda(statusVenda);
 		
@@ -369,6 +350,47 @@ public class PageController {
 		return "redirect:/meuPerfil?success=troca";
 
 		
+	}
+	@RequestMapping(value = "/alterar/senha", method=RequestMethod.POST)
+	public String GerenciarSenha(@ModelAttribute("usuario") Usuario mUsuario, Model model, HttpServletRequest request) {
+		
+		String validacaoRegistro = new RegistroValidador().validate(mUsuario);
+		  
+		if(validacaoRegistro.equals("erroConfirmarSenha")) {
+			model.addAttribute("message", "Senhas não correspondem!");
+			model.addAttribute("ClickMeuPerfil",true);
+			return "page";		        
+		}	 
+		
+		 
+		if(validacaoRegistro.equals("senha8caracteres")) {	
+			 model.addAttribute("message", "Senha deve conter mais que 8 caractéres!");
+			 model.addAttribute("ClickMeuPerfil",true);
+			 return "page";	
+		}
+		 
+		if (validacaoRegistro.equals("senhaMinusculo")) {			 
+			 model.addAttribute("message", "Senha deve conter pelo menos 1 caracter minúsculo!");
+			 model.addAttribute("ClickMeuPerfil",true);
+			 return "page";	
+			   
+		}
+		if(validacaoRegistro.equals("senhaMaiusculo")) {
+			 model.addAttribute("message", "Senha deve conter pelo menos 1 caracter maiúsculo!");
+			 model.addAttribute("ClickMeuPerfil",true);
+			 return "page";	
+			   
+		}
+		if(validacaoRegistro.equals("senhaEspecial")) {
+			 model.addAttribute("message", "Senha deve conter pelo menos 1 caracter especial!");
+			 model.addAttribute("ClickMeuPerfil",true);
+			 return "page";	
+		}
+		mUsuario.setSenha(passwordEncoder.encode(mUsuario.getSenha()));
+
+		usuarioDAO.update(mUsuario);
+		
+		return "redirect:/meuPerfil?success=senha";
 	}
 	
 	@RequestMapping(value = "/gerenciar/relatorios")

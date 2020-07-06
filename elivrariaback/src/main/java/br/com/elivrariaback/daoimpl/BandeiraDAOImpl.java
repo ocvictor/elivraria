@@ -67,7 +67,4 @@ public class BandeiraDAOImpl implements BandeiraDAO {
 			return false;
 		}
 	}
-
-	
-
 }

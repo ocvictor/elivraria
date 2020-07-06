@@ -1,20 +1,14 @@
 package br.com.elivrariafront.validador;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import br.com.elivrariaback.dao.GrupoPrecificacaoDAO;
 import br.com.elivrariaback.dto.Estoque;
-import br.com.elivrariaback.dto.GrupoPrecificacao;
-import br.com.elivrariafront.controller.GerenciamentoController;
+
 
 public class EstoqueValidador implements Validator {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EstoqueValidador.class);
 	
 	@Autowired
 	GrupoPrecificacaoDAO grpDAO;

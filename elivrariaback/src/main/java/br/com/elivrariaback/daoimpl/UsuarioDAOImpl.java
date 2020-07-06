@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dto.Cartao;
 import br.com.elivrariaback.dto.Endereco;
-import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.Usuario;
 
 
@@ -47,51 +46,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 			return false;
 		}
 	}
-	
-	@Override
-	public boolean addCartao(Cartao cartao) {
-		try {			
-			sessionFactory.getCurrentSession().persist(cartao);			
-			return true;
-		}
-		catch(Exception ex) {
-			return false;
-		}
-	}
-	
-	@Override
-	public boolean updateCartao(Cartao cartao) {
-		try {			
-			sessionFactory.getCurrentSession().update(cartao);			
-			return true;
-		}
-		catch(Exception ex) {
-			return false;
-		}
-	}
-	
-	@Override
-	public boolean addEndereco(Endereco endereco) {
-		try {			
-			sessionFactory.getCurrentSession().persist(endereco);			
-			return true;
-		}
-		catch(Exception ex) {
-			return false;
-		}
-	}
-	
-	@Override
-	public boolean updateEndereco(Endereco endereco) {
-		try {			
-			sessionFactory.getCurrentSession().update(endereco);			
-			return true;
-		}
-		catch(Exception ex) {
-			return false;
-		}
-	}	
-	
+		
 	@Override
 	public List<Cartao> listCartao(int usuarioId) {
 		String selectQuery = "FROM Cartao WHERE usuarioId = :usuarioId ORDER BY id DESC";
@@ -154,29 +109,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 	}
 	
 	@Override
-	public Cartao getCartao(int cartaoId) {
-		try {			
-			return sessionFactory.getCurrentSession().get(Cartao.class, cartaoId);			
-		}
-		catch(Exception ex) {
-			System.out.println(ex.getMessage());
-			return null;
-		}
-	}
-	
-	@Override
-	public Endereco getEndereco(int enderecoId) {
-		try {			
-			return sessionFactory.getCurrentSession().get(Endereco.class, enderecoId);			
-		}
-		catch(Exception ex) {
-			System.out.println(ex.getMessage());
-			return null;
-		}
-	}
-	
-	@Override
-	public boolean updateUsuario(Usuario usuario) {
+	public boolean update(Usuario usuario) {
 		try {			
 			sessionFactory.getCurrentSession().update(usuario);			
 			return true;
@@ -190,7 +123,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 	public List<Usuario> listUsuarios() {
 		return sessionFactory
 				.getCurrentSession()
-					.createQuery("FROM Usuario" , Usuario.class)
+					.createNativeQuery(" Select * FROM Usuario Where id > 1 ", Usuario.class)
 						.getResultList();
 	}
 

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.TrocaDAO;
-import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Troca;
 
 @Repository("trocaDAO")
@@ -81,6 +79,16 @@ public class TrocaDAOImpl implements TrocaDAO {
 		return sessionFactory.getCurrentSession().
 				createQuery(query, Troca.class)
 				.setParameter("statusTrocaId", 3)
+				.getResultList();
+		
+	}
+	
+	@Override
+	public List<Troca> getConfirmadas() {
+		String query = "From Troca Where status_troca_id= :statusTrocaId ";
+		return sessionFactory.getCurrentSession().
+				createQuery(query, Troca.class)
+				.setParameter("statusTrocaId", 2)
 				.getResultList();
 		
 	}

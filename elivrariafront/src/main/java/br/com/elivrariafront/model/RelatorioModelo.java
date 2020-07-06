@@ -1,7 +1,5 @@
 package br.com.elivrariafront.model;
 
-import java.util.Date;
-
 public class RelatorioModelo{
 
 	/**

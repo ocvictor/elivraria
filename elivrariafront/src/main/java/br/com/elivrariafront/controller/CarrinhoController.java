@@ -1,7 +1,5 @@
 package br.com.elivrariafront.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +13,6 @@ import br.com.elivrariafront.service.CarrinhoService;
 @RequestMapping("/carrinho")
 public class CarrinhoController {
 
-	private final static Logger logger = LoggerFactory.getLogger(CarrinhoController.class);
-	
 	@Autowired
 	private CarrinhoService carrinhoService;
 	@RequestMapping("/mostrar")

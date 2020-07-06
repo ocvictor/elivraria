@@ -1,34 +1,25 @@
 package br.com.elivrariafront.handler;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import org.springframework.validation.Errors;
+
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
-import org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.google.protobuf.Empty;
 
 import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.CartaoDAO;
 import br.com.elivrariaback.dao.CupomPromocionalDAO;
 import br.com.elivrariaback.dao.CupomTrocaDAO;
+import br.com.elivrariaback.dao.EnderecoDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.ItemCarrinhoDAO;
 import br.com.elivrariaback.dao.LivroDAO;
@@ -55,13 +46,11 @@ import br.com.elivrariafront.model.ErroModelo;
 import br.com.elivrariafront.model.FreteModelo;
 import br.com.elivrariafront.model.UsuarioModelo;
 import br.com.elivrariafront.validador.DoisCartaoValidador;
-import br.com.elivrariafront.validador.LivroValidador;
 import br.com.elivrariafront.validador.VendaValidador;
 
 @Component
 public class CheckoutHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(CheckoutHandler.class);
     private static final DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	
@@ -95,7 +84,8 @@ public class CheckoutHandler {
 	@Autowired
 	private CupomPromocionalDAO cupomPromocionalDAO;
 	
-	//private FreteHandler freteHandler;
+	@Autowired
+	private EnderecoDAO enderecoDAO;
 	
 	public CheckoutModelo init(String nome) throws Exception{
 
@@ -145,7 +135,7 @@ public class CheckoutHandler {
 		String transitionValue = "success";
 		
 		
-		Endereco enderecoEntrega = usuarioDAO.getEndereco(enderecoId);		
+		Endereco enderecoEntrega = enderecoDAO.getEndereco(enderecoId);		
 		
 		checkoutModelo.setEndereco(enderecoEntrega);
 		
@@ -172,12 +162,9 @@ public class CheckoutHandler {
 		freteModelo.setsCdAvisoRecebimento("S");
 		freteModelo.setStrRetorno("xml");
 		
-		logger.info("Aqui montou o frete modelo" + freteModelo);
 
 		String valorFrete = new FreteHandler().calcularFrete(freteModelo);
 		
-		logger.info("executou com sucesso o calcular, valor frete " + valorFrete);
-
 		dValorFrete = Double.valueOf(valorFrete.replace(",","."));
 		
 		checkoutModelo.setValorFrete(dValorFrete);
@@ -194,7 +181,7 @@ public class CheckoutHandler {
 		
 		endereco.setUsuarioId(checkoutModelo.getUsuario().getId());
 		endereco.setEntrega(true);
-		usuarioDAO.addEndereco(endereco);
+		enderecoDAO.addEndereco(endereco);
 		
 		checkoutModelo.setEndereco(endereco);
 		
@@ -294,7 +281,7 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 		String transitionValue = "success";
 		
 		
-		Cartao cartao = usuarioDAO.getCartao(cartaoId);
+		Cartao cartao = cartaoDAO.getCartao(cartaoId);
 		
 		checkoutModelo.setCartaoUm(cartao);
 		
@@ -319,7 +306,7 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 		cartao.setNomeCartao(cartaoModelo.getNomeCartao());
 		cartao.setNumeroCartao(cartaoModelo.getNumeroCartao());
 
-		usuarioDAO.addCartao(cartao);
+		cartaoDAO.addCartao(cartao);
 		
 		return transitionValue;
 		
@@ -353,7 +340,6 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 	public String salvarCupomPromocional(CheckoutModelo checkoutModelo, String cupomPromocionalDesc, MessageContext error) {
 		String transitionValue = "success";
 		cupomPromocionalDesc = cupomPromocionalDesc.toUpperCase();
-		logger.info("Cupom informado: " + cupomPromocionalDesc);
 		
 		List<CupomPromocional> lCupons = cupomPromocionalDAO.getByDescricao(cupomPromocionalDesc);
 		
@@ -393,7 +379,6 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 		String transitionValue = "success";
 		String results = "";
 		
-		logger.info("Valor segundo cartao: " + doisCartoes.getValorSegundoCartao());
 		results = new DoisCartaoValidador().validar(doisCartoes, results);
 		
 		
@@ -431,14 +416,12 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 		
 		Cartao cartao = cartaoDAO.getCartao(doisCartoes.getPrimeiroCartao().getId());
 		
-		logger.info("pegou o cartão");
 		
 		List<CartaoValidador> lCartaoValidador= cartaoDAO.validar(cartao.getBandeira().getId(),
 				cartao.getNomeCartao(),cartao.getNumeroCartao(),
 				cartao.getMesVencimento(),cartao.getAnoVencimento(), 
 				cartao.getCcv());
 		
-		logger.info("processou lista de cartao validos");
 		
 		if(lCartaoValidador.isEmpty()) {
 			error.addMessage(new MessageBuilder().error().source(
@@ -461,17 +444,14 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 				    return transitionValue;			
 		}
 		
-		checkoutModelo.setCartaoUm(usuarioDAO.getCartao(doisCartoes.getPrimeiroCartao().getId()));
-		checkoutModelo.setCartaoDois(usuarioDAO.getCartao(doisCartoes.getSegundoCartao().getId()));
+		checkoutModelo.setCartaoUm(cartaoDAO.getCartao(doisCartoes.getPrimeiroCartao().getId()));
+		checkoutModelo.setCartaoDois(cartaoDAO.getCartao(doisCartoes.getSegundoCartao().getId()));
 		
 		return transitionValue;
 	}
 	
 	public String salvarPedido(CheckoutModelo checkoutModelo) {
 		String transitionValue = "success";
-		BindingResult results;
-		int status_venda;
-		
 		
 		VendaDetalhe detalhePedido = new VendaDetalhe();
 				
@@ -560,7 +540,6 @@ public List<CartaoModelo> getCartaoDoisCartoes(CheckoutModelo modelo) {
 					
 			
 			String ReturnErroCartao = new VendaValidador().validate(checkoutModelo);	
-			logger.info("Cartao validado");
 			
 			if(ReturnErroCartao == "error") {
 				StatusVenda sv = statusVendaDAO.get(2);

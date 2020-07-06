@@ -31,7 +31,7 @@
  			<password-encoder ref="passwordEncoder" />
  			<jdbc-user-service data-source-ref="dataSource"
  				authorities-by-username-query="select email, role from usuario where email = ?"
- 				users-by-username-query="select email, senha, ativo from usuario where email = ?"
+ 				users-by-username-query="select email, senha, ativo from usuario where email = ? and ativo=1"
  			/>
  		</authentication-provider>
 	</authentication-manager>

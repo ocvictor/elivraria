@@ -15,6 +15,12 @@ import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.elivrariaback.util.UsuarioSerializer;
+
+@JsonSerialize(using = UsuarioSerializer.class)
 @Component
 @Entity
 @Table(name = "Usuario")
@@ -66,7 +72,9 @@ public class Usuario implements Serializable{
 	private boolean ativo = true;
 	@Transient
 	private String confirmaSenha;
-
+	
+	
+	
 	
 	public String getGenero() {
 		return genero;

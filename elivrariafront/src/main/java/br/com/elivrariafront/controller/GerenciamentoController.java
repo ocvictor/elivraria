@@ -1,16 +1,16 @@
 package br.com.elivrariafront.controller;
 
 import java.util.List;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.elivrariaback.dao.CategoriaDAO;
 import br.com.elivrariaback.dao.CupomTrocaDAO;
+import br.com.elivrariaback.dao.EnderecoDAO;
 import br.com.elivrariaback.dao.EstoqueDAO;
 import br.com.elivrariaback.dao.FornecedorDAO;
 import br.com.elivrariaback.dao.GrupoPrecificacaoDAO;
@@ -31,6 +32,7 @@ import br.com.elivrariaback.dao.LivroDAO;
 import br.com.elivrariaback.dao.StatusVendaDAO;
 import br.com.elivrariaback.dao.TrocaDAO;
 import br.com.elivrariaback.dao.BandeiraDAO;
+import br.com.elivrariaback.dao.CartaoDAO;
 import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
 import br.com.elivrariaback.dto.Bandeira;
@@ -46,22 +48,20 @@ import br.com.elivrariaback.dto.StatusVenda;
 import br.com.elivrariaback.dto.Troca;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariaback.dto.VendaDetalhe;
+import br.com.elivrariafront.handler.EstoqueHandler;
 import br.com.elivrariafront.util.FileUtil;
 import br.com.elivrariafront.validador.EstoqueValidador;
 import br.com.elivrariafront.validador.LivroValidador;
+import br.com.elivrariafront.validador.RegistroValidador;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Controller
 @RequestMapping("/gerenciar")
 public class GerenciamentoController {
 
-	private static final Logger logger = LoggerFactory.getLogger(GerenciamentoController.class);
-	
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Autowired
@@ -71,8 +71,7 @@ public class GerenciamentoController {
 	private CategoriaDAO categoriaDAO;		
 	
 	@Autowired
-	private UsuarioDAO usuarioDAO;
-	
+	private UsuarioDAO usuarioDAO;	
 
 	@Autowired
 	private BandeiraDAO bandeiraDAO;
@@ -80,8 +79,8 @@ public class GerenciamentoController {
 	@Autowired
 	private GrupoPrecificacaoDAO grpPrecificacaoDAO;
 	
-	@Autowired
-	private EstoqueDAO estoqueDAO;
+	//@Autowired
+	//private EstoqueDAO estoqueDAO;
 	
 	@Autowired
 	private FornecedorDAO fornecedorDAO;
@@ -98,6 +97,22 @@ public class GerenciamentoController {
 	@Autowired
 	private CupomTrocaDAO cupomTrocaDAO;
 	
+	@Autowired
+	private EnderecoDAO enderecoDAO;
+	
+	@Autowired
+	private CartaoDAO cartaoDAO;
+	
+	 @Autowired
+	 private PasswordEncoder passwordEncoder;
+	 
+	 private EstoqueHandler estoqueHandler;
+	
+	 @Autowired // adicione tudo isso
+	 
+	 public GerenciamentoController(EstoqueHandler estoqueHandler) {
+	        this.estoqueHandler = estoqueHandler;
+	    }
 	@RequestMapping("/livro")
 	public ModelAndView gerenciarLivro(@RequestParam(name="success",required=false)String success) {		
 
@@ -109,40 +124,31 @@ public class GerenciamentoController {
 		nLivro.setAtivo(true);
 
 		mv.addObject("livro", nLivro);
-
 		
 		if(success != null) {
 			if(success.equals("livro")){
-				mv.addObject("message", "Produto Cadastrado com sucesso!");
+				mv.addObject("message", "Livro Cadastrado com sucesso!");
 			}	
 			else if (success.equals("categoria")) {
 				mv.addObject("message", "Categoria Cadastrada com sucesso!");
 			}
-		}
-			
-		return mv;
-		
+		}			
+		return mv;		
 	}
-
 	
 	@RequestMapping("/{id}/livro")
 	public ModelAndView gerenciarLivroEditar(@PathVariable int id) {		
 
 		ModelAndView mv = new ModelAndView("page");	
 		mv.addObject("title","Gerenciar Livro");		
-		mv.addObject("ClickGerenciarLivro",true);
-		
-		mv.addObject("livro", livroDAO.get(id));
-
-			
+		mv.addObject("ClickGerenciarLivro",true);		
+		mv.addObject("livro", livroDAO.get(id));			
 		return mv;
 		
-	}
-	
-	
+	}	
 	
 	@RequestMapping(value = "/livro", method=RequestMethod.POST)
-	public String managePostProduct(@Valid @ModelAttribute("livro") Livro mLivro, 
+	public String GerenciarLivroPost(@Valid @ModelAttribute("livro") Livro mLivro, 
 			BindingResult results, Model model, HttpServletRequest request) {
 		
 		if(mLivro.getId() == 0) {
@@ -178,7 +184,7 @@ public class GerenciamentoController {
 	
 	@RequestMapping(value = "/livro/{id}/ativacao", method=RequestMethod.GET)
 	@ResponseBody
-	public String managePostProductActivation(@PathVariable int id) {		
+	public String GerenciarLivroAtivacao(@PathVariable int id) {		
 		Livro livro = livroDAO.get(id);
 		boolean isAtivo = livro.isAtivo();
 		livro.setAtivo(!isAtivo);
@@ -229,14 +235,14 @@ public class GerenciamentoController {
 		return mv;
 		
 	}
-
+	
 	
 	@RequestMapping("/{id}/usuario")
 	public ModelAndView gerenciarUsuarioEditar(@PathVariable int id) {		
 
 		ModelAndView mv = new ModelAndView("page");	
 		mv.addObject("title","Gerenciar Usuario");		
-		mv.addObject("ClickGerenciarUsuaio",true);
+		mv.addObject("ClickGerenciarUsuario",true);
 		
 		mv.addObject("usuario", usuarioDAO.get(id));
 
@@ -248,14 +254,49 @@ public class GerenciamentoController {
 	
 	@RequestMapping(value = "/usuario", method=RequestMethod.POST)
 	public String managePostUsuario(@Valid @ModelAttribute("usuario") Usuario mUsuario, Endereco mEndereco, Cartao mCartao,
-			BindingResult results, Model model, HttpServletRequest request) {
+			BindingResult results, Model model, HttpServletRequest request, MessageContext error) {
 		
 		if(mUsuario.getId() == 0 ) {
+			mUsuario.setRole("ADMIN");
 			usuarioDAO.add(mUsuario);
 		}
 		else {
-			usuarioDAO.updateEndereco(mEndereco);
-			usuarioDAO.updateCartao(mCartao);
+			String validacaoRegistro = new RegistroValidador().validate(mUsuario);
+			  
+			if(validacaoRegistro.equals("erroConfirmarSenha")) {
+				model.addAttribute("message", "Senhas não correspondem!");
+				model.addAttribute("ClickGerenciarUsuario",true);
+				return "page";		        
+			}	 
+			
+			 
+			if(validacaoRegistro.equals("senha8caracteres")) {	
+				 model.addAttribute("message", "Senha deve conter mais que 8 caractéres!");
+				 model.addAttribute("ClickGerenciarUsuario",true);
+				 return "page";	
+			}
+			 
+			if (validacaoRegistro.equals("senhaMinusculo")) {			 
+				 model.addAttribute("message", "Senha deve conter pelo menos 1 caracter minúsculo!");
+				 model.addAttribute("ClickGerenciarUsuario",true);
+				 return "page";	
+				   
+			}
+			if(validacaoRegistro.equals("senhaMaiusculo")) {
+				 model.addAttribute("message", "Senha deve conter pelo menos 1 caracter maiúsculo!");
+				 model.addAttribute("ClickGerenciarUsuario",true);
+				 return "page";	
+				   
+			}
+			if(validacaoRegistro.equals("senhaEspecial")) {
+				 model.addAttribute("message", "Senha deve conter pelo menos 1 caracter especial!");
+				 model.addAttribute("ClickGerenciarUsuario",true);
+				 return "page";	
+			}
+			mUsuario.setSenha(passwordEncoder.encode(mUsuario.getSenha()));
+
+			usuarioDAO.update(mUsuario);
+			
 		}
 		
 		return "redirect:/gerenciar/usuario?success=usuario";
@@ -268,20 +309,20 @@ public class GerenciamentoController {
 		Usuario usuario = usuarioDAO.get(id);
 		boolean isAtivo = usuario.isAtivo();
 		usuario.setAtivo(!isAtivo);
-		usuarioDAO.updateUsuario(usuario);		
-		return (isAtivo)? "Usuario Desativado com Sucesso!": "usuario Ativado com Sucesso";
+		usuarioDAO.update(usuario);		
+		return (isAtivo)? "Usuario Desativado com Sucesso!": "Usuario Ativado com Sucesso";
 	}
 			
 
 	@RequestMapping(value = "/endereco", method=RequestMethod.POST)
 	public String GerenciarEndereco(@ModelAttribute("endereco") Endereco mEndereco, HttpServletRequest request) {					
-		usuarioDAO.addEndereco(mEndereco);		
+		enderecoDAO.addEndereco(mEndereco);		
 		return "redirect:" + request.getHeader("Referer") + "?success=endereco";
 	}
 	
 	@RequestMapping(value = "/cartao", method=RequestMethod.POST)
 	public String GerenciarCartao(@ModelAttribute("cartao") Cartao mCartao, HttpServletRequest request) {					
-		usuarioDAO.addCartao(mCartao);		
+		cartaoDAO.addCartao(mCartao);		
 		return "redirect:" + request.getHeader("Referer") + "?success=cartao";
 	}
 		
@@ -370,69 +411,27 @@ public class GerenciamentoController {
 	}
 	
 	@RequestMapping(value = "/estoque", method=RequestMethod.POST)
-	public String managePostProduct(@Valid @ModelAttribute("estoque") Estoque mEstoque, 
+	public String gerenciarEstoquePost(@Valid @ModelAttribute("estoque") Estoque mEstoque, 
 			BindingResult results, Model model, HttpServletRequest request) {
 		
 		
 		if(mEstoque.getId() == 0) {
-		    Date date = new Date();  
-			mEstoque.setDataEntrada(sdf.format(date));
-			mEstoque.setFlgZerado(false);
-			mEstoque.setTpoOperacao("ENTRADA");
-
-			new EstoqueValidador().validate(mEstoque, results);
-		}
-		
-		if(results.hasErrors()) {
-			model.addAttribute("message", "Falha ao Cadastrar Estoque!");
-			model.addAttribute("ClickGerenciarEstoque",true);
-			return "page";
-		}			
-
-		
-		if(mEstoque.getId() == 0 ) {
-								
-			estoqueDAO.add(mEstoque);
+			String salvar = estoqueHandler.save(mEstoque, results);
 			
-			//atualiza as informações do livro
-			
-			Object lstEstoque = estoqueDAO.getByLivroDataZero(mEstoque.getLivroId());
-			
-			BigDecimal maiorVlrCustoBd = (BigDecimal) lstEstoque;
-			
-			double maiorVlrCusto = maiorVlrCustoBd.doubleValue();
-			
-			Livro livro = livroDAO.get(mEstoque.getLivroId());
-			int qtdAnt = livro.getQuantidade();
-			livro.setQuantidade(qtdAnt + mEstoque.getQuantidade());
-			
-			GrupoPrecificacao grp = grpPrecificacaoDAO.get(livro.getGrupoPrecificacaoId());
-			
-			livro.setPrecoUnit(maiorVlrCusto * (grp.getPercentualLucro() + 1));
-			
-			livroDAO.update(livro);
-			
+			if(salvar=="erro") {
+				model.addAttribute("message", "Falha ao Cadastrar Estoque!");
+				model.addAttribute("ClickGerenciarEstoque",true);
+				return "page";
+			}	
+		   
 		}
 		else {
-			estoqueDAO.update(mEstoque);
-			
-			//atualiza as informações do livro
-			
-			Object lstEstoque = estoqueDAO.getByLivroDataZero(mEstoque.getLivroId());
-			
-			BigDecimal maiorVlrCustoBd = (BigDecimal) lstEstoque;
-			
-			double maiorVlrCusto = maiorVlrCustoBd.doubleValue();
-			
-			Livro livro = livroDAO.get(mEstoque.getLivroId());
-			int qtdAnt = livro.getQuantidade();
-			livro.setQuantidade(qtdAnt + mEstoque.getQuantidade());
-			
-			GrupoPrecificacao grp = grpPrecificacaoDAO.get(livro.getGrupoPrecificacaoId());
-			
-			livro.setPrecoUnit(maiorVlrCusto * (grp.getPercentualLucro() + 1));
-			
-			livroDAO.update(livro);
+			String atualizar = new EstoqueHandler().update(mEstoque);
+			if(atualizar=="erro") {
+				model.addAttribute("message", "Falha ao Atualizar Estoque!");
+				model.addAttribute("ClickGerenciarEstoque",true);
+				return "page";
+			}	
 		}		
 		
 		return "redirect:/gerenciar/estoque?success=estoque";
@@ -440,7 +439,6 @@ public class GerenciamentoController {
 	
 	@RequestMapping(value="/vendas")
 	public ModelAndView gerenciarVendas() {		
-		logger.info("Chamando controller");
 		ModelAndView mv = new ModelAndView("page");	
 		mv.addObject("title","Gerenciar Vendas");		
 		mv.addObject("ClickGerenciarVendas",true);			
@@ -450,7 +448,6 @@ public class GerenciamentoController {
 	
 	@RequestMapping(value="/vendas/{id}/avancar")
 	public String gerenciarVendasAvancarStatus(@PathVariable int id) {
-		logger.info("Chamando controller do avancar");
 
 		ModelAndView mv = new ModelAndView("page");
 		mv.addObject("title","Gerenciar Vendas Avançar");		
@@ -462,7 +459,6 @@ public class GerenciamentoController {
 		
 		//Atualiza para o próximo status da venda
 		
-		logger.info("status venda: " + vd.getStatusVenda().getDescricao());
 		
 		if (vd.getStatusVenda().getId() ==  1)
 		{
@@ -505,7 +501,6 @@ public class GerenciamentoController {
 		
 		Troca troca = trocaDAO.get(id);
 		
-		logger.info("status: " + troca.getStatusTrocaId());
 		
 		if (troca.getStatusTrocaId() == 4) {
 			troca.setStatusTrocaId(3);
@@ -541,7 +536,7 @@ public class GerenciamentoController {
 		estoque.setLivroId(troca.getLivroId());
 		estoque.setQuantidade(troca.getQtdTroca());
 		estoque.setTpoOperacao("ENTRADA");		
-		estoqueDAO.add(estoque);
+	//	estoqueDAO.add(estoque);
 		
 		//atualiza quantidade total do livro trocado
 		Livro livro = livroDAO.get(troca.getLivroId());
@@ -569,6 +564,7 @@ public class GerenciamentoController {
 		return "redirect:/gerenciar/trocasCancelamentos?success=troca";
 		
 	}
+
 }
 
 	

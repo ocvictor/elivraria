@@ -1,9 +1,6 @@
 package br.com.elivrariaback.daoimpl;
 
-import br.com.elivrariaback.dto.Livro;
-
 import java.util.List;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -12,15 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import br.com.elivrariaback.dao.EstoqueDAO;
-import br.com.elivrariaback.dto.Categoria;
 import br.com.elivrariaback.dto.Estoque;
 
 @Repository("estoqueDAO")
 @Transactional
 public class EstoqueDAOImpl implements EstoqueDAO{
-	
-	private static final Logger logger = LoggerFactory.getLogger(EstoqueDAOImpl.class);
-
 	
 	@Autowired
 	private SessionFactory sessionFactory;

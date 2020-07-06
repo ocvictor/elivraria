@@ -101,7 +101,7 @@
 				<hr/>			
 			</div>
 			
-			<h3>Cancelamentos Solicitados</h3>
+			<h3>Trocas Confirmadas</h3>
 			<hr/>
 			
 			<div class="row">
@@ -110,16 +110,15 @@
 				<div class='col-xs-12'>
 				
 				
-					<table id="cancelamentosTable" class="table table-condensed table-bordered">
+					<table id="trocasConfirmadasTable" class="table table-condensed table-bordered">
 									
 						<thead>					
 							<tr>					
 								<th>Data</th>
 								<th>Cliente</th>
 								<th>Pedido</th>
-								<th>Quantidade Itens</th>
-								<th>Valor Total</th>
-								<th>Visualizar</th>
+								<th>Livro</th>
+								<th>Quantidade</th>
 							</tr>					
 						</thead>
 						
@@ -128,9 +127,8 @@
 								<th>Data</th>
 								<th>Cliente</th>
 								<th>Pedido</th>
-								<th>Quantidade Itens</th>
-								<th>Valor Total</th>
-								<th>Visualizar</th>
+								<th>Livro</th>
+								<th>Quantidade</th>
 							</tr>									
 						</tfoot>
 						
@@ -141,7 +139,7 @@
 				</div>
 				
 				<hr/>			
-			</div>			
+			</div>	
  		</div>
  	</div>
 </div>

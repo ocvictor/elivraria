@@ -2,14 +2,7 @@ package br.com.elivrariafront.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
-
-import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.Cartao;
-
 public class DoisCartoesModelo implements Serializable {
 
 	/**

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import br.com.elivrariaback.dao.UsuarioDAO;
-import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.Usuario;
 import br.com.elivrariafront.model.UsuarioModelo;
 

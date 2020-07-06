@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,7 +26,8 @@ public class ItemCarrinho implements Serializable {
 	private int id;
 	@OneToOne
 	private Livro livro;
-	@Column(name = "carrinho_id")
+	
+	@JoinColumn(name = "carrinho_id")
 	private int carrinhoId;	
 	@Column(name = "livro_qtd")
 	private int livro_qtd;

@@ -4,16 +4,11 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.elivrariaback.dao.BandeiraDAO;
 import br.com.elivrariaback.dao.VendaDetalheDAO;
-import br.com.elivrariaback.dto.Bandeira;
-import br.com.elivrariaback.dto.Livro;
 import br.com.elivrariaback.dto.VendaDetalhe;
 
 @Repository("vendaDetalheDAO")
@@ -23,7 +18,6 @@ public class VendaDetalheDAOImpl implements VendaDetalheDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-	private static final Logger logger = LoggerFactory.getLogger(VendaDetalheDAOImpl.class);
 	
 	@Override
 	public List<VendaDetalhe> listByUsuario(int usuarioId) {

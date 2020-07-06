@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.elivrariaback.dao.ItemCarrinhoDAO;
 import br.com.elivrariaback.dao.LivroDAO;
-import br.com.elivrariaback.dao.UsuarioDAO;
 import br.com.elivrariaback.dto.Carrinho;
 import br.com.elivrariaback.dto.ItemCarrinho;
 import br.com.elivrariaback.dto.Livro;

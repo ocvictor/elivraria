@@ -5,28 +5,12 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -40,11 +24,9 @@ import org.w3c.dom.Document;
 
 public class FreteHandler {
 
-	public static final Logger logger = LoggerFactory.getLogger(FreteHandler.class);
 	
 	public String calcularFrete(FreteModelo freteModelo){
 		
-		logger.info("frete handler");
 		//URL do webservice correio para calculo de frete
 		String urlString = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx";
 
@@ -83,7 +65,6 @@ public class FreteHandler {
 			
 		}
 		
-		logger.info("URL: " + urlString);
 		
 		try {
 			// cria o objeto url

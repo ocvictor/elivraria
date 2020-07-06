@@ -791,34 +791,100 @@ $(function() {
 	}
 	
 	
-	// lista todos enderecos do cliente
-	var UsuariosTable = $('#UsuariosTable');
+	// lista as vendas em transporte
+	var $UsuariosTable = $('#UsuariosTable');
 	
 	
-	if(UsuariosTable.length) {
+	if($UsuariosTable.length) {
 		
 		var jsonUrl = window.contextRoot + '/json/data/admin/todos/usuarios';
 		console.log(jsonUrl);
 		
-		UsuariosTable.DataTable({
-					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 registros', '30 registros', '50 registros', 'Todos' ] ],
+		$UsuariosTable.DataTable({
+			 order : [[ 1, "desc" ]],
+			 
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
 					pageLength : 30,
 					ajax : {
 						url : jsonUrl,
 						dataSrc : ''
 					},
 					columns : [		
-					           	{data: 'id'},
-
-
-					           	
 					           	{
-									data : 'nome'
+					           		data: 'id'
+					           	},
+
+					           	{
+					           		data: 'nome'
+					           	},
+					           	{
+									data : 'sobrenome'
+								},							
+								{
+									data : 'cpf'
 								},
 								{
-									data : 'sobrenome'
+									data : 'dtNascimento'
 								},
-								
+								{
+									data : 'genero'
+								},
+								{
+									data : 'email'
+								},
+								{
+									data : 'dddTelefone'
+								},
+								{
+									data : 'telefone'
+								},
+								{
+									data : 'ativo',
+									bSortable : false,
+									mRender : function(data, type, row) {
+										var str = '';
+										if(data) {											
+											str += '<label class="switch"> <input type="checkbox" value="'+row.id+'" checked="checked">  <div class="slider round"> </div></label>';
+											
+										}else {
+											str += '<label class="switch"> <input type="checkbox" value="'+row.id+'">  <div class="slider round"> </div></label>';
+										}
+										
+										return str;
+									}
+								},
 								{
 									data : 'id',
 									bSortable : false,
@@ -827,14 +893,49 @@ $(function() {
 										var str = '';
 										str += '<a href="'
 												+ window.contextRoot
-												+ '/gerenciar/'
+												+ '/gerenciar/'												
 												+ data
-												+ '/usuario" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></a> &#160;';
+												+ '/usuario" class="btn btn-primary"><span class="glyphicon glyphicon-forward"></span></a> &#160;';
 
-										return str;
+									return str;
 									}
 								}					           	
-					],				
+					],
+					
+					initComplete: function () {
+						var api = this.api();
+						api.$('.switch input[type="checkbox"]').on('change' , function() {							
+							var dText = (this.checked)? 'Deseja ativar o usuario?': 'Deseja desativar o usuario?';
+							var checked = this.checked;
+							var checkbox = $(this);
+							debugger;
+						    bootbox.confirm({
+						    	size: 'medium',
+						    	title: 'Ativar/Desativar Usuario',
+						    	message: dText,
+						    	callback: function (confirmed) {
+							        if (confirmed) {
+							            $.ajax({							            	
+							            	type: 'GET',
+							            	url: window.contextRoot + '/gerenciar/usuario/'+checkbox.prop('value')+'/ativacao',
+							        		timeout : 100000,
+							        		success : function(data) {
+							        			bootbox.alert(data);							        										        			
+							        		},
+							        		error : function(e) {
+							        			bootbox.alert('ERROR: '+ e);
+							        			//display(e);
+							        		}						            	
+							            });
+							        }
+							        else {							        	
+							        	checkbox.prop('checked', !checked);
+							        }
+						    	}
+						    });																											
+						});
+							
+					}
 					
 				});
 	}
@@ -1082,23 +1183,6 @@ $(function() {
 							},
 							{
 								data : 'pais'
-							},
-							{
-								data : 'id',
-								bSortable : false,
-								mRender : function(data, type, row) {
-
-									var str = '';
-									str += '<a href="'
-											+ window.contextRoot
-											+ '/editar/'
-											+ data
-											+ '/endereco" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
-									
-									return str;
-
-								}
-
 							} ]
 				});
 	}
@@ -1282,6 +1366,83 @@ $(function() {
 					
 				});
 	}
+	
+	
+	
+	var $trocasConfirmadasTable = $('#trocasConfirmadasTable');
+	
+	
+	if($trocasConfirmadasTable.length) {
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/trocas/confirmadas';
+		console.log(jsonUrl);
+		
+		$trocasConfirmadasTable.DataTable({
+			
+			 order : [[ 1, "desc" ]],
+			 
+			"language": {
+				
+			    "sEmptyTable": "Nenhum registro encontrado",
+			    "sInfo": "Mostrando de _START_ ate _END_ de _TOTAL_ registros",
+			    "sInfoEmpty": "Mostrando 0 ate 0 de 0 registros",
+			    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+			    "sInfoPostFix": "",
+			    "sInfoThousands": ".",
+			    "sLengthMenu": "_MENU_ resultados por pagina",
+			    "sLoadingRecords": "Carregando...",
+			    "sProcessing": "Processando...",
+			    "sZeroRecords": "Nenhum registro encontrado",
+			    "sSearch": "Pesquisar",
+			    "oPaginate": {
+			        "sNext": "Proximo",
+			        "sPrevious": "Anterior",
+			        "sFirst": "Primeiro",
+			        "sLast": "Ultimo"
+			    },
+			    "oAria": {
+			        "sSortAscending": ": Ordenar colunas de forma ascendente",
+			        "sSortDescending": ": Ordenar colunas de forma descendente"
+			    },
+			    "select": {
+			        "rows": {
+			            "_": "Selecionado %d linhas",
+			            "0": "Nenhuma linha selecionada",
+			            "1": "Selecionado 1 linha"
+			        }
+			    }
+			
+        },
+					lengthMenu : [ [ 10, 30, 50, -1 ], [ '10 ', '30 ', '50 ', 'Todos' ] ],
+					pageLength : 30,
+					ajax : {
+						url : jsonUrl,
+						dataSrc : ''
+					},
+					columns : [		
+					           	{
+					           		data: 'dataSolicitacao'
+					           	},
+
+					           	{
+					           		data: 'usuarioNome'
+					           	},
+					           	{
+									data : 'vendaDetalheId'
+								},
+					           	{
+									data : 'titulo'
+								},							
+								{
+									data : 'qtdTroca'
+								}					           	
+					],
+					
+					
+					
+				});
+	}
+	
 	var $table = $('#cartoesCliente');
 
 	if ($table.length) {
@@ -1354,23 +1515,6 @@ $(function() {
 							},
 							{
 								data : 'anoVencimento'
-							},
-							{
-								data : 'id',
-								bSortable : false,
-								mRender : function(data, type, row) {
-
-									var str = '';
-									str += '<a href="'
-											+ window.contextRoot
-											+ '/editar/'
-											+ data
-											+ '/cartao" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a> &#160;';
-									
-									return str;
-
-								}
-
 							} ]
 				});
 	}
@@ -1440,7 +1584,7 @@ $(function() {
 				messages: {					
 					username: {
 						required: 'Entre com e-mail',
-						email: 'Insira um e-mail válido!'
+						email: 'Insira um e-mail valido!'
 					},
 					password: {
 						required: 'Entre com a senha!'

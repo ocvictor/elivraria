@@ -10,6 +10,8 @@ public interface TrocaDAO {
 	List<Troca> list();
 	List<Troca> getSolicitadas();
 	List<Troca> getEmAnalise();
+	List<Troca> getConfirmadas();
+
 
 	boolean add(Troca troca);
 	boolean update(Troca troca);
